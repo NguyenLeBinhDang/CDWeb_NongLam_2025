@@ -1,11 +1,1 @@
-/backend/.gitattributes
-/.idea/.gitignore
-/backend/.gitignore
-/backend/src/main/resources/application.properties
-/backend/src/main/java/com/lowquality/backend/BackendApplication.java
-/backend/src/test/java/com/lowquality/backend/BackendApplicationTests.java
-/.idea/material_theme_project_new.xml
-/backend/.mvn/wrapper/maven-wrapper.properties
-/backend/mvnw
-/backend/mvnw.cmd
-/backend/pom.xml
+.idea
