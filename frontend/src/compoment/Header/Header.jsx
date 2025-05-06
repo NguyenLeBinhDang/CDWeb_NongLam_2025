@@ -17,8 +17,8 @@ const Header = () => {
                         <div className="col-lg-3 col-md-4 col-8">
                             <div className="site-branding">
                                 <Link to="/" className="logo">
-                                    <img src="/logo.png" alt="TopTruyenTV" className="img-fluid" />
-                                    <span className="site-name">TopTruyenTV</span>
+                                    <img src="/logo.png" alt="LowQuality" className="img-fluid" />
+                                    <span className="site-name">LowQuality</span>
                                 </Link>
                             </div>
                         </div>
@@ -39,7 +39,7 @@ const Header = () => {
                         <div className="col-lg-3 col-md-4 col-4 text-end">
                             <div className="header-actions">
                                 <button className="btn btn-sm btn-outline-light me-2 d-none d-md-inline-block">
-                                    <i className="fas fa-user-circle me-1"></i> Đăng nhập
+                                    <Link to="/login"> <i className="fas fa-user-circle me-1"></i> Đăng nhập</Link>
                                 </button>
                                 <button 
                                     className="mobile-menu-toggle d-md-none"

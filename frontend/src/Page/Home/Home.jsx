@@ -1,8 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import MangaCard from '../../compoment/mangaCard';
+import { useFilter } from '../../context/FilterContext';
 import './Home.css';
 
 const Home = () => {
+    const navigate = useNavigate();
+    const { setFilterFromHome } = useFilter();
+
     // Dữ liệu mẫu cho truyện mới cập nhật
     const latestManga = [
         { id: 1, title: "One Piece", chapter: "Chapter 1090", image: "https://via.placeholder.com/150x200", time: "2 giờ trước" },
@@ -32,10 +37,19 @@ const Home = () => {
         "Romance", "School Life", "Sci-Fi", "Slice of Life", "Sports", "Supernatural", "Thriller"
     ];
 
+    const handleViewAllLatest = () => {
+        setFilterFromHome({
+            status: 'all',
+            sortBy: 'latest',
+            genres: []
+        });
+        navigate('/all-manga');
+    };
+
     return (
         <div className="home-page">
             <div className="container">
-                {/* Banner Slider */}
+                {/* Banner Slider - Truyện đọc nhiều nhất */}
                 <div className="banner-slider mb-4">
                     <div id="homeBanner" className="carousel slide" data-bs-ride="carousel">
                         <div className="carousel-indicators">
@@ -44,27 +58,15 @@ const Home = () => {
                             <button type="button" data-bs-target="#homeBanner" data-bs-slide-to="2"></button>
                         </div>
                         <div className="carousel-inner">
-                            <div className="carousel-item active">
-                                <img src="https://via.placeholder.com/1200x400" className="d-block w-100" alt="Banner 1" />
-                                <div className="carousel-caption">
-                                    <h3>One Piece</h3>
-                                    <p>Hành trình tìm kiếm kho báu vĩ đại nhất thế giới</p>
+                            {recommendedManga.slice(0, 3).map((manga, index) => (
+                                <div key={manga.id} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
+                                    <img src={manga.image} className="d-block w-100" alt={manga.title} />
+                                    <div className="carousel-caption">
+                                        <h3>{manga.title}</h3>
+                                        <p>{manga.views} lượt xem</p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="carousel-item">
-                                <img src="https://via.placeholder.com/1200x400" className="d-block w-100" alt="Banner 2" />
-                                <div className="carousel-caption">
-                                    <h3>Jujutsu Kaisen</h3>
-                                    <p>Cuộc chiến giữa các thuật sư và chú linh</p>
-                                </div>
-                            </div>
-                            <div className="carousel-item">
-                                <img src="https://via.placeholder.com/1200x400" className="d-block w-100" alt="Banner 3" />
-                                <div className="carousel-caption">
-                                    <h3>Demon Slayer</h3>
-                                    <p>Thanh gươm diệt quỷ</p>
-                                </div>
-                            </div>
+                            ))}
                         </div>
                         <button className="carousel-control-prev" type="button" data-bs-target="#homeBanner" data-bs-slide="prev">
                             <span className="carousel-control-prev-icon"></span>
@@ -81,30 +83,18 @@ const Home = () => {
                         <div className="content-section latest-manga">
                             <div className="section-header">
                                 <h2 className="section-title">Truyện mới cập nhật</h2>
-                                <Link to="/latest" className="view-all">Xem tất cả <i className="fas fa-angle-right"></i></Link>
+                                <button 
+                                    className="view-all"
+                                    onClick={handleViewAllLatest}
+                                >
+                                    Xem tất cả <i className="fas fa-angle-right"></i>
+                                </button>
                             </div>
                             <div className="manga-list">
                                 <div className="row">
                                     {latestManga.map(manga => (
                                         <div key={manga.id} className="col-md-6 col-lg-4 mb-4">
-                                            <div className="manga-card">
-                                                <div className="manga-image">
-                                                    <Link to={`/manga/${manga.id}`}>
-                                                        <img src={manga.image} alt={manga.title} className="img-fluid" />
-                                                    </Link>
-                                                    <div className="manga-update">
-                                                        <span>{manga.chapter}</span>
-                                                    </div>
-                                                </div>
-                                                <div className="manga-info">
-                                                    <h3 className="manga-title">
-                                                        <Link to={`/manga/${manga.id}`}>{manga.title}</Link>
-                                                    </h3>
-                                                    <div className="update-time">
-                                                        <i className="far fa-clock"></i> {manga.time}
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <MangaCard manga={manga} type="latest" />
                                         </div>
                                     ))}
                                 </div>
@@ -122,21 +112,7 @@ const Home = () => {
                                 </div>
                                 <div className="recommended-list">
                                     {recommendedManga.map(manga => (
-                                        <div key={manga.id} className="recommended-item">
-                                            <div className="recommended-image">
-                                                <Link to={`/manga/${manga.id}`}>
-                                                    <img src={manga.image} alt={manga.title} className="img-fluid" />
-                                                </Link>
-                                            </div>
-                                            <div className="recommended-info">
-                                                <h3 className="manga-title">
-                                                    <Link to={`/manga/${manga.id}`}>{manga.title}</Link>
-                                                </h3>
-                                                <div className="manga-views">
-                                                    <i className="far fa-eye"></i> {manga.views} lượt xem
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <MangaCard key={manga.id} manga={manga} type="recommended" />
                                     ))}
                                 </div>
                             </div>
@@ -154,40 +130,6 @@ const Home = () => {
                                     ))}
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Truyện đọc nhiều nhất */}
-                <div className="content-section popular-manga">
-                    <div className="section-header">
-                        <h2 className="section-title">Truyện đọc nhiều nhất</h2>
-                        <Link to="/popular" className="view-all">Xem tất cả <i className="fas fa-angle-right"></i></Link>
-                    </div>
-                    <div className="popular-list">
-                        <div className="row">
-                            {recommendedManga.map(manga => (
-                                <div key={manga.id} className="col-md-4 col-lg-2 mb-4">
-                                    <div className="popular-card">
-                                        <div className="popular-image">
-                                            <Link to={`/manga/${manga.id}`}>
-                                                <img src={manga.image} alt={manga.title} className="img-fluid" />
-                                            </Link>
-                                            <div className="popular-ranking">
-                                                <span>{manga.id - 10}</span>
-                                            </div>
-                                        </div>
-                                        <div className="popular-info">
-                                            <h3 className="manga-title">
-                                                <Link to={`/manga/${manga.id}`}>{manga.title}</Link>
-                                            </h3>
-                                            <div className="manga-views">
-                                                <i className="far fa-eye"></i> {manga.views}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
                         </div>
                     </div>
                 </div>
