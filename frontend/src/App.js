@@ -12,6 +12,7 @@ import './App.css';
 import Login from './Page/Login/Login';
 import Register from './Page/Register/Register';
 import MangaReader from './Page/MangaReader/MangaReader';
+import UserInfo from './compoment/UserInfo/UserInfo';
 
 const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID'; // Thay thế bằng Client ID của bạn
 
@@ -30,6 +31,7 @@ function App() {
                 <Route path="/manga/:id/chapter/:chapterId" element={<MangaReader />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
+                <Route path="/profile" element={<UserInfo />} />
               </Routes>
             </main>
             <Footer />

@@ -1,38 +1,60 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
+import { useUser } from '../../context/UserContext';
+import axios from 'axios';
+import Loading from '../../utils/Loading';
 import './Login.css';
 
 const Login = () => {
     const navigate = useNavigate();
+    const { login } = useUser();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-
+    const [loading, setLoading] = useState(false);
+    
     const handleEmailLogin = async (e) => {
         e.preventDefault();
+        setError('');
+        setLoading(true);
         try {
-            // TODO: Implement email/password login
-            console.log('Email login:', email, password);
+            const response = await axios.post('http://localhost:8080/api/auth/login', {
+                email,
+                password
+            });
+            
+            const { token, user } = response.data;
+            login(user, token);
+            navigate('/');
         } catch (err) {
-            setError('Login failed. Please try again.');
+            setError(err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleGoogleSuccess = async (credentialResponse) => {
         try {
-            // TODO: Send credential to your backend
-            console.log('Google login success:', credentialResponse);
-            // After successful login, redirect to home
+            const response = await axios.post('http://localhost:8080/api/auth/google', {
+                credential: credentialResponse.credential
+            });
+            
+            const { token, user } = response.data;
+            login(user, token);
             navigate('/');
         } catch (err) {
-            setError('Google login failed. Please try again.');
+            setError('Đăng nhập bằng Google thất bại. Vui lòng thử lại.');
         }
     };
 
     const handleGoogleError = () => {
-        setError('Google login failed. Please try again.');
+        setError('Đăng nhập bằng Google thất bại. Vui lòng thử lại.');
     };
+
+    if (loading) {
+        return <Loading size="large" />;
+    }
 
     return (
         <div className="login-page">
@@ -64,8 +86,8 @@ const Login = () => {
                         />
                     </div>
                     
-                    <button type="submit" className="login-btn">
-                        Đăng Nhập
+                    <button type="submit" className="login-btn" disabled={loading}>
+                        {loading ? 'Đang xử lý...' : 'Đăng Nhập'}
                     </button>
                 </form>
                 
@@ -81,8 +103,8 @@ const Login = () => {
                     />
                 </div>
                 
-                <div className="login-footer">
-                    <p>Chưa có tài khoản? <Link to="/register">Đăng ký</Link></p>
+                <div className="register-link">
+                    Chưa có tài khoản? <Link to="/register">Đăng ký</Link>
                 </div>
             </div>
         </div>

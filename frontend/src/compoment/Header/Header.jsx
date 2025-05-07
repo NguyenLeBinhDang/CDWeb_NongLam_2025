@@ -1,12 +1,29 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useUser } from '../../context/UserContext';
+import axios from 'axios';
 import './Header.css';
 
 const Header = () => {
+    const navigate = useNavigate();
     const [showMobileMenu, setShowMobileMenu] = useState(false);
+    const { user, logout } = useUser();
 
     const toggleMobileMenu = () => {
         setShowMobileMenu(!showMobileMenu);
+    };
+
+    const handleLogout = async () => {
+        try {
+            await axios.post('http://localhost:8080/api/auth/logout');
+            logout();
+            navigate('/login');
+        } catch (error) {
+            console.error('Logout failed:', error);
+            // Still logout locally even if server request fails
+            logout();
+            navigate('/login');
+        }
     };
 
     return (
@@ -17,7 +34,7 @@ const Header = () => {
                         <div className="col-lg-3 col-md-4 col-8">
                             <div className="site-branding">
                                 <Link to="/" className="logo">
-                                    <img src="/logo.png" alt="LowQuality" className="img-fluid" />
+                                    <img src="/img.png" alt="LowQuality" className="img-fluid" />
                                     <span className="site-name">LowQuality</span>
                                 </Link>
                             </div>
@@ -36,17 +53,22 @@ const Header = () => {
                                 </form>
                             </div>
                         </div>
-                        <div className="col-lg-3 col-md-4 col-4 text-end">
-                            <div className="header-actions">
-                                <button className="btn btn-sm btn-outline-light me-2 d-none d-md-inline-block">
-                                    <Link to="/login"> <i className="fas fa-user-circle me-1"></i> Đăng nhập</Link>
-                                </button>
-                                <button 
-                                    className="mobile-menu-toggle d-md-none"
-                                    onClick={toggleMobileMenu}
-                                >
-                                    <i className={`fas ${showMobileMenu ? 'fa-times' : 'fa-bars'}`}></i>
-                                </button>
+                        <div className="col-lg-3 col-md-4 col-4">
+                            <div className="user-actions">
+                                {user ? (
+                                    <div className="d-flex gap-2">
+                                        <Link to="/profile" className="btn btn-outline-light">
+                                            <i className="fas fa-user"></i> Profile
+                                        </Link>
+                                        <button onClick={handleLogout} className="btn btn-outline-light">
+                                            <i className="fas fa-sign-out-alt"></i> Đăng xuất
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <Link to="/login" className="btn btn-outline-light">
+                                        <i className="fas fa-sign-in-alt"></i> Đăng nhập
+                                    </Link>
+                                )}
                             </div>
                         </div>
                     </div>

@@ -2,18 +2,21 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useUser } from '../../context/UserContext';
+import axios from 'axios';
+import Loading from '../../utils/Loading';
 import './Register.css';
 
 const Register = () => {
     const navigate = useNavigate();
     const { login } = useUser();
     const [formData, setFormData] = useState({
-        name: '',
         email: '',
         password: '',
-        confirmPassword: ''
+        confirmPassword: '',
+        fullName: ''
     });
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -26,28 +29,40 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setLoading(true);
 
         // Validate passwords match
         if (formData.password !== formData.confirmPassword) {
-            setError('Mật khẩu không khớp');
+            setError('Mật khẩu không trùng khớp');
+            setLoading(false);
             return;
         }
 
         try {
-            // TODO: Implement registration API call
-            console.log('Register data:', formData);
-            // After successful registration, redirect to login
+            const response = await axios.post('http://localhost:8080/api/auth/register', {
+                email: formData.email,
+                password: formData.password,
+                fullName: formData.fullName
+            });
+
+            const { token, user } = response.data;
+            login(user, token);
             navigate('/login');
         } catch (err) {
-            setError('Đăng ký thất bại. Vui lòng thử lại.');
+            setError(err.response?.data?.message || 'Đăng ký thất bại. Vui lòng thử lại.');
+        } finally {
+            setLoading(false);
         }
     };
 
     const handleGoogleSuccess = async (credentialResponse) => {
         try {
-            // TODO: Send credential to your backend
-            console.log('Google registration success:', credentialResponse);
-            // After successful registration, redirect to home
+            const response = await axios.post('http://localhost:8080/api/auth/google', {
+                credential: credentialResponse.credential
+            });
+            
+            const { token, user } = response.data;
+            login(user, token);
             navigate('/');
         } catch (err) {
             setError('Đăng ký bằng Google thất bại. Vui lòng thử lại.');
@@ -58,21 +73,25 @@ const Register = () => {
         setError('Đăng ký bằng Google thất bại. Vui lòng thử lại.');
     };
 
+    if (loading) {
+        return <Loading size="large" />;
+    }
+
     return (
         <div className="register-page">
             <div className="register-container">
-                <h1 className="register-title">Đăng Ký Tài Khoản</h1>
+                <h1 className="register-title">Đăng Ký</h1>
                 
                 {error && <div className="register-error">{error}</div>}
                 
                 <form onSubmit={handleSubmit} className="register-form">
                     <div className="form-group">
-                        <label htmlFor="name">Họ và tên</label>
+                        <label htmlFor="fullName">Họ và tên</label>
                         <input
                             type="text"
-                            id="name"
-                            name="name"
-                            value={formData.name}
+                            id="fullName"
+                            name="fullName"
+                            value={formData.fullName}
                             onChange={handleChange}
                             required
                         />
@@ -116,8 +135,8 @@ const Register = () => {
                         />
                     </div>
                     
-                    <button type="submit" className="register-btn">
-                        Đăng Ký
+                    <button type="submit" className="register-btn" disabled={loading}>
+                        {loading ? 'Đang xử lý...' : 'Đăng Ký'}
                     </button>
                 </form>
                 
@@ -133,8 +152,8 @@ const Register = () => {
                     />
                 </div>
                 
-                <div className="register-footer">
-                    <p>Đã có tài khoản? <Link to="/login">Đăng nhập</Link></p>
+                <div className="login-link">
+                    Đã có tài khoản? <Link to="/login">Đăng nhập</Link>
                 </div>
             </div>
         </div>
