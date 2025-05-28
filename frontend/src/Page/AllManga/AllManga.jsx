@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import MangaCard from '../../compoment/mangaCard';
-import FilterSidebar from '../../compoment/FilterSidebar';
+import MangaCard from '../../components/mangaCard';
+import FilterSidebar from '../../components/FilterSidebar';
 import { useFilter } from '../../context/FilterContext';
 import './AllManga.css';
 
@@ -8,7 +8,7 @@ const AllManga = () => {
     const { defaultFilter } = useFilter();
     const [currentPage, setCurrentPage] = useState(1);
     const [filters, setFilters] = useState(defaultFilter);
-    const mangaPerPage = 24;
+    const mangaPerPage = 10;
 
     // Dữ liệu mẫu cho tất cả truyện
     const allManga = [

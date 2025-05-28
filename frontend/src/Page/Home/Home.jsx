@@ -1,6 +1,6 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import MangaCard from '../../compoment/mangaCard';
+import {Link, NavLink, useNavigate} from 'react-router-dom';
+import MangaCard from '../../components/mangaCard';
 import { useFilter } from '../../context/FilterContext';
 import './Home.css';
 
