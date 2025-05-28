@@ -94,16 +94,7 @@ const Header = () => {
                                 <li><Link to="/category/sci-fi">Sci-Fi</Link></li>
                             </ul>
                         </li>
-                        <li className="dropdown">
-                            <Link to="#" className="dropdown-toggle">
-                                <i className="fas fa-bookmark"></i> Theo dõi
-                            </Link>
-                            <ul className="dropdown-menu">
-                                <li><Link to="/bookmark/reading">Đang đọc</Link></li>
-                                <li><Link to="/bookmark/favorites">Yêu thích</Link></li>
-                                <li><Link to="/bookmark/history">Lịch sử</Link></li>
-                            </ul>
-                        </li>
+                        <li className="d-flex gap-2"><Link to="/bookmark"><i className="fas fa-bookmark"></i> Theo dõi </Link></li>
                     </ul>
                 </nav>
             </div>

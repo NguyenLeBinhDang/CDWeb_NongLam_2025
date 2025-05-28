@@ -83,6 +83,7 @@ const Home = () => {
                         <div className="content-section latest-manga">
                             <div className="section-header">
                                 <h2 className="section-title">Truyện mới cập nhật</h2>
+                                {/*Xem tat ca*/}
                                 <button 
                                     className="view-all"
                                     onClick={handleViewAllLatest}

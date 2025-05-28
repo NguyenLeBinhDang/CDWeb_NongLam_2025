@@ -14,6 +14,8 @@ import Register from './Page/Register/Register';
 import MangaReader from './Page/MangaReader/MangaReader';
 import UserInfo from './components/UserInfo/UserInfo';
 import {MangaReaderProvider} from "./context/MangaReaderContext";
+import BookMark from "./Page/BookMark/BookMark";
+import {BookmarkProvider} from "./context/BookMarkContext";
 
 const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID'; // Thay thế bằng Client ID của bạn
 
@@ -23,21 +25,24 @@ function App() {
             <UserProvider>
                 <FilterProvider>
                     <MangaReaderProvider>
-                        <div className="App">
-                            <Header/>
-                            <main className="main-content">
-                                <Routes>
-                                    <Route path="/" element={<Home/>}/>
-                                    <Route path="/all-manga" element={<AllManga/>}/>
-                                    <Route path="/manga/:id" element={<MangaDetail/>}/>
-                                    <Route path="/manga/:id/chapter/:chapterId" element={<MangaReader/>}/>
-                                    <Route path="/login" element={<Login/>}/>
-                                    <Route path="/register" element={<Register/>}/>
-                                    <Route path="/profile" element={<UserInfo/>}/>
-                                </Routes>
-                            </main>
-                            <Footer/>
-                        </div>
+                        <BookmarkProvider>
+                            <div className="App">
+                                <Header/>
+                                <main className="main-content">
+                                    <Routes>
+                                        <Route path="/" element={<Home/>}/>
+                                        <Route path="/all-manga" element={<AllManga/>}/>
+                                        <Route path="/manga/:id" element={<MangaDetail/>}/>
+                                        <Route path="/manga/:id/chapter/:chapterId" element={<MangaReader/>}/>
+                                        <Route path="/login" element={<Login/>}/>
+                                        <Route path="/register" element={<Register/>}/>
+                                        <Route path="/profile" element={<UserInfo/>}/>
+                                        <Route path="/bookmark" element={<BookMark/>}/>
+                                    </Routes>
+                                </main>
+                                <Footer/>
+                            </div>
+                        </BookmarkProvider>
                     </MangaReaderProvider>
                 </FilterProvider>
             </UserProvider>
