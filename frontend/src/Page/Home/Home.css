@@ -58,14 +58,19 @@
 }
 
 .view-all {
-    color: #ddd;
+    color: #444;
     font-size: 0.9rem;
     text-decoration: none;
     transition: all 0.3s ease;
+    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
 }
 
 .view-all:hover {
-    color: #f39c12;
+    color: #fff;
+    background-color: #f39c12;
+    cursor: pointer;
+    text-decoration: none;
 }
 
 /* Manga Cards in Latest Updates */

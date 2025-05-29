@@ -10,9 +10,9 @@ const Footer = () => {
                     <div className="row">
                         <div className="col-lg-4 col-md-6">
                             <div className="footer-widget about-widget">
-                                <h4 className="widget-title">Về TopTruyenTV</h4>
+                                <h4 className="widget-title">Về LowQuality</h4>
                                 <div className="about-content">
-                                    <p>TopTruyenTV là website đọc truyện tranh online được nhiều bạn trẻ yêu thích và đánh giá cao, với nhiều thể loại truyện đa dạng.</p>
+                                    <p>LowQuality là website đọc truyện tranh online được nhiều bạn trẻ yêu thích và đánh giá cao, với nhiều thể loại truyện đa dạng.</p>
                                     <div className="social-links mt-3">
                                         <a href="#" className="social-link"><i className="fab fa-facebook-f"></i></a>
                                         <a href="#" className="social-link"><i className="fab fa-twitter"></i></a>
@@ -52,7 +52,7 @@ const Footer = () => {
                     <div className="row">
                         <div className="col-md-12">
                             <div className="copyright-text">
-                                <p>&copy; {new Date().getFullYear()} TopTruyenTV. Tất cả các quyền được bảo lưu.</p>
+                                <p>&copy; {new Date().getFullYear()} LowQuality. Tất cả các quyền được bảo lưu.</p>
                             </div>
                         </div>
                     </div>
