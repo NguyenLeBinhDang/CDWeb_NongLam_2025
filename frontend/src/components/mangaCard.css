@@ -137,6 +137,18 @@
     overflow: hidden;
 }
 
+.chapter-link {
+    display: block;
+    font-size: 0.85rem;
+    color: #3498db;
+    margin-bottom: 2px;
+    transition: color 0.2s;
+}
+
+.chapter-link:hover {
+    color: #1abc9c;
+}
+
 /* Responsive styles */
 @media (max-width: 767px) {
     .manga-image img,
