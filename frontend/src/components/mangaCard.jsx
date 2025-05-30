@@ -1,8 +1,22 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {Link} from 'react-router-dom';
 import './mangaCard.css';
+import {useFilter} from "../context/FilterContext";
 
-const MangaCard = ({ manga, type = 'latest' }) => {
+const MangaCard = ({manga, type = 'latest'}) => {
+    const [chapter, setChapter] = useState([]);
+    const {getChapterOfManga} = useFilter();
+
+    useEffect(() => {
+        const fetchChapters = async () => {
+            const result = await getChapterOfManga(manga.id);
+            setChapter(result || []);
+        };
+        fetchChapters().then(r => {
+            console.log('Chapters fetched successfully')
+        });
+    }, []);
+
     const renderCard = () => {
         switch (type) {
             case 'latest':
@@ -10,24 +24,30 @@ const MangaCard = ({ manga, type = 'latest' }) => {
                     <div className="manga-card">
                         <div className="manga-image">
                             <Link to={`/manga/${manga.id}`}>
-                                <img src={manga.cover_img} alt={manga.name} className="img-fluid" />
+                                <img src="https://placehold.co/600x400" alt={manga.name} className="img-fluid"/>
                             </Link>
-                            <div className="manga-update">
-                                {/*{manga.chapters.map((id, name, chapter_number) => (*/}
-                                {/*    <Link*/}
-                                {/*        key={id}*/}
-                                {/*        to={`/manga/${manga.id}/chapter/${id}`}*/}
-                                {/*        className="chapter-link"*/}
-                                {/*    >*/}
-                                {/*        {chapter_number}*/}
-                                {/*    </Link>*/}
-                                ))}
+
+
                             </div>
-                        </div>
                         <div className="manga-info">
                             <h3 className="manga-title">
                                 <Link to={`/manga/${manga.id}`}>{manga.name}</Link>
                             </h3>
+                            <div className="manga-update">
+                                {chapter && chapter.length > 0 ? (
+                                    chapter.map((ch) => (
+                                        <Link
+                                            key={ch.id}
+                                            to={`/manga/${manga.id}/chapter/${ch.id}`}
+                                            className="chapter-link"
+                                        >
+                                            {ch.chapter_name || `Chapter ${ch.chapter_number}`}
+                                        </Link>
+                                    ))
+                                ) : (
+                                    <span className="no-chapters">Chưa có chương nào</span>
+                                )}
+                            </div>
                             <div className="update-time">
                                 <i className="far fa-clock"></i> {manga.time}
                             </div>
@@ -39,7 +59,7 @@ const MangaCard = ({ manga, type = 'latest' }) => {
                     <div className="popular-card">
                         <div className="popular-image">
                             <Link to={`/manga/${manga.id}`}>
-                                <img src={manga.cover_img} alt={manga.name} className="img-fluid" />
+                                <img src={manga.cover_img} alt={manga.name} className="img-fluid"/>
                             </Link>
                             <div className="popular-ranking">
                                 <span>{manga.id - 10}</span>
@@ -60,7 +80,7 @@ const MangaCard = ({ manga, type = 'latest' }) => {
                     <div className="manga-card recommended">
                         <div className="manga-image">
                             <Link to={`/manga/${manga.id}`}>
-                                <img src={manga.cover_img} alt={manga.name} className="img-fluid" />
+                                <img src={manga.cover_img} alt={manga.name} className="img-fluid"/>
                             </Link>
                         </div>
                         <div className="manga-info">

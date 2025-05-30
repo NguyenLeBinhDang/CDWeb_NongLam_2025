@@ -74,6 +74,21 @@
 }
 
 /* Manga Cards in Latest Updates */
+.chapter-link {
+    /*display: block;*/
+    font-size: 0.85rem;
+    color: #fff;
+    text-decoration: none;
+    margin: 0; /* Reduce vertical spacing */
+    padding: 1px 2px;
+    transition: background 0.3s;
+}
+
+.chapter-link:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+}
+
 .manga-card {
     background-color: #333;
     border-radius: 8px;
@@ -103,25 +118,30 @@
 }
 
 .manga-update {
-    position: absolute;
+    position: relative;
+    width: 100%;
+    height: 100px;
+    overflow: hidden;
     bottom: 0;
     left: 0;
     right: 0;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
-    padding: 15px 10px 5px;
+    padding: 1px 1px 1px;
 }
 
 .manga-update span {
     font-size: 0.85rem;
     background-color: #f39c12;
     color: #000;
-    padding: 2px 8px;
+    padding: 2px 2px;
     border-radius: 3px;
     font-weight: bold;
 }
 
 .manga-info {
     padding: 12px;
+    position: relative;
+    overflow: hidden;
 }
 
 .manga-title {

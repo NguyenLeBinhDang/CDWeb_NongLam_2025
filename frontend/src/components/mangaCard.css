@@ -141,6 +141,7 @@
     display: block;
     font-size: 0.85rem;
     color: #3498db;
+    margin-top: 20px;
     margin-bottom: 2px;
     transition: color 0.2s;
 }
