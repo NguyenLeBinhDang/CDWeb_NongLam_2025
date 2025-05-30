@@ -1,5 +1,5 @@
 import React, {useEffect} from 'react';
-import {Link, NavLink, useNavigate} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import MangaCard from '../../components/mangaCard';
 import {useFilter} from '../../context/FilterContext';
 import './Home.css';
@@ -12,35 +12,6 @@ const Home = () => {
         getAllManga();
         getAllCategories();
     }, []);
-
-    // Dữ liệu mẫu cho truyện mới cập nhật
-    // const latestManga = [
-    //     { id: 1, title: "One Piece", chapter: "Chapter 1090", image: "https://via.placeholder.com/150x200", time: "2 giờ trước" },
-    //     { id: 2, title: "Black Clover", chapter: "Chapter 369", image: "https://via.placeholder.com/150x200", time: "6 giờ trước" },
-    //     { id: 3, title: "Jujutsu Kaisen", chapter: "Chapter 253", image: "https://via.placeholder.com/150x200", time: "12 giờ trước" },
-    //     { id: 4, title: "My Hero Academia", chapter: "Chapter 420", image: "https://via.placeholder.com/150x200", time: "1 ngày trước" },
-    //     { id: 5, title: "Chainsaw Man", chapter: "Chapter 150", image: "https://via.placeholder.com/150x200", time: "1 ngày trước" },
-    //     { id: 6, title: "Solo Leveling", chapter: "Chapter 200", image: "https://via.placeholder.com/150x200", time: "1 ngày trước" },
-    //     { id: 7, title: "Demon Slayer", chapter: "Chapter 205", image: "https://via.placeholder.com/150x200", time: "2 ngày trước" },
-    //     { id: 8, title: "Dragon Ball Super", chapter: "Chapter 99", image: "https://via.placeholder.com/150x200", time: "2 ngày trước" },
-    //     { id: 9, title: "Tower of God", chapter: "Chapter 592", image: "https://via.placeholder.com/150x200", time: "3 ngày trước" },
-    //     { id: 10, title: "Bleach", chapter: "Chapter 686", image: "https://via.placeholder.com/150x200", time: "4 ngày trước" }
-    // ];
-
-    // Dữ liệu mẫu cho truyện đề xuất
-    const recommendedManga = [
-        {id: 11, title: "Attack on Titan", image: "https://via.placeholder.com/180x250", views: "10.5M"},
-        {id: 12, title: "Naruto", image: "https://via.placeholder.com/180x250", views: "15.2M"},
-        {id: 13, title: "Hunter x Hunter", image: "https://via.placeholder.com/180x250", views: "8.7M"},
-        {id: 14, title: "Death Note", image: "https://via.placeholder.com/180x250", views: "9.3M"},
-        {id: 15, title: "Tokyo Revengers", image: "https://via.placeholder.com/180x250", views: "7.1M"}
-    ];
-
-    // Dữ liệu mẫu cho thể loại
-    // const categories = [
-    //     "Action", "Adventure", "Comedy", "Drama", "Fantasy", "Horror", "Mystery",
-    //     "Romance", "School Life", "Sci-Fi", "Slice of Life", "Sports", "Supernatural", "Thriller"
-    // ];
 
     const handleViewAllLatest = () => {
         setFilterFromHome({
@@ -58,18 +29,23 @@ const Home = () => {
                 <div className="banner-slider mb-4">
                     <div id="homeBanner" className="carousel slide" data-bs-ride="carousel">
                         <div className="carousel-indicators">
-                            <button type="button" data-bs-target="#homeBanner" data-bs-slide-to="0"
-                                    className="active"></button>
-                            <button type="button" data-bs-target="#homeBanner" data-bs-slide-to="1"></button>
-                            <button type="button" data-bs-target="#homeBanner" data-bs-slide-to="2"></button>
+                            {mangaList.slice(0, 3).map((_, index) => (
+                                <button
+                                    key={index}
+                                    type="button"
+                                    data-bs-target="#homeBanner"
+                                    data-bs-slide-to={index}
+                                    className={index === 0 ? 'active' : ''}
+                                ></button>
+                            ))}
                         </div>
                         <div className="carousel-inner">
-                            {recommendedManga.slice(0, 3).map((manga, index) => (
+                            {mangaList.slice(0, 3).map((manga, index) => (
                                 <div key={manga.id} className={`carousel-item ${index === 0 ? 'active' : ''}`}>
-                                    <img src={manga.image} className="d-block w-100" alt={manga.title}/>
+                                    <img src={manga.cover_img} className="d-block w-100" alt={manga.name}/>
                                     <div className="carousel-caption">
-                                        <h3>{manga.title}</h3>
-                                        <p>{manga.views} lượt xem</p>
+                                        <h3>{manga.name}</h3>
+                                        <p>Tác giả: {manga.id_author?.author_name}</p>
                                     </div>
                                 </div>
                             ))}
@@ -91,7 +67,6 @@ const Home = () => {
                         <div className="content-section latest-manga">
                             <div className="section-header">
                                 <h2 className="section-title">Truyện mới cập nhật</h2>
-                                {/*Xem tat ca*/}
                                 <button
                                     className="view-all"
                                     onClick={handleViewAllLatest}
@@ -120,7 +95,7 @@ const Home = () => {
                                     <h2 className="section-title">Đề xuất cho bạn</h2>
                                 </div>
                                 <div className="recommended-list">
-                                    {recommendedManga.map(manga => (
+                                    {mangaList.slice(0, 5).map(manga => (
                                         <MangaCard key={manga.id} manga={manga} type="recommended"/>
                                     ))}
                                 </div>
@@ -133,7 +108,11 @@ const Home = () => {
                                 </div>
                                 <div className="categories-list">
                                     {categories.map(({id, category_name}) => (
-                                        <Link key={id} to={`/category/${id}`} className="category-tag">
+                                        <Link
+                                            key={id}
+                                            to={`/category/${id}`}
+                                            className="category-tag"
+                                        >
                                             {category_name}
                                         </Link>
                                     ))}

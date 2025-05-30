@@ -12,10 +12,8 @@ const MangaCard = ({manga, type = 'latest'}) => {
             const result = await getChapterOfManga(manga.id);
             setChapter(result || []);
         };
-        fetchChapters().then(r => {
-            console.log('Chapters fetched successfully')
-        });
-    }, []);
+        fetchChapters();
+    }, [manga.id]);
 
     const renderCard = () => {
         switch (type) {
@@ -24,11 +22,9 @@ const MangaCard = ({manga, type = 'latest'}) => {
                     <div className="manga-card">
                         <div className="manga-image">
                             <Link to={`/manga/${manga.id}`}>
-                                <img src="https://placehold.co/600x400" alt={manga.name} className="img-fluid"/>
+                                <img src={manga.cover_img || "https://placehold.co/600x400"} alt={manga.name} className="img-fluid"/>
                             </Link>
-
-
-                            </div>
+                        </div>
                         <div className="manga-info">
                             <h3 className="manga-title">
                                 <Link to={`/manga/${manga.id}`}>{manga.name}</Link>
@@ -41,15 +37,19 @@ const MangaCard = ({manga, type = 'latest'}) => {
                                             to={`/manga/${manga.id}/chapter/${ch.id}`}
                                             className="chapter-link"
                                         >
-                                            {ch.chapter_name || `Chapter ${ch.chapter_number}`}
+                                            {ch.chapter_name || `Chapter ${ch.chap_number}`}
                                         </Link>
                                     ))
                                 ) : (
                                     <span className="no-chapters">Chưa có chương nào</span>
                                 )}
                             </div>
-                            <div className="update-time">
-                                <i className="far fa-clock"></i> {manga.time}
+                            <div className="manga-categories">
+                                {manga.id_category?.slice(0, 3).map(category => (
+                                    <span key={category.id} className="category-tag">
+                                        {category.category_name}
+                                    </span>
+                                ))}
                             </div>
                         </div>
                     </div>
@@ -70,7 +70,7 @@ const MangaCard = ({manga, type = 'latest'}) => {
                                 <Link to={`/manga/${manga.id}`}>{manga.name}</Link>
                             </h3>
                             <div className="manga-views">
-                                <i className="far fa-eye"></i> {manga.views}
+                                <i className="far fa-eye"></i> {manga.views || 0}
                             </div>
                         </div>
                     </div>
@@ -87,8 +87,8 @@ const MangaCard = ({manga, type = 'latest'}) => {
                             <h3 className="manga-title">
                                 <Link to={`/manga/${manga.id}`}>{manga.name}</Link>
                             </h3>
-                            <div className="manga-views">
-                                <i className="far fa-eye"></i> {manga.views}
+                            <div className="manga-status">
+                                {manga.id_status?.status_name}
                             </div>
                         </div>
                     </div>
