@@ -1,7 +1,15 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import './FilterSidebar.css';
+import {useFilter} from "../context/FilterContext";
 
 const FilterSidebar = ({ filters, onFilterChange }) => {
+    const {categories, getAllCategories} = useFilter();
+    useEffect(() => {
+        getAllCategories();
+    }, []);
+
+    const genres = categories;
+
     // Các options cho status
     const statusOptions = [
         { value: 'all', label: 'Tất cả' },
@@ -19,10 +27,10 @@ const FilterSidebar = ({ filters, onFilterChange }) => {
     ];
 
     // Danh sách thể loại
-    const genres = [
-        "Action", "Adventure", "Comedy", "Drama", "Fantasy", "Horror", "Mystery",
-        "Romance", "School Life", "Sci-Fi", "Slice of Life", "Sports", "Supernatural", "Thriller"
-    ];
+    // const genres = [
+    //     "Action", "Adventure", "Comedy", "Drama", "Fantasy", "Horror", "Mystery",
+    //     "Romance", "School Life", "Sci-Fi", "Slice of Life", "Sports", "Supernatural", "Thriller"
+    // ];
 
     // Xử lý thay đổi status
     const handleStatusChange = (e) => {
@@ -113,15 +121,15 @@ const FilterSidebar = ({ filters, onFilterChange }) => {
                 <div className="filter-group">
                     <h3 className="filter-title">Thể loại</h3>
                     <div className="genres-grid">
-                        {genres.map(genre => (
-                            <label key={genre} className="genre-option">
+                        {genres.map(({id, category_name})=> (
+                            <label key={id} className="genre-option">
                                 <input
                                     type="checkbox"
-                                    checked={filters.genres.includes(genre)}
-                                    onChange={() => handleGenreToggle(genre)}
+                                    checked={filters.genres.includes(category_name)}
+                                    onChange={() => handleGenreToggle(category_name)}
                                 />
                                 <span className="checkbox-label"></span>
-                                {genre}
+                                {category_name}
                             </label>
                         ))}
                     </div>

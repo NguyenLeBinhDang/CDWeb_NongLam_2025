@@ -1,16 +1,30 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
 import axios from 'axios';
 import './Header.css';
+import {useFilter} from "../../context/FilterContext";
 
 const Header = () => {
     const navigate = useNavigate();
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const { user, logout } = useUser();
+    const {categories, getAllCategories} = useFilter();
+
+    useEffect(() => {
+        getAllCategories();
+    },[]);
 
     const toggleMobileMenu = () => {
         setShowMobileMenu(!showMobileMenu);
+    };
+
+    const handleSelectedCategory = (categoryId) => {
+        navigate(`/category/${categoryId}`);
+    };
+
+    const handleBookmarkClick = () => {
+        navigate('/bookmark');
     };
 
     const handleLogout = async () => {
@@ -42,10 +56,10 @@ const Header = () => {
                         <div className="col-lg-6 col-md-4 d-none d-md-block">
                             <div className="search-box">
                                 <form className="d-flex">
-                                    <input 
-                                        type="text" 
-                                        className="form-control" 
-                                        placeholder="Tìm kiếm truyện..." 
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        placeholder="Tìm kiếm truyện..."
                                     />
                                     <button type="submit" className="btn btn-primary">
                                         <i className="fas fa-search"></i>
@@ -73,28 +87,32 @@ const Header = () => {
                         </div>
                     </div>
                 </div>
-                
+
                 <nav className={`main-navigation ${showMobileMenu ? 'mobile-menu-active' : ''}`}>
                     <ul className="main-menu">
-                        <li><Link to="/" className="active"><i className="fas fa-home"></i> Trang chủ</Link></li>
+                        <li><Link to="/"><i className="fas fa-home"></i> Trang chủ</Link></li>
                         <li><Link to="/hot"><i className="fas fa-fire"></i> Truyện Hot</Link></li>
                         <li><Link to="/completed"><i className="fas fa-check-circle"></i> Hoàn thành</Link></li>
                         <li className="dropdown">
                             <Link to="#" className="dropdown-toggle">
                                 <i className="fas fa-list"></i> Thể loại
                             </Link>
+                            {/*<span className="dropdown-toggle"> <i className="fas fa-list"></i> Thể loại</span>*/}
                             <ul className="dropdown-menu">
-                                <li><Link to="/category/action">Action</Link></li>
-                                <li><Link to="/category/adventure">Adventure</Link></li>
-                                <li><Link to="/category/comedy">Comedy</Link></li>
-                                <li><Link to="/category/drama">Drama</Link></li>
-                                <li><Link to="/category/fantasy">Fantasy</Link></li>
-                                <li><Link to="/category/horror">Horror</Link></li>
-                                <li><Link to="/category/romance">Romance</Link></li>
-                                <li><Link to="/category/sci-fi">Sci-Fi</Link></li>
+                                {categories.map((cat) => (
+                                    <li key={cat.id}>
+                                        <button
+                                            onClick={() => handleSelectedCategory(cat.id)}
+                                            className="dropdown-item-btn"
+                                        >
+                                            {cat.category_name}
+                                        </button>
+                                    </li>
+                                ))}
                             </ul>
                         </li>
                         <li className="d-flex gap-2"><Link to="/bookmark"><i className="fas fa-bookmark"></i> Theo dõi </Link></li>
+                        {/*<li><span className="d-flex gap-2" onClick={handleBookmarkClick}><i className="fas fa-bookmark"></i> Theo dõi</span></li>*/}
                     </ul>
                 </nav>
             </div>

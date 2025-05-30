@@ -101,15 +101,15 @@
     .main-navigation {
         display: none;
     }
-    
+
     .main-navigation.mobile-menu-active {
         display: block;
     }
-    
+
     .main-menu {
         flex-direction: column;
     }
-    
+
     .main-menu .dropdown-menu {
         position: static;
         display: none;
@@ -117,8 +117,28 @@
         box-shadow: none;
         background-color: #2a2a2a;
     }
-    
+
     .main-menu .dropdown.show .dropdown-menu {
         display: block;
     }
+
+    .dropdown-item-btn {
+        display: block;
+        width: 100%;
+        text-align: left;
+        padding: 10px 16px;
+        background: none;
+        border: none;
+        color: #ccc;
+        font-size: 0.95rem;
+        border-radius: 4px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        cursor: pointer;
+    }
+
+    .dropdown-item-btn:hover {
+        background-color: rgba(255, 255, 255, 0.08);
+        color: #fff;
+    }
+
 }
