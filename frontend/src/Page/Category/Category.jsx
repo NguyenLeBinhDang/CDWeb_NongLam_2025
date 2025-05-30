@@ -16,7 +16,7 @@ const Category = () => {
     useEffect(() => {
         const fetchMangaByCategory = async () => {
             try {
-                await getMangaByCategory(categoryId);
+                await getMangaByCategory({categoryIds: [Number(categoryId) || 0]});
             } catch (error) {
                 console.error("Failed to fetch manga by category:", error);
             }

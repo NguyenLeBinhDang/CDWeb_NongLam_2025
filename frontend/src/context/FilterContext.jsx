@@ -56,13 +56,21 @@ export const FilterProvider = ({children}) => {
         }
     };
 
-    const getMangaByCategory = async (categoryId) => {
+    const getMangaByCategory = async ({ search = "", categoryIds = [], statusId = null }) => {
         try {
-            const response = await axios.get(`http://localhost:8080/api/manga/category/${categoryId}`);
+            const params = new URLSearchParams();
+
+            if (search) params.append("search", search);
+            if (statusId !== null) params.append("statusId", statusId);
+            if (Array.isArray(categoryIds)) {
+                categoryIds.forEach(id => params.append("categoryIds", id));
+            }
+
+            const response = await axios.get(`http://localhost:8080/api/manga?${params.toString()}`);
             setMangaList(response.data);
         } catch (error) {
-            console.error(`Error fetching manga for category with ID ${categoryId}:`, error);
-            throw new Error(`Failed to fetch manga for category with ID ${categoryId}`);
+            console.error(`Error fetching manga for category with ID ${categoryIds}:`, error);
+            throw new Error(`Failed to fetch manga for category with ID ${categoryIds}`);
         }
     };
 
