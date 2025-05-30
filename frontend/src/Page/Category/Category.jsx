@@ -6,9 +6,8 @@ import './Category.css';
 import {useParams} from "react-router-dom";
 
 const Category = () => {
-    const {mangaList, categories, getAllCategories, getMangaByCategory, defaultFilter} = useFilter();
+    const {mangaList, categories, getAllCategories, getManga, setFilterFromHome} = useFilter();
     const [currentPage, setCurrentPage] = useState(1);
-    const [filters, setFilters] = useState(defaultFilter);
     const mangaPerPage = 10;
 
     const {categoryId} = useParams();
@@ -16,7 +15,14 @@ const Category = () => {
     useEffect(() => {
         const fetchMangaByCategory = async () => {
             try {
-                await getMangaByCategory({categoryIds: [Number(categoryId) || 0]});
+                // Set filters based on categoryId
+                const newFilter = {
+                    search: '',
+                    categoryIds: [Number(categoryId)],
+                    statusId: null
+                };
+                // setFilterFromHome(newFilter);
+                await getManga(newFilter);
             } catch (error) {
                 console.error("Failed to fetch manga by category:", error);
             }
@@ -34,11 +40,6 @@ const Category = () => {
         }
         fetchCategories();
     }, []);
-
-    const handleFilterChange = (newFilters) => {
-        setFilters(newFilters);
-        setCurrentPage(1);
-    };
 
     // Calculate pagination
     const indexOfLastManga = currentPage * mangaPerPage;
@@ -66,7 +67,7 @@ const Category = () => {
                             <div className="manga-grid">
                                 {currentManga.map(manga => (
                                     <div key={manga.id} className="manga-item">
-                                        <MangaCard manga={manga} type="latest" />
+                                        <MangaCard manga={manga} type="latest"/>
                                     </div>
                                 ))}
                             </div>
