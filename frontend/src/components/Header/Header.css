@@ -65,30 +65,79 @@
     color: #fff;
 }
 
+/* Updated Dropdown Styles */
 .main-menu .dropdown-menu {
     position: absolute;
-    background-color: #222;
-    min-width: 180px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    background-color: #2a2a2a;
+    min-width: 220px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     z-index: 1000;
     display: none;
-    border-radius: 4px;
-    padding: 0;
+    border-radius: 8px;
+    padding: 8px;
+    border: 1px solid #333;
+    margin-top: 5px;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    /*!* Add padding to create an invisible area above the menu *!*/
+    /*padding-top: 15px;*/
+    /*margin-top: -15px;*/
 }
 
-.main-menu .dropdown:hover .dropdown-menu {
+/* Show dropdown when hovering over the dropdown container */
+.main-menu .dropdown:hover .dropdown-menu,
+.main-menu .dropdown-menu:hover {
     display: block;
+    opacity: 1;
+    transform: translateY(0);
 }
 
-.main-menu .dropdown-menu a {
-    padding: 8px 15px;
+.main-menu .dropdown-menu li {
+    margin: 2px 0;
+}
+
+.main-menu .dropdown-menu .dropdown-item-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 15px;
+    background: none;
+    border: none;
     color: #ddd;
+    font-size: 0.95rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    cursor: pointer;
 }
 
-.main-menu .dropdown-menu a:hover {
+.main-menu .dropdown-menu .dropdown-item-btn:hover {
     background-color: #f39c12;
     color: #fff;
+    transform: translateX(5px);
 }
+
+.main-menu .dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.main-menu .dropdown-toggle::after {
+    content: '';
+    display: inline-block;
+    margin-left: 5px;
+    vertical-align: middle;
+    border-top: 4px solid #fff;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    transition: transform 0.3s ease;
+}
+
+.main-menu .dropdown:hover .dropdown-toggle::after {
+    transform: rotate(180deg);
+}
+
 
 .mobile-menu-toggle {
     background: transparent;
@@ -97,6 +146,7 @@
     font-size: 1.5rem;
 }
 
+/* Mobile Responsive Styles */
 @media (max-width: 768px) {
     .main-navigation {
         display: none;
@@ -116,6 +166,11 @@
         width: 100%;
         box-shadow: none;
         background-color: #2a2a2a;
+        opacity: 1;
+        transform: none;
+        margin-top: 0;
+        padding: 0;
+        border: none;
     }
 
     .main-menu .dropdown.show .dropdown-menu {
@@ -139,6 +194,55 @@
     .dropdown-item-btn:hover {
         background-color: rgba(255, 255, 255, 0.08);
         color: #fff;
+        transform: none;
     }
 
+    .main-menu .dropdown-toggle::after {
+        float: right;
+        margin-top: 8px;
+    }
+}
+
+/* User Actions Styles */
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.user-actions .btn {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.user-actions .btn-outline-light {
+    border-color: #444;
+}
+
+.user-actions .btn-outline-light:hover {
+    background-color: #f39c12;
+    border-color: #f39c12;
+    color: #fff;
+}
+
+/* Header Main Section */
+.header-main {
+    padding: 15px 0;
+}
+
+/* Search Box Styles */
+.search-box {
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.search-box .form-control:focus {
+    box-shadow: none;
+    border-color: #f39c12;
+}
+
+.search-box .btn:hover {
+    background-color: #e67e22;
+    border-color: #e67e22;
 }
