@@ -10,9 +10,9 @@ export const FilterProvider = ({children}) => {
     const [categories, setCategories] = useState([]);
     const [chapters, setChapters] = useState([]);
     const [defaultFilter, setDefaultFilter] = useState({
-        status: 'all',
-        sortBy: 'latest',
-        genres: []
+        search: '',
+        categoryIds: [],
+        statusId: null
     });
 
     const getChapterOfManga = async (mangaId) => {
@@ -56,22 +56,39 @@ export const FilterProvider = ({children}) => {
         }
     };
 
-    const getMangaByCategory = async ({ search = "", categoryIds = [], statusId = null }) => {
+    const getManga = async (filter = defaultFilter) => {
         try {
             const params = new URLSearchParams();
 
-            if (search) params.append("search", search);
-            if (statusId !== null) params.append("statusId", statusId);
-            if (Array.isArray(categoryIds)) {
-                categoryIds.forEach(id => params.append("categoryIds", id));
+            if (filter.search) params.append("search", filter.search);
+            if (filter.statusId !== null) params.append("statusId", filter.statusId);
+            if (Array.isArray(filter.categoryIds)) {
+                filter.categoryIds.forEach(id => params.append("categoryIds", id));
             }
-
             const response = await axios.get(`http://localhost:8080/api/manga?${params.toString()}`);
             setMangaList(response.data);
         } catch (error) {
-            console.error(`Error fetching manga for category with ID ${categoryIds}:`, error);
-            throw new Error(`Failed to fetch manga for category with ID ${categoryIds}`);
+            console.error('Error fetching manga:', error);
+            throw new Error('Failed to fetch manga');
         }
+    };
+
+    const handleCategoryChange = (categoryId) => {
+        setDefaultFilter(prevFilter => {
+            const isSelected = prevFilter.categoryIds.includes(categoryId);
+            const updatedCategories = isSelected
+                ? prevFilter.categoryIds.filter(id => id !== categoryId)
+                : [...prevFilter.categoryIds, categoryId];
+
+            const newFilter = {
+                ...prevFilter,
+                categoryIds: updatedCategories
+            };
+
+            // Fetch new manga based on updated filters
+            getManga(newFilter);
+            return newFilter;
+        });
     };
 
     const setFilterFromHome = (filter) => {
@@ -90,7 +107,8 @@ export const FilterProvider = ({children}) => {
             getAllManga,
             getMangaById,
             getChapterOfManga,
-            getMangaByCategory
+            getManga,
+            handleCategoryChange
         }}>
             {children}
         </FilterContext.Provider>

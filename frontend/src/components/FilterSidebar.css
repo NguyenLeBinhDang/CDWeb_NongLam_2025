@@ -70,6 +70,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
+    cursor: pointer;
 }
 
 .filter-option input[type="radio"],
@@ -84,6 +85,49 @@
     cursor: pointer;
     position: relative;
     transition: all 0.3s ease;
+}
+
+.filter-option input[type="checkbox"] {
+    display: none;
+}
+
+.filter-option .checkbox-label {
+    position: relative;
+    padding-left: 24px;
+    color: #ddd;
+    font-size: 0.9rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+/* Checkbox box */
+.filter-option .checkbox-label::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 2px;
+    width: 16px;
+    height: 16px;
+    border: 2px solid #444;
+    background-color: #333;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+/* Checkmark */
+.filter-option input[type="checkbox"]:checked ~ .checkbox-label::before {
+    background-color: #f39c12;
+    border-color: #f39c12;
+}
+
+.filter-option input[type="checkbox"]:checked ~ .checkbox-label::after {
+    content: '✓';
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    color: #000;
+    font-size: 12px;
+    font-weight: bold;
 }
 
 .filter-option input[type="radio"] {

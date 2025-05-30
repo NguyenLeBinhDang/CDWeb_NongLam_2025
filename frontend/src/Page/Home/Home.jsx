@@ -14,11 +14,6 @@ const Home = () => {
     }, []);
 
     const handleViewAllLatest = () => {
-        setFilterFromHome({
-            status: 'all',
-            sortBy: 'latest',
-            genres: []
-        });
         navigate('/all-manga');
     };
 

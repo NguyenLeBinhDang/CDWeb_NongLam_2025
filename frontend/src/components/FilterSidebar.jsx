@@ -2,35 +2,27 @@ import React, {useEffect} from 'react';
 import './FilterSidebar.css';
 import {useFilter} from "../context/FilterContext";
 
-const FilterSidebar = ({ filters, onFilterChange }) => {
-    const {categories, getAllCategories} = useFilter();
+const FilterSidebar = ({filters, onFilterChange}) => {
+    const {categories, getAllCategories, getManga, setFilterFromHome, handleCategoryChange} = useFilter();
     useEffect(() => {
         getAllCategories();
     }, []);
 
-    const genres = categories;
-
     // Các options cho status
     const statusOptions = [
-        { value: 'all', label: 'Tất cả' },
-        { value: 'ongoing', label: 'Đang tiến hành' },
-        { value: 'completed', label: 'Hoàn thành' },
-        { value: 'hiatus', label: 'Tạm ngưng' }
+        {value: 'all', label: 'Tất cả'},
+        {value: 'ongoing', label: 'Đang tiến hành'},
+        {value: 'completed', label: 'Hoàn thành'},
+        {value: 'hiatus', label: 'Tạm ngưng'}
     ];
 
     // Các options cho sorting
     const sortOptions = [
-        { value: 'latest', label: 'Mới nhất' },
-        { value: 'popular', label: 'Phổ biến' },
-        { value: 'rating', label: 'Đánh giá' },
-        { value: 'name', label: 'Tên A-Z' }
+        {value: 'latest', label: 'Mới nhất'},
+        {value: 'popular', label: 'Phổ biến'},
+        {value: 'rating', label: 'Đánh giá'},
+        {value: 'name', label: 'Tên A-Z'}
     ];
-
-    // Danh sách thể loại
-    // const genres = [
-    //     "Action", "Adventure", "Comedy", "Drama", "Fantasy", "Horror", "Mystery",
-    //     "Romance", "School Life", "Sci-Fi", "Slice of Life", "Sports", "Supernatural", "Thriller"
-    // ];
 
     // Xử lý thay đổi status
     const handleStatusChange = (e) => {
@@ -48,25 +40,15 @@ const FilterSidebar = ({ filters, onFilterChange }) => {
         });
     };
 
-    // Xử lý thay đổi genre
-    const handleGenreToggle = (genre) => {
-        const newGenres = filters.genres.includes(genre)
-            ? filters.genres.filter(g => g !== genre)
-            : [...filters.genres, genre];
-        
-        onFilterChange({
-            ...filters,
-            genres: newGenres
-        });
-    };
-
     // Reset tất cả filter
     const handleResetFilters = () => {
-        onFilterChange({
-            status: 'all',
-            sortBy: 'latest',
-            genres: []
-        });
+        const newFilter = {
+            search: '',
+            categoryIds: [],
+            statusId: null
+        };
+        setFilterFromHome(newFilter);
+        getManga(newFilter);
     };
 
     return (
@@ -121,15 +103,14 @@ const FilterSidebar = ({ filters, onFilterChange }) => {
                 <div className="filter-group">
                     <h3 className="filter-title">Thể loại</h3>
                     <div className="genres-grid">
-                        {genres.map(({id, category_name})=> (
-                            <label key={id} className="genre-option">
+                        {categories.map(({id, category_name}) => (
+                            <label key={id} className="filter-option">
                                 <input
                                     type="checkbox"
-                                    checked={filters.genres.includes(category_name)}
-                                    onChange={() => handleGenreToggle(category_name)}
+                                    checked={filters.categoryIds.includes(id)}
+                                    onChange={() => handleCategoryChange(id)}
                                 />
-                                <span className="checkbox-label"></span>
-                                {category_name}
+                                <span className="checkbox-label">{category_name}</span>
                             </label>
                         ))}
                     </div>
