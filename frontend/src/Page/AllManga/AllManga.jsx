@@ -5,19 +5,19 @@ import {useFilter} from '../../context/FilterContext';
 import './AllManga.css';
 
 const AllManga = () => {
-    const {mangaList, getAllManga, defaultFilter} = useFilter();
+    const {mangaList, getAllManga,getManga, defaultFilter} = useFilter();
     const [currentPage, setCurrentPage] = useState(1);
-    const [filters, setFilters] = useState(defaultFilter);
+    // const [filters, setFilters] = useState(defaultFilter);
     const mangaPerPage = 10;
 
     useEffect(() => {
         getAllManga();
     },[]);
 
-    const handleFilterChange = (newFilters) => {
-        setFilters(newFilters);
-        setCurrentPage(1); // Reset to first page when filters change
-    };
+    // const handleFilterChange = (newFilters) => {
+    //     setFilters(newFilters);
+    //     setCurrentPage(1); // Reset to first page when filters change
+    // };
 
     // Calculate pagination
     const indexOfLastManga = currentPage * mangaPerPage;
@@ -70,7 +70,7 @@ const AllManga = () => {
 
                     {/* Filter Sidebar */}
                     <div className="col-lg-3">
-                        <FilterSidebar filters={filters} onFilterChange={handleFilterChange}/>
+                        <FilterSidebar filters={defaultFilter} onFilterChange={getManga}/>
                     </div>
                 </div>
             </div>
