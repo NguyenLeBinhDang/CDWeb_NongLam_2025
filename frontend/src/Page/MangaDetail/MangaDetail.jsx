@@ -1,49 +1,51 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import './MangaDetail.css';
+import {useFilter} from "../../context/FilterContext";
 
 const MangaDetail = () => {
     const {id} = useParams();
-    // const [activeTab, setActiveTab] = useState('info');
+    const {manga, chapters, getMangaById, getChapterOfManga} = useFilter();
+    // const [chapter, setChapter] = useState([]);
 
-    // Dữ liệu mẫu cho chi tiết truyện
-    const mangaDetail = {
-        id: id,
-        title: "One Piece",
-        author: "Eiichiro Oda",
-        status: "Đang tiến hành",
-        genres: ["Action", "Adventure", "Comedy", "Drama", "Fantasy"],
-        description: "One Piece là câu chuyện về Monkey D. Luffy, một cậu bé có ước mơ trở thành Vua Hải Tặc. Sau khi vô tình ăn phải trái ác quỷ, cơ thể cậu có khả năng co giãn như cao su. Cùng với những người bạn đồng hành, Luffy bắt đầu cuộc hành trình tìm kiếm kho báu One Piece và thực hiện ước mơ của mình.",
-        coverImage: "https://via.placeholder.com/300x400",
-        rating: 4.8,
-        views: "1.2M",
-        chapters: [
-            {id: 1, number: "1090", title: "Chapter 1090", date: "2 giờ trước"},
-            {id: 2, number: "1089", title: "Chapter 1089", date: "1 ngày trước"},
-            {id: 3, number: "1088", title: "Chapter 1088", date: "2 ngày trước"},
-            {id: 4, number: "1087", title: "Chapter 1087", date: "3 ngày trước"},
-            {id: 5, number: "1086", title: "Chapter 1086", date: "4 ngày trước"},
-        ]
-    };
+    useEffect(() => {
+        const fetchManga = async () => {
+            await getMangaById(id);
+        }
+        fetchManga();
+    }, [id]);
+
+    useEffect(() => {
+        const fetchChapters = async () => {
+            const result = await getChapterOfManga(id);
+        };
+        fetchChapters();
+    }, [id])
+
+    useEffect(() => {
+        if (manga) console.log('Fetched manga:', manga);
+    }, [id]);
+
+    if (!manga) return <div>Loading manga...</div>;
+
 
     return (
         <div className="manga-detail-page">
             <div className="container">
                 <div className="manga-detail-content">
                     <div className="row">
-                        {/* Manga Cover and Basic Info */}
                         <div className="col-lg-4">
                             <div className="manga-cover">
-                                <img src={mangaDetail.coverImage} alt={mangaDetail.title} className="img-fluid"/>
+                                <img src={manga.cover_img} alt={manga.name} className="img-fluid"/>
                             </div>
                             <div className="manga-info-basic">
-                                <h1 className="manga-title">{mangaDetail.title}</h1>
+                                <h1 className="manga-title">{manga.name}</h1>
                                 <div className="manga-meta">
-                                    <p><strong>Tác giả:</strong> {mangaDetail.author}</p>
-                                    <p><strong>Trạng thái:</strong> {mangaDetail.status}</p>
-                                    <p><strong>Thể loại:</strong> {mangaDetail.genres.join(", ")}</p>
-                                    <p><strong>Đánh giá:</strong> {mangaDetail.rating}/5</p>
-                                    <p><strong>Lượt xem:</strong> {mangaDetail.views}</p>
+                                    <p><strong>Tác giả:</strong> {manga.id_author?.name}</p>
+                                    <p><strong>Trạng thái:</strong> {manga.id_status?.status_name}</p>
+                                    <p><strong>Thể
+                                        loại:</strong> {manga.id_category.map(cat => cat.category_name).join(", ")}
+                                    </p>
                                 </div>
                             </div>
                         </div>
@@ -51,7 +53,7 @@ const MangaDetail = () => {
                         <div className="col-lg-8">
                             <div className="manga-description">
                                 <h3>Nội dung</h3>
-                                <p>{mangaDetail.description}</p>
+                                <p>{manga.description}</p>
                             </div>
                         </div>
                     </div>
@@ -59,13 +61,13 @@ const MangaDetail = () => {
 
                 <div className="manga-chapters">
                     <div className="chapters-list">
-                        {mangaDetail.chapters.map(chapter => (
-                            <div key={chapter.id} className="chapter-item">
-                                <a href={`/manga/${mangaDetail.id}/chapter/${chapter.number}`}
+                        {chapters.map((ch) => (
+                            <div key={ch.id} className="chapter-item">
+                                <a href={`/manga/${manga.id}/chapter/${ch.id}`}
                                    className="chapter-link">
-                                    <span className="chapter-number">{chapter.number}</span>
-                                    <span className="chapter-title">{chapter.title}</span>
-                                    <span className="chapter-date">{chapter.date}</span>
+                                    <span className="chapter-number">{ch.chapter_number}</span>
+                                    <span className="chapter-title">{ch.chapter_name}</span>
+                                    {/*<span className="chapter-date">{ch.date}</span>*/}
                                 </a>
                             </div>
                         ))}

@@ -8,6 +8,7 @@ export const FilterProvider = ({children}) => {
     const [mangaList, setMangaList] = useState([]);
     const [manga, setManga] = useState(null);
     const [categories, setCategories] = useState([]);
+    const [chapters, setChapters] = useState([]);
     const [defaultFilter, setDefaultFilter] = useState({
         status: 'all',
         sortBy: 'latest',
@@ -17,6 +18,7 @@ export const FilterProvider = ({children}) => {
     const getChapterOfManga = async (mangaId) => {
         try {
             const response = await axios.get(`http://localhost:8080/api/manga/${mangaId}/chapter`);
+            setChapters(response.data);
             return response.data;
         } catch (error) {
             console.error(`Error fetching chapters for manga with ID ${mangaId}:`, error);
@@ -65,6 +67,7 @@ export const FilterProvider = ({children}) => {
             mangaList,
             manga,
             categories,
+            chapters,
             getAllCategories,
             setFilterFromHome,
             getAllManga,
