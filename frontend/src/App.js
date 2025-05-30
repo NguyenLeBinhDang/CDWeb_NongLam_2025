@@ -17,6 +17,7 @@ import {MangaReaderProvider} from "./context/MangaReaderContext";
 import BookMark from "./Page/BookMark/BookMark";
 import {BookmarkProvider} from "./context/BookMarkContext";
 import {FloatingNavBarProvider} from "./context/FloatingNavBarContext";
+import Category from "./Page/Category/Category";
 
 const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID'; // Thay thế bằng Client ID của bạn
 
@@ -35,6 +36,7 @@ function App() {
                                             <Route path="/" element={<Home/>}/>
                                             <Route path="/all-manga" element={<AllManga/>}/>
                                             <Route path="/manga/:id" element={<MangaDetail/>}/>
+                                            <Route path="/manga/category/:categoryId" element={<Category/>}/>
                                             <Route path="/manga/:id/chapter/:chapterId" element={<MangaReader/>}/>
                                             <Route path="/login" element={<Login/>}/>
                                             <Route path="/register" element={<Register/>}/>

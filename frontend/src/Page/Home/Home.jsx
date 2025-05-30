@@ -110,7 +110,7 @@ const Home = () => {
                                     {categories.map(({id, category_name}) => (
                                         <Link
                                             key={id}
-                                            to={`/category/${id}`}
+                                            to={`/manga/category/${id}`}
                                             className="category-tag"
                                         >
                                             {category_name}

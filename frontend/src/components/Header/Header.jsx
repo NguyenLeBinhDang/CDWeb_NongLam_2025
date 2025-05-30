@@ -20,7 +20,7 @@ const Header = () => {
     };
 
     const handleSelectedCategory = (categoryId) => {
-        navigate(`/category/${categoryId}`);
+        navigate(`/manga/category/${categoryId}`);
     };
 
     const handleBookmarkClick = () => {

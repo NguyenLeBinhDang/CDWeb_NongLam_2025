@@ -56,6 +56,15 @@ export const FilterProvider = ({children}) => {
         }
     };
 
+    const getMangaByCategory = async (categoryId) => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/manga/category/${categoryId}`);
+            setMangaList(response.data);
+        } catch (error) {
+            console.error(`Error fetching manga for category with ID ${categoryId}:`, error);
+            throw new Error(`Failed to fetch manga for category with ID ${categoryId}`);
+        }
+    };
 
     const setFilterFromHome = (filter) => {
         setDefaultFilter(filter);
@@ -72,7 +81,8 @@ export const FilterProvider = ({children}) => {
             setFilterFromHome,
             getAllManga,
             getMangaById,
-            getChapterOfManga
+            getChapterOfManga,
+            getMangaByCategory
         }}>
             {children}
         </FilterContext.Provider>
