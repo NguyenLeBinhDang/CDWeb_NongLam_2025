@@ -19,7 +19,8 @@ import {BookmarkProvider} from "./context/BookMarkContext";
 import {FloatingNavBarProvider} from "./context/FloatingNavBarContext";
 import Category from "./Page/Category/Category";
 import Admin from "./Admin";
-import MangaManagement from './Admin/Pages/MangaManagement';
+import MangaManagement from './Admin/Pages/MangaManagement/MangaManagement';
+import UserManagement from "./Admin/Pages/UserManagement/UserManagement";
 
 
 const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID'; // Thay thế bằng Client ID của bạn
@@ -45,10 +46,10 @@ function App() {
                                             <Route path="/register" element={<Register/>}/>
                                             <Route path="/profile" element={<UserInfo/>}/>
                                             <Route path="/bookmark" element={<BookMark/>}/>
-                                            <Route path="/admin" element={<Admin />}>
-                                                <Route path="manga-management" element={<MangaManagement />} />
-                                                <Route path="button2" element={<div>Button 2 Content</div>} />
-                                                <Route path="button3" element={<div>Button 3 Content</div>} />
+                                            <Route path="/admin" element={<Admin/>}>
+                                                <Route path="manga-management" element={<MangaManagement/>}/>
+                                                <Route path="user-management" element={<UserManagement/>}/>
+                                                <Route path="button3" element={<div>Button 3 Content</div>}/>
                                             </Route>
                                         </Routes>
                                     </main>

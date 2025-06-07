@@ -9,11 +9,23 @@ export const FilterProvider = ({children}) => {
     const [manga, setManga] = useState(null);
     const [categories, setCategories] = useState([]);
     const [chapters, setChapters] = useState([]);
+    const [users, setUsers] = useState([]);
     const [defaultFilter, setDefaultFilter] = useState({
         search: '',
         categoryIds: [],
         statusId: null
     });
+
+    const getAllUser = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/users');
+            setUsers(response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            throw new Error('Failed to fetch users');
+        }
+    }
 
     const getChapterOfManga = async (mangaId) => {
         try {
@@ -102,13 +114,15 @@ export const FilterProvider = ({children}) => {
             manga,
             categories,
             chapters,
+            users,
             getAllCategories,
             setFilterFromHome,
             getAllManga,
             getMangaById,
             getChapterOfManga,
             getManga,
-            handleCategoryChange
+            handleCategoryChange,
+            getAllUser
         }}>
             {children}
         </FilterContext.Provider>

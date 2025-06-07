@@ -1,7 +1,7 @@
 import './Admin.css';
-import { useState } from 'react';
-import { Box, Button, Stack } from '@mui/material';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import {useState} from 'react';
+import {Box, Button, Stack} from '@mui/material';
+import {Outlet, useNavigate, useLocation} from 'react-router-dom';
 
 const Admin = () => {
     const navigate = useNavigate();
@@ -16,28 +16,28 @@ const Admin = () => {
     return (
         <Box className="admin-container">
             {/* Persistent Header */}
-            <Box sx={{ 
-                p: 2, 
-                backgroundColor: '#fff',
+            <Box sx={{
+                p: 2,
+                backgroundColor: '#555',
                 boxShadow: 1,
                 position: 'sticky',
                 top: 0,
                 zIndex: 1000
             }}>
                 <Stack direction="row" spacing={2}>
-                    <Button 
+                    <Button
                         variant={location.pathname.includes('manga-management') ? 'contained' : 'outlined'}
                         onClick={() => handleNavigation('/admin/manga-management')}
                     >
                         Manga Management
                     </Button>
-                    <Button 
-                        variant={location.pathname.includes('button2') ? 'contained' : 'outlined'}
-                        onClick={() => handleNavigation('/admin/button2')}
+                    <Button
+                        variant={location.pathname.includes('user-management') ? 'contained' : 'outlined'}
+                        onClick={() => handleNavigation('/admin/user-management')}
                     >
-                        Button 2
+                        User Management
                     </Button>
-                    <Button 
+                    <Button
                         variant={location.pathname.includes('button3') ? 'contained' : 'outlined'}
                         onClick={() => handleNavigation('/admin/button3')}
                     >
@@ -47,8 +47,8 @@ const Admin = () => {
             </Box>
 
             {/* Content Area */}
-            <Box sx={{ p: 2 }}>
-                <Outlet />
+            <Box sx={{}}>
+                <Outlet/>
             </Box>
         </Box>
     );
