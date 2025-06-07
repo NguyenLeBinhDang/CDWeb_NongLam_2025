@@ -3,17 +3,8 @@ import {Link} from 'react-router-dom';
 import './mangaCard.css';
 import {useFilter} from "../context/FilterContext";
 
-const MangaCard = ({manga, type = 'latest'}) => {
-    const [chapter, setChapter] = useState([]);
+const MangaCard = ({manga, type = 'latest',chapter}) => {
     const {getChapterOfManga} = useFilter();
-
-    useEffect(() => {
-        const fetchChapters = async () => {
-            const result = await getChapterOfManga(manga.id);
-            setChapter(result || []);
-        };
-        fetchChapters();
-    }, [manga.id]);
 
     const renderCard = () => {
         switch (type) {
