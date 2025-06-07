@@ -73,7 +73,7 @@
     text-decoration: none;
 }
 
-/* Manga Cards in Latest Updates */
+/* MangaModal Cards in Latest Updates */
 .chapter-link {
     /*display: block;*/
     font-size: 0.85rem;
@@ -167,7 +167,7 @@
     color: #aaa;
 }
 
-/* Recommended Manga */
+/* Recommended MangaModal */
 .recommended-item {
     display: flex;
     margin-bottom: 15px;
@@ -231,7 +231,7 @@
     color: #000;
 }
 
-/* Popular Manga */
+/* Popular MangaModal */
 .popular-card {
     background-color: #333;
     border-radius: 8px;
