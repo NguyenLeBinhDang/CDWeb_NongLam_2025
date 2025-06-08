@@ -3,18 +3,8 @@ import {Link} from 'react-router-dom';
 import './mangaCard.css';
 import {useFilter} from "../context/FilterContext";
 
-const MangaCard = ({manga, type = 'latest'}) => {
-    const [chapter, setChapter] = useState([]);
-    const {getChapterOfManga} = useFilter();
 
-    useEffect(() => {
-        const fetchChapters = async () => {
-            const result = await getChapterOfManga(manga.id);
-            setChapter(result || []);
-        };
-        fetchChapters();
-    }, [manga.id]);
-
+const MangaCard = ({manga, type = 'latest', chapter}) => {
     const renderCard = () => {
         switch (type) {
             case 'latest':
@@ -22,7 +12,8 @@ const MangaCard = ({manga, type = 'latest'}) => {
                     <div className="manga-card">
                         <div className="manga-image">
                             <Link to={`/manga/${manga.id}`}>
-                                <img src={manga.cover_img || "https://placehold.co/600x400"} alt={manga.name} className="img-fluid"/>
+                                <img src={manga.cover_img || "https://placehold.co/600x400"} alt={manga.name}
+                                     className="img-fluid"/>
                             </Link>
                         </div>
                         <div className="manga-info">
@@ -94,11 +85,34 @@ const MangaCard = ({manga, type = 'latest'}) => {
                     </div>
                 );
             default:
-                return null;
+                return (
+                    <div className="manga-card admin-view">
+                        <div className="manga-image">
+                            <img src={manga.cover_img || "https://placehold.co/600x400"} alt={manga.name}
+                                 className="img-fluid"/>
+                        </div>
+                        <div className="manga-info">
+                            <h3 className="manga-title">{manga.name}</h3>
+                            <p className="manga-author">Tác giả: {manga.id_author?.author_name || 'Không rõ'}</p>
+                            <div className="manga-categories">
+                                {manga.id_category?.slice(0, 3).map(category => (
+                                    <span key={category.id} className="category-tag">
+                                    {category.category_name}
+                                </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                );
         }
     };
 
     return renderCard();
 };
+
+MangaCard.defaultProps = {
+    type: null,
+    chapter: null,
+}
 
 export default MangaCard;
