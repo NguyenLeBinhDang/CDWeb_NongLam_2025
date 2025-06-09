@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import MangaCard from '../../components/mangaCard';
+import MangaCard from '../../components/MangaCard/mangaCard';
 import FilterSidebar from '../../components/FilterSidebar';
 import {useFilter} from '../../context/FilterContext';
 import './AllManga.css';
