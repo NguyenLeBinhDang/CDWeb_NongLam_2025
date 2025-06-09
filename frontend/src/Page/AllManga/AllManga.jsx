@@ -11,8 +11,8 @@ const AllManga = () => {
     const mangaPerPage = 10;
 
     useEffect(() => {
-        getAllManga();
-    },[]);
+        getManga(defaultFilter);
+    }, [defaultFilter]);
 
     // const handleFilterChange = (newFilters) => {
     //     setFilters(newFilters);
