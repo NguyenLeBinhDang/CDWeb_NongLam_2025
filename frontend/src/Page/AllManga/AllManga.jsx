@@ -5,7 +5,7 @@ import {useFilter} from '../../context/FilterContext';
 import './AllManga.css';
 
 const AllManga = () => {
-    const {mangaList, getAllManga,getManga, defaultFilter} = useFilter();
+    const {mangaList, getAllManga, getManga, defaultFilter, mangaChapters, fetchChapterForAll} = useFilter();
     const [currentPage, setCurrentPage] = useState(1);
     // const [filters, setFilters] = useState(defaultFilter);
     const mangaPerPage = 10;
@@ -13,6 +13,12 @@ const AllManga = () => {
     useEffect(() => {
         getManga(defaultFilter);
     }, [defaultFilter]);
+
+    useEffect(() => {
+        if (mangaList.length > 0) {
+            fetchChapterForAll();
+        }
+    }, [mangaList]);
 
     // const handleFilterChange = (newFilters) => {
     //     setFilters(newFilters);
@@ -38,7 +44,7 @@ const AllManga = () => {
                             <div className="manga-grid">
                                 {currentManga.map(manga => (
                                     <div key={manga.id} className="manga-item">
-                                        <MangaCard manga={manga} type="latest"/>
+                                        <MangaCard manga={manga} type="latest" chapter={mangaChapters[manga.id] || []}/>
                                     </div>
                                 ))}
                             </div>
