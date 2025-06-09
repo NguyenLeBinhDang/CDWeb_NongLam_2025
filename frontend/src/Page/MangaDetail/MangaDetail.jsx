@@ -41,7 +41,7 @@ const MangaDetail = () => {
                             <div className="manga-info-basic">
                                 <h1 className="manga-title">{manga.name}</h1>
                                 <div className="manga-meta">
-                                    <p><strong>Tác giả:</strong> {manga.id_author?.name}</p>
+                                    <p><strong>Tác giả:</strong> {manga.id_author?.author_name}</p>
                                     <p><strong>Trạng thái:</strong> {manga.id_status?.status_name}</p>
                                     <p><strong>Thể
                                         loại:</strong> {manga.id_category.map(cat => cat.category_name).join(", ")}

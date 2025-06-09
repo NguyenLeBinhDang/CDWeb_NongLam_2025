@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useFilter} from '../../../context/FilterContext';
-import MangaCard from '../../../components/mangaCard';
+import MangaCard from '../../../components/MangaCard/mangaCard';
 import {Grid, Pagination, Box, Button} from '@mui/material';
 import FilterSidebar from "../../../components/FilterSidebar";
 

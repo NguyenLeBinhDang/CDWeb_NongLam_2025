@@ -1,4 +1,8 @@
 .manga-card {
+    width: 100%;
+    max-width: 300px;
+    height: 100%;
+    /*display: flex;*/
     background: #fff;
     border-radius: 8px;
     overflow: hidden;

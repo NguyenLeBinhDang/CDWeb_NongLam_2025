@@ -1,5 +1,5 @@
 import React from 'react';
-import MangaCard from '../../components/mangaCard';
+import MangaCard from '../../components/MangaCard/mangaCard';
 import { useBookmark } from '../../context/BookMarkContext';
 import './BookMark.css';
 

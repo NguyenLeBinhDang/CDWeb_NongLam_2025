@@ -17,12 +17,16 @@
     object-fit: cover;
 }
 
+.carousel-inner {
+    position: relative;
+}
+
 .carousel-caption {
-    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    background: linear-gradient(rgba(0, 0, 0, 0.8), transparent);
     left: 0;
     right: 0;
     bottom: 0;
-    padding: 30px 20px 20px;
+    /*padding: 30px 20px 20px;*/
     text-align: left;
 }
 

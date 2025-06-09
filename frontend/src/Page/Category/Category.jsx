@@ -1,12 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import MangaCard from '../../components/mangaCard';
+import MangaCard from '../../components/MangaCard/mangaCard';
 // import FilterSidebar from '../../components/FilterSidebar';
 import {useFilter} from '../../context/FilterContext';
 import './Category.css';
 import {useParams} from "react-router-dom";
 
 const Category = () => {
-    const {mangaList, categories, getAllCategories, getManga, setFilterFromHome} = useFilter();
+    const {mangaList, categories, getAllCategories, getManga, mangaChapters, fetchChapterForAll} = useFilter();
     const [currentPage, setCurrentPage] = useState(1);
     const mangaPerPage = 10;
 
@@ -41,6 +41,12 @@ const Category = () => {
         fetchCategories();
     }, []);
 
+    useEffect(() => {
+        if (mangaList.length > 0) {
+            fetchChapterForAll()
+        }
+    }, [mangaList])
+
     // Calculate pagination
     const indexOfLastManga = currentPage * mangaPerPage;
     const indexOfFirstManga = indexOfLastManga - mangaPerPage;
@@ -67,7 +73,7 @@ const Category = () => {
                             <div className="manga-grid">
                                 {currentManga.map(manga => (
                                     <div key={manga.id} className="manga-item">
-                                        <MangaCard manga={manga} type="latest"/>
+                                        <MangaCard manga={manga} type="latest" chapter={mangaChapters[manga.id] || []}/>
                                     </div>
                                 ))}
                             </div>

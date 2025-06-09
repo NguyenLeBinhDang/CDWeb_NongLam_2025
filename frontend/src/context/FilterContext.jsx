@@ -10,12 +10,24 @@ export const FilterProvider = ({children}) => {
     const [categories, setCategories] = useState([]);
     const [chapters, setChapters] = useState([]);
     const [users, setUsers] = useState([]);
+    const [mangaChapters, setMangaChapters] = useState({});
+
     const [defaultFilter, setDefaultFilter] = useState({
         search: '',
         categoryIds: [],
         statusId: null,
         authorId: null
     });
+
+    const fetchChapterForAll = async () => {
+        const chaptersMap = {};
+        if(mangaList !== null) {
+            await Promise.all(mangaList.map(async (manga) => {
+                chaptersMap[manga.id] = await getChapterOfManga(manga.id);
+            }))
+            setMangaChapters(chaptersMap);
+        }
+    };
 
     const getAllUser = async () => {
         try {
@@ -116,6 +128,7 @@ export const FilterProvider = ({children}) => {
             categories,
             chapters,
             users,
+            mangaChapters,
             getAllCategories,
             setFilterFromHome,
             getAllManga,
@@ -123,7 +136,8 @@ export const FilterProvider = ({children}) => {
             getChapterOfManga,
             getManga,
             handleCategoryChange,
-            getAllUser
+            getAllUser,
+            fetchChapterForAll
         }}>
             {children}
         </FilterContext.Provider>

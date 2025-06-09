@@ -1,13 +1,21 @@
 import React, {useEffect, useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
-import MangaCard from '../../components/mangaCard';
+import MangaCard from '../../components/MangaCard/mangaCard';
 import {useFilter} from '../../context/FilterContext';
 import './Home.css';
 
 const Home = () => {
     const navigate = useNavigate();
-    const {mangaList, categories, getAllCategories, getAllManga, getChapterOfManga, setFilterFromHome} = useFilter();
-    const [mangaChapters, setMangaChapters] = useState({});
+    const {
+        mangaList,
+        categories,
+        getAllCategories,
+        getAllManga,
+        getChapterOfManga,
+        mangaChapters,
+        fetchChapterForAll
+    } = useFilter();
+    // const [mangaChapters, setMangaChapters] = useState({});
 
     useEffect(() => {
         const fetchData = async () => {
@@ -18,18 +26,10 @@ const Home = () => {
     }, []);
 
     useEffect(() => {
-        const fetchChapterForAll = async () => {
-            const chaptersMap = {};
-            await Promise.all(mangaList.map(async (manga) => {
-                const chapters = await getChapterOfManga(manga.id);
-                chaptersMap[manga.id] = chapters;
-            }))
-            setMangaChapters(chaptersMap);
-        };
-        if (mangaList.length  > 0) {
+        if (mangaList.length > 0) {
             fetchChapterForAll()
         }
-    },[mangaList])
+    }, [mangaList])
 
     const handleViewAllLatest = () => {
         navigate('/all-manga');
@@ -59,18 +59,20 @@ const Home = () => {
                                     <div className="carousel-caption">
                                         <h3>{manga.name}</h3>
                                         <p>Tác giả: {manga.id_author?.author_name}</p>
+                                        <button className="carousel-control-prev" type="button"
+                                                data-bs-target="#homeBanner"
+                                                data-bs-slide="prev">
+                                            <span className="carousel-control-prev-icon"></span>
+                                        </button>
+                                        <button className="carousel-control-next" type="button"
+                                                data-bs-target="#homeBanner"
+                                                data-bs-slide="next">
+                                            <span className="carousel-control-next-icon"></span>
+                                        </button>
                                     </div>
                                 </div>
                             ))}
                         </div>
-                        <button className="carousel-control-prev" type="button" data-bs-target="#homeBanner"
-                                data-bs-slide="prev">
-                            <span className="carousel-control-prev-icon"></span>
-                        </button>
-                        <button className="carousel-control-next" type="button" data-bs-target="#homeBanner"
-                                data-bs-slide="next">
-                            <span className="carousel-control-next-icon"></span>
-                        </button>
                     </div>
                 </div>
 
@@ -91,7 +93,8 @@ const Home = () => {
                                 <div className="row">
                                     {mangaList.map(manga => (
                                         <div key={manga.id} className="col-md-6 col-lg-4 mb-4">
-                                            <MangaCard manga={manga} type="latest" chapter={mangaChapters[manga.id] || []}/>
+                                            <MangaCard manga={manga} type="latest"
+                                                       chapter={mangaChapters[manga.id] || []}/>
                                         </div>
                                     ))}
                                 </div>
