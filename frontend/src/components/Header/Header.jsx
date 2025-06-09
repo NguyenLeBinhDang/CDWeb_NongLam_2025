@@ -9,8 +9,10 @@ const Header = () => {
     const navigate = useNavigate();
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const { user, logout } = useUser();
-    const {categories, getAllCategories} = useFilter();
-
+    const {categories, getAllCategories,getManga, setFilterFromHome} = useFilter();
+    const [searchTerm, setSearchTerm] = useState('');
+    const [searchSuggestions, setSearchSuggestions] = useState([]);
+    const [typingTimeout, setTypingTimeout] = useState(null);
     useEffect(() => {
         getAllCategories();
     },[]);
@@ -40,6 +42,45 @@ const Header = () => {
         }
     };
 
+    const handleSearchChange = (e) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+
+        if (typingTimeout) clearTimeout(typingTimeout);
+
+        // Đợi 300ms sau khi dừng gõ để gọi API
+        const timeout = setTimeout(async () => {
+            if (value.trim() === '') {
+                setSearchSuggestions([]);
+                return;
+            }
+
+            try {
+                const params = new URLSearchParams();
+                params.append("search", value);
+                const response = await axios.get(`http://localhost:8080/api/manga?${params.toString()}`);
+                setSearchSuggestions(response.data.slice(0, 5)); // Gợi ý tối đa 5
+            } catch (error) {
+                console.error("Failed to fetch suggestions", error);
+            }
+        }, 300);
+
+        setTypingTimeout(timeout);
+    };
+
+    const handleSearchSubmit = async (e) => {
+        e.preventDefault();
+        const newFilter = {
+            search: searchTerm,
+            categoryIds: [],
+            statusId: null,
+            authorId: null,
+        };
+        setFilterFromHome(newFilter); // Lưu filter vào context
+        await getManga(newFilter);    // Gọi API để lấy kết quả tương ứng
+        navigate('/all-manga');// Điều hướng tới trang danh sách
+        setSearchSuggestions([]);
+    };
     return (
         <header className="site-header">
             <div className="container">
@@ -55,12 +96,32 @@ const Header = () => {
                         </div>
                         <div className="col-lg-6 col-md-4 d-none d-md-block">
                             <div className="search-box">
-                                <form className="d-flex">
+                                <form className="d-flex" onSubmit={handleSearchSubmit}>
                                     <input
                                         type="text"
                                         className="form-control"
                                         placeholder="Tìm kiếm truyện..."
+                                        value={searchTerm}
+                                        onChange={handleSearchChange}
                                     />
+                                    {searchSuggestions.length > 0 && (
+                                        <ul className="autocomplete-suggestions">
+                                            {searchSuggestions.map(manga => (
+                                                <li
+                                                    key={manga.id}
+                                                    className="suggestion-item"
+                                                    onClick={() => {
+                                                        setSearchSuggestions([]); // 🔴 Ẩn autocomplete
+                                                        navigate(`/manga/${manga.id}`);
+                                                    }}
+
+                                                >
+                                                    <img src={manga.cover_img} alt={manga.name} />
+                                                    <span className="suggestion-text">{manga.name}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
                                     <button type="submit" className="btn btn-primary">
                                         <i className="fas fa-search"></i>
                                     </button>

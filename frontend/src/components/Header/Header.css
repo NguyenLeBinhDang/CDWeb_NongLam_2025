@@ -233,6 +233,7 @@
 
 /* Search Box Styles */
 .search-box {
+    position: relative;
     max-width: 500px;
     margin: 0 auto;
 }
@@ -245,4 +246,47 @@
 .search-box .btn:hover {
     background-color: #e67e22;
     border-color: #e67e22;
+}
+.autocomplete-suggestions {
+    position: absolute;
+    top: 100%; /* Hiển thị ngay dưới ô input */
+    left: 0;
+    width: 100%;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 999;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.suggestion-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #2e2e2e;
+    color: #fff;
+    transition: background-color 0.2s ease;
+}
+
+.suggestion-item:hover {
+    background-color: #333;
+}
+
+.suggestion-item img {
+    width: 40px;
+    height: 60px;
+    object-fit: cover;
+    margin-right: 12px;
+    border-radius: 4px;
+}
+
+.suggestion-text {
+    font-size: 0.95rem;
+    font-weight: 500;
 }

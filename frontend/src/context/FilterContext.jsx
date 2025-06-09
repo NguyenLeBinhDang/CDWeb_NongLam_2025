@@ -13,7 +13,8 @@ export const FilterProvider = ({children}) => {
     const [defaultFilter, setDefaultFilter] = useState({
         search: '',
         categoryIds: [],
-        statusId: null
+        statusId: null,
+        authorId: null
     });
 
     const getAllUser = async () => {
