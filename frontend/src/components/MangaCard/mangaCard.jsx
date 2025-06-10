@@ -5,14 +5,23 @@ import {useFilter} from "../../context/FilterContext";
 // import {navigate} from "next/dist/client/components/segment-cache";
 
 
-
 const MangaCard = ({manga, type = null, chapter = null}) => {
 
     const navigate = useNavigate();
 
-    const handleSelectedCategory = (categoryId) => {
-        navigate(`/manga/category/${categoryId}`);
-    };
+    const {setFilterFromHome} = useFilter();
+
+    const handleCategoryRedirect = async (id) => {
+        const newFilter = {
+            search: '',
+            categoryIds: [id],
+            statusId: null,
+            authorId: null
+        }
+        setFilterFromHome(newFilter);
+        // await getManga(newFilter);
+        navigate('/all-manga');
+    }
 
     const renderCard = () => {
         switch (type) {
@@ -46,15 +55,8 @@ const MangaCard = ({manga, type = null, chapter = null}) => {
                             </div>
                             <div className="manga-categories">
                                 {manga.id_category?.slice(0, 3).map(category => (
-                                    // <li key={category.id}>
-                                    //     <button
-                                    //         onClick={() => handleSelectedCategory(category.id)}
-                                    //         className="category-tag"
-                                    //     >
-                                    //         {category.category_name}
-                                    //     </button>
-                                    // </li>
-                                    <span key={category.id} className="category-tag" onClick={() => handleSelectedCategory(category.id)}>
+                                    <span key={category.id} className="category-tag"
+                                          onClick={() => handleCategoryRedirect(category.id)}>
                                     {category.category_name}
                                 </span>
                                 ))}
@@ -140,7 +142,8 @@ const MangaCard = ({manga, type = null, chapter = null}) => {
                                     //     </button>
                                     // </li>
 
-                                    <span key={category.id} className="category-tag" onClick={() => handleSelectedCategory(category.id)}>
+                                    <span key={category.id} className="category-tag"
+                                          onClick={() => handleCategoryRedirect(category.id)}>
                                 {category.category_name}
                             </span>
                                 ))}

@@ -11,9 +11,11 @@ const Home = () => {
         categories,
         getAllCategories,
         getAllManga,
+        getManga,
         getChapterOfManga,
         mangaChapters,
-        fetchChapterForAll
+        fetchChapterForAll,
+        setFilterFromHome
     } = useFilter();
     // const [mangaChapters, setMangaChapters] = useState({});
 
@@ -31,9 +33,28 @@ const Home = () => {
         }
     }, [mangaList])
 
-    const handleViewAllLatest = () => {
+    const handleViewAllLatest = async () => {
+        const newFilter = {
+            search: '',
+            categoryIds: [],
+            statusId: null,
+            authorId: null
+        }
+        setFilterFromHome(newFilter);
+        await getManga(newFilter);
         navigate('/all-manga');
     };
+
+    const handleCategoryRedirect = async (id) => {
+        const newFilter = {
+            search: '',
+            categoryIds: [id],
+            statusId: null,
+            authorId: null
+        }
+        setFilterFromHome(newFilter);
+        navigate('/all-manga');
+    }
 
     return (
         <div className="home-page">
@@ -87,6 +108,7 @@ const Home = () => {
                                     onClick={handleViewAllLatest}
                                 >
                                     Xem tất cả <i className="fas fa-angle-right"></i>
+
                                 </button>
                             </div>
                             <div className="manga-list">
@@ -124,13 +146,8 @@ const Home = () => {
                                 </div>
                                 <div className="categories-list">
                                     {categories.map(({id, category_name}) => (
-                                        <Link
-                                            key={id}
-                                            to={`/manga/category/${id}`}
-                                            className="category-tag"
-                                        >
-                                            {category_name}
-                                        </Link>
+                                        <span key={id} className="category-tag"
+                                              onClick={() => handleCategoryRedirect(id)}>{category_name}</span>
                                     ))}
                                 </div>
                             </div>

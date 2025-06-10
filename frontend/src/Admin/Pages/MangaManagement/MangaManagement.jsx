@@ -10,8 +10,8 @@ const MangaManagement = () => {
     const mangaPerPage = 8;
 
     useEffect(() => {
-        getAllManga();
-    }, []);
+        getManga(defaultFilter);
+    }, [defaultFilter]);
 
     const indexOfLastManga = currentPage * mangaPerPage;
     const indexOfFirstManga = indexOfLastManga - mangaPerPage;

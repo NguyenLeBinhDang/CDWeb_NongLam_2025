@@ -3,9 +3,10 @@ import MangaCard from '../../components/MangaCard/mangaCard';
 import FilterSidebar from '../../components/FilterSidebar';
 import {useFilter} from '../../context/FilterContext';
 import './AllManga.css';
+import Loading from "../../components/Loader/Loading";
 
 const AllManga = () => {
-    const {mangaList, getAllManga, getManga, defaultFilter, mangaChapters, fetchChapterForAll} = useFilter();
+    const {mangaList, getAllManga, getManga, defaultFilter, mangaChapters, fetchChapterForAll, loading} = useFilter();
     const [currentPage, setCurrentPage] = useState(1);
     // const [filters, setFilters] = useState(defaultFilter);
     const mangaPerPage = 10;
@@ -33,6 +34,7 @@ const AllManga = () => {
 
     return (
         <div className="all-manga-page">
+            {loading && <Loading/>}
             <div className="container">
                 <div className="row">
                     {/* Main Content */}

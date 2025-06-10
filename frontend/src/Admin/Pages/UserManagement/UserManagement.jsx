@@ -3,24 +3,21 @@ import {useFilter} from "../../../context/FilterContext";
 import {useEffect} from "react";
 
 const UserManagement = () => {
-    const {users, getAllUsers} = useFilter();
+    const {users, getAllUser} = useFilter();
 
     useEffect(() => {
         const fetchUsers = async () => {
-            try {
-                await getAllUsers();
-            } catch (error) {
-                console.error("Error fetching users:", error);
-            }
+            await getAllUser();
         }
         fetchUsers();
-    });
+    }, []);
 
     // Table cell styles
     const tableCellStyle = {
         whiteSpace: 'normal',
+        backgroundColor: '#fff',
         wordWrap: 'break-word',
-        maxWidth: '200px', // Adjust this value as needed
+        maxWidth: '80%', // Adjust this value as needed
         padding: '12px 16px',
         borderBottom: '1px solid rgba(224, 224, 224, 1)'
     };
@@ -28,11 +25,11 @@ const UserManagement = () => {
     // Table header styles
     const tableHeaderStyle = {
         fontWeight: 'bold',
-        backgroundColor: '#f5f5f5',
+        // backgroundColor: '#ddd',
         position: 'sticky',
         top: 0,
         zIndex: 1,
-        ...tableCellStyle
+        // ...tableCellStyle
     };
 
     return (
@@ -53,12 +50,12 @@ const UserManagement = () => {
                     <Table stickyHeader>
                         <TableHead>
                             <TableRow>
-                                <TableCell>UserID</TableCell>
-                                <TableCell>Email</TableCell>
-                                <TableCell>FullName</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell>Role</TableCell>
-                                <TableCell>Actions</TableCell>
+                                <TableCell sx={tableHeaderStyle}>UserID</TableCell>
+                                <TableCell sx={tableHeaderStyle}>Email</TableCell>
+                                <TableCell sx={tableHeaderStyle}>FullName</TableCell>
+                                <TableCell sx={tableHeaderStyle}>Status</TableCell>
+                                <TableCell sx={tableHeaderStyle}>Role</TableCell>
+                                <TableCell sx={tableHeaderStyle}>Actions</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -70,6 +67,7 @@ const UserManagement = () => {
                                         <TableCell sx={tableCellStyle}>{user.email}</TableCell>
                                         <TableCell sx={tableCellStyle}>{user.fullName}</TableCell>
                                         <TableCell sx={tableCellStyle}>{user.isActive}</TableCell>
+                                        <TableCell sx={tableCellStyle}>{user.role}</TableCell>
                                         <TableCell sx={tableCellStyle}>temp</TableCell>
                                     </TableRow>
                                 ))}

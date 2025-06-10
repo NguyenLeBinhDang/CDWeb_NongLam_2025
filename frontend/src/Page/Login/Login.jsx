@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { useUser } from '../../context/UserContext';
 import axios from 'axios';
-import Loading from '../../utils/Loading';
+import Loading from '../../components/Loader/Loading';
 import './Login.css';
 
 const Login = () => {

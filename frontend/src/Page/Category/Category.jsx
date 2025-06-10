@@ -4,9 +4,20 @@ import MangaCard from '../../components/MangaCard/mangaCard';
 import {useFilter} from '../../context/FilterContext';
 import './Category.css';
 import {useParams} from "react-router-dom";
+import FilterSidebar from "../../components/FilterSidebar";
 
 const Category = () => {
-    const {mangaList, categories, getAllCategories, getManga, mangaChapters, fetchChapterForAll} = useFilter();
+    const {
+        mangaList,
+        categories,
+        getAllCategories,
+        status,
+        getManga,
+        mangaChapters,
+        fetchChapterForAll,
+        defaultFilter,
+        getAllStatus
+    } = useFilter();
     const [currentPage, setCurrentPage] = useState(1);
     const mangaPerPage = 10;
 
@@ -28,7 +39,7 @@ const Category = () => {
             }
         }
         fetchMangaByCategory();
-    }, [categoryId]);
+    }, [defaultFilter]);
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -103,10 +114,10 @@ const Category = () => {
                         </div>
                     </div>
 
-                    {/*/!* Filter Sidebar *!/*/}
-                    {/*<div className="col-lg-3">*/}
-                    {/*    <FilterSidebar filters={filters} onFilterChange={handleFilterChange}/>*/}
-                    {/*</div>*/}
+                    {/* Filter Sidebar */}
+                    <div className="col-lg-3">
+                        <FilterSidebar filters={defaultFilter} pages='category'/>
+                    </div>
                 </div>
             </div>
         </div>

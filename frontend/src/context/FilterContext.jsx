@@ -1,5 +1,6 @@
 import React, {createContext, useContext, useState} from 'react';
 import axios from "axios";
+import {showConfirmDialog, showErrorDialog} from "../utils/Alert";
 
 const FilterContext = createContext();
 
@@ -12,6 +13,8 @@ export const FilterProvider = ({children}) => {
     const [users, setUsers] = useState([]);
     const [mangaChapters, setMangaChapters] = useState({});
     const [status, setStatus] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [errorMassage, setErrorMessage] = useState('some error');
 
     const [defaultFilter, setDefaultFilter] = useState({
         search: '',
@@ -44,12 +47,22 @@ export const FilterProvider = ({children}) => {
     }
     const getAllUser = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/users');
+            setLoading(true);
+            const response = await axios.get('http://localhost:8080/api/users', {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            setLoading(false)
             setUsers(response.data);
             return response.data;
         } catch (error) {
+            setLoading(false);
             console.error('Error fetching users:', error);
-            throw new Error('Failed to fetch users');
+            const message = error?.response?.data?.message || 'Failed to fetch users';
+            setErrorMessage(message);
+            await showErrorDialog("Lỗi", message);
         }
     }
 
@@ -103,11 +116,16 @@ export const FilterProvider = ({children}) => {
             if (Array.isArray(filter.categoryIds)) {
                 filter.categoryIds.forEach(id => params.append("categoryIds", id));
             }
+            setLoading(true);
             const response = await axios.get(`http://localhost:8080/api/manga?${params.toString()}`);
             setMangaList(response.data);
+            setLoading(false);
         } catch (error) {
+            setLoading(true);
             console.error('Error fetching manga:', error);
-            throw new Error('Failed to fetch manga');
+            const message = error?.response?.data?.message || 'Failed to fetch manga';
+            await setErrorMessage(message);
+            await showErrorDialog('', message)
         }
     };
 
@@ -151,6 +169,7 @@ export const FilterProvider = ({children}) => {
             users,
             mangaChapters,
             status,
+            loading,
             getAllCategories,
             setFilterFromHome,
             getAllManga,
