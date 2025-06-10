@@ -17,7 +17,7 @@ const FilterSidebar = ({filters, onFilterChange}) => {
     useEffect(() => {
         getAllStatus();
         getAllCategories();
-    },[]);
+    }, []);
 
     // Các options cho sorting
     const sortOptions = [
@@ -47,14 +47,15 @@ const FilterSidebar = ({filters, onFilterChange}) => {
                     <i className="fas fa-redo"></i> Reset Filters
                 </button>
 
-                 {/*Status Filter*/}
+                {/*Status Filter*/}
                 <div className="filter-group">
                     <h3 className="filter-title">Trạng thái</h3>
                     <div className="filter-options">
-                        <label className="filter-option">
+                        <label key="all" className="filter-option">
                             <input
                                 type="radio"
                                 name="status"
+                                checked={filters.statusId === null}
                                 onChange={() => handleStatusChange(null)}
                             />
                             <span className="radio-label"></span>
@@ -65,7 +66,6 @@ const FilterSidebar = ({filters, onFilterChange}) => {
                                 <input
                                     type="radio"
                                     name="status"
-                                    value={id}
                                     checked={filters.statusId === id}
                                     onChange={() => handleStatusChange(id)}
                                 />
