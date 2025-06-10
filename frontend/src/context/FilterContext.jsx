@@ -128,7 +128,7 @@ export const FilterProvider = ({children}) => {
 
     const handleStatusChange = (statusId) => {
         setDefaultFilter(prevFilter => {
-            prevFilter.statusId = null;
+
             // Fetch new manga based on updated filters
             return {
                 ...prevFilter,

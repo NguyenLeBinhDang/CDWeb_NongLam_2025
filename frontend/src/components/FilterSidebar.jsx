@@ -19,14 +19,6 @@ const FilterSidebar = ({filters, onFilterChange}) => {
         getAllCategories();
     },[]);
 
-    // Các options cho status
-    // const statusOptions = status || [
-    //     // {value: 'all', label: 'Tất cả'},
-    //     {id: 'ongoing', status_name: 'Đang tiến hành'},
-    //     {id: 'completed', status_name: 'Hoàn thành'},
-    //     {id: 'hiatus', status_name: 'Tạm ngưng'}
-    // ];
-
     // Các options cho sorting
     const sortOptions = [
         {value: 'latest', label: 'Mới nhất'},
@@ -59,6 +51,15 @@ const FilterSidebar = ({filters, onFilterChange}) => {
                 <div className="filter-group">
                     <h3 className="filter-title">Trạng thái</h3>
                     <div className="filter-options">
+                        <label className="filter-option">
+                            <input
+                                type="radio"
+                                name="status"
+                                onChange={() => handleStatusChange(null)}
+                            />
+                            <span className="radio-label"></span>
+                            All
+                        </label>
                         {status.map(({id, status_name}) => (
                             <label key={id} className="filter-option">
                                 <input
