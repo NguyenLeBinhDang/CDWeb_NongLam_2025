@@ -1,4 +1,4 @@
-import React, {createContext, useState, useContext} from 'react';
+import React, {createContext, useContext, useState} from 'react';
 import axios from "axios";
 
 const FilterContext = createContext();
@@ -11,6 +11,7 @@ export const FilterProvider = ({children}) => {
     const [chapters, setChapters] = useState([]);
     const [users, setUsers] = useState([]);
     const [mangaChapters, setMangaChapters] = useState({});
+    const [status, setStatus] = useState([]);
 
     const [defaultFilter, setDefaultFilter] = useState({
         search: '',
@@ -19,16 +20,28 @@ export const FilterProvider = ({children}) => {
         authorId: null
     });
 
+
     const fetchChapterForAll = async () => {
         const chaptersMap = {};
-        if(mangaList !== null) {
+        if (mangaList !== null) {
             await Promise.all(mangaList.map(async (manga) => {
                 chaptersMap[manga.id] = await getChapterOfManga(manga.id);
             }))
             setMangaChapters(chaptersMap);
         }
     };
+    //fetch status
+    const getAllStatus = async () => {
+        try {
+            const response = await axios.get('http://localhost:8080/api/status');
+            setStatus(response.data);
+            return response.data;
+        } catch (error) {
+            console.error('Error fetching status:', error);
+            throw new Error('Failed to fetch status');
+        }
 
+    }
     const getAllUser = async () => {
         try {
             const response = await axios.get('http://localhost:8080/api/users');
@@ -105,16 +118,24 @@ export const FilterProvider = ({children}) => {
                 ? prevFilter.categoryIds.filter(id => id !== categoryId)
                 : [...prevFilter.categoryIds, categoryId];
 
-            const newFilter = {
+            // Fetch new manga based on updated filters
+            return {
                 ...prevFilter,
                 categoryIds: updatedCategories
             };
-
-            // Fetch new manga based on updated filters
-            getManga(newFilter);
-            return newFilter;
         });
     };
+
+    const handleStatusChange = (statusId) => {
+        setDefaultFilter(prevFilter => {
+            prevFilter.statusId = null;
+            // Fetch new manga based on updated filters
+            return {
+                ...prevFilter,
+                statusId: statusId
+            };
+        });
+    }
 
     const setFilterFromHome = (filter) => {
         setDefaultFilter(filter);
@@ -129,6 +150,7 @@ export const FilterProvider = ({children}) => {
             chapters,
             users,
             mangaChapters,
+            status,
             getAllCategories,
             setFilterFromHome,
             getAllManga,
@@ -137,7 +159,9 @@ export const FilterProvider = ({children}) => {
             getManga,
             handleCategoryChange,
             getAllUser,
-            fetchChapterForAll
+            fetchChapterForAll,
+            handleStatusChange,
+            getAllStatus,
         }}>
             {children}
         </FilterContext.Provider>

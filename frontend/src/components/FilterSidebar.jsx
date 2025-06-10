@@ -3,18 +3,29 @@ import './FilterSidebar.css';
 import {useFilter} from "../context/FilterContext";
 
 const FilterSidebar = ({filters, onFilterChange}) => {
-    const {categories, getAllCategories, getManga, setFilterFromHome, handleCategoryChange} = useFilter();
+    const {
+        categories,
+        getAllCategories,
+        getAllStatus,
+        getManga,
+        status,
+        setFilterFromHome,
+        handleCategoryChange,
+        handleStatusChange
+    } = useFilter();
+
     useEffect(() => {
+        getAllStatus();
         getAllCategories();
-    }, []);
+    },[]);
 
     // Các options cho status
-    const statusOptions = [
-        {value: 'all', label: 'Tất cả'},
-        {value: 'ongoing', label: 'Đang tiến hành'},
-        {value: 'completed', label: 'Hoàn thành'},
-        {value: 'hiatus', label: 'Tạm ngưng'}
-    ];
+    // const statusOptions = status || [
+    //     // {value: 'all', label: 'Tất cả'},
+    //     {id: 'ongoing', status_name: 'Đang tiến hành'},
+    //     {id: 'completed', status_name: 'Hoàn thành'},
+    //     {id: 'hiatus', status_name: 'Tạm ngưng'}
+    // ];
 
     // Các options cho sorting
     const sortOptions = [
@@ -24,28 +35,13 @@ const FilterSidebar = ({filters, onFilterChange}) => {
         {value: 'name', label: 'Tên A-Z'}
     ];
 
-    // Xử lý thay đổi status
-    const handleStatusChange = (e) => {
-        onFilterChange({
-            ...filters,
-            status: e.target.value
-        });
-    };
-
-    // Xử lý thay đổi sorting
-    const handleSortChange = (e) => {
-        onFilterChange({
-            ...filters,
-            sortBy: e.target.value
-        });
-    };
-
     // Reset tất cả filter
     const handleResetFilters = () => {
         const newFilter = {
             search: '',
             categoryIds: [],
-            statusId: null
+            statusId: null,
+            authorId: null,
         };
         setFilterFromHome(newFilter);
         getManga(newFilter);
@@ -59,38 +55,38 @@ const FilterSidebar = ({filters, onFilterChange}) => {
                     <i className="fas fa-redo"></i> Reset Filters
                 </button>
 
-                {/* Status Filter */}
+                 {/*Status Filter*/}
                 <div className="filter-group">
                     <h3 className="filter-title">Trạng thái</h3>
                     <div className="filter-options">
-                        {statusOptions.map(option => (
-                            <label key={option.value} className="filter-option">
+                        {status.map(({id, status_name}) => (
+                            <label key={id} className="filter-option">
                                 <input
                                     type="radio"
                                     name="status"
-                                    value={option.value}
-                                    checked={filters.status === option.value}
-                                    onChange={handleStatusChange}
+                                    value={id}
+                                    checked={filters.statusId === id}
+                                    onChange={() => handleStatusChange(id)}
                                 />
                                 <span className="radio-label"></span>
-                                {option.label}
+                                {status_name}
                             </label>
                         ))}
                     </div>
                 </div>
 
-                {/* Sort Options */}
+                {/*/!* Sort Options *!/*/}
                 <div className="filter-group">
                     <h3 className="filter-title">Sắp xếp theo</h3>
                     <div className="filter-options">
                         {sortOptions.map(option => (
-                            <label key={option.value} className="filter-option">
+                            <label key={option.id} className="filter-option">
                                 <input
                                     type="radio"
                                     name="sort"
                                     value={option.value}
-                                    checked={filters.sortBy === option.value}
-                                    onChange={handleSortChange}
+                                    checked={filters.sortBy === option.id}
+                                    // onChange={}
                                 />
                                 <span className="radio-label"></span>
                                 {option.label}

@@ -173,6 +173,9 @@ const Header = () => {
                             </ul>
                         </li>
                         <li className="d-flex gap-2"><Link to="/bookmark"><i className="fas fa-bookmark"></i> Theo dõi </Link></li>
+
+                        <li className="d-flex gap-2"><Link to="/admin"><i className="fas fa-cog"></i> Admin </Link></li>
+
                         {/*<li><span className="d-flex gap-2" onClick={handleBookmarkClick}><i className="fas fa-bookmark"></i> Theo dõi</span></li>*/}
                     </ul>
                 </nav>

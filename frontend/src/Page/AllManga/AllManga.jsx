@@ -76,7 +76,7 @@ const AllManga = () => {
 
                     {/* Filter Sidebar */}
                     <div className="col-lg-3">
-                        <FilterSidebar filters={defaultFilter} onFilterChange={getManga}/>
+                        <FilterSidebar filters={defaultFilter}/>
                     </div>
                 </div>
             </div>
