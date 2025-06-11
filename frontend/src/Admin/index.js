@@ -22,7 +22,7 @@ const Admin = () => {
                 boxShadow: 1,
                 position: 'sticky',
                 top: 0,
-                zIndex: 1000
+                zIndex: 998
             }}>
                 <Stack direction="row" spacing={2}>
                     <Button

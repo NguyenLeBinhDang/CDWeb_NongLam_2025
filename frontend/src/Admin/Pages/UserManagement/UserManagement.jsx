@@ -17,36 +17,41 @@ const UserManagement = () => {
         whiteSpace: 'normal',
         backgroundColor: '#fff',
         wordWrap: 'break-word',
-        maxWidth: '80%', // Adjust this value as needed
+        maxWidth: '100%', // Adjust this value as needed
         padding: '12px 16px',
-        borderBottom: '1px solid rgba(224, 224, 224, 1)'
+        borderBottom: '1px solid rgba(224, 224, 224, 1)',
+        zIndex: 1,
     };
 
     // Table header styles
     const tableHeaderStyle = {
         fontWeight: 'bold',
-        // backgroundColor: '#ddd',
+        width: '10%',
         position: 'sticky',
         top: 0,
-        zIndex: 1,
-        // ...tableCellStyle
+        zIndex: 2,
+        backgroundColor: '#f4f4f4',
     };
 
     return (
         <>
             <Box sx={{backgroundColor: '#666', padding: 3, minHeight: '100vh'}}>
                 <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
-                    <Typography variant="h4">Danh sách người dùng</Typography>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        // onClick={handleAddUser}
-                    >
-                        Thêm User
-                    </Button>
+                    <Typography variant="h4" sx={{color: '#fff'}}>Danh sách người dùng</Typography>
+                    <Box>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            // onClick={handleAddUser}
+                        >
+                            Thêm User
+                        </Button>
+
+
+                    </Box>
                 </Box>
                 {/*user table*/}
-                <TableContainer sx={{maxHeight: 'calc(100vh - 200px)', overflowY: 'auto', backgroundColor: '#666'}}>
+                <TableContainer sx={{maxHeight: 'calc(100vh - 200px)', overflowY: 'auto'}}>
                     <Table stickyHeader>
                         <TableHead>
                             <TableRow>
@@ -67,8 +72,25 @@ const UserManagement = () => {
                                         <TableCell sx={tableCellStyle}>{user.email}</TableCell>
                                         <TableCell sx={tableCellStyle}>{user.fullName}</TableCell>
                                         <TableCell sx={tableCellStyle}>{user.isActive}</TableCell>
-                                        <TableCell sx={tableCellStyle}>{user.role}</TableCell>
-                                        <TableCell sx={tableCellStyle}>temp</TableCell>
+                                        <TableCell sx={tableCellStyle}>{user.role.role_name}</TableCell>
+                                        <TableCell sx={tableCellStyle}>
+                                            <Box sx={{display: 'flex', gap: 2}} >
+                                                <Button
+                                                    variant="contained"
+                                                    color="primary"
+                                                >
+                                                    Thay đổi thông tin user
+                                                </Button>
+
+                                                <Button
+                                                    variant="contained"
+                                                    color="error"
+                                                    // onClick={handleAddUser}
+                                                >
+                                                    Ban User
+                                                </Button>
+                                            </Box>
+                                        </TableCell>
                                     </TableRow>
                                 ))}
                         </TableBody>

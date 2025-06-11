@@ -46,17 +46,6 @@ export const UserProvider = ({children}) => {
         localStorage.removeItem('token');
     };
 
-    // const fetchUserInfo = async (id) => {
-    //     try {
-    //         const response = await axios.get(`http://localhost:8080/api/users/${id}`);
-    //         if (!response.status === 200 || !response.data.id === id) {
-    //             throw new Error('Failed to fetch user info');
-    //         }
-    //         setUserInfo(response.data);
-    //     } catch (error) {
-    //         console.error('Failed to fetch user info:', error);
-    //     }
-    // }
 
     return (
         <UserContext.Provider value={{user, token, login, logout, loading}}>

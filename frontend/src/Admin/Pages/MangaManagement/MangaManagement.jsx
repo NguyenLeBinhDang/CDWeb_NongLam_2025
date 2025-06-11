@@ -5,13 +5,23 @@ import {Grid, Pagination, Box, Button} from '@mui/material';
 import FilterSidebar from "../../../components/FilterSidebar";
 
 const MangaManagement = () => {
-    const {mangaList, getAllManga, defaultFilter, getManga} = useFilter();
+    const {mangaList, getAllManga, defaultFilter, getManga, setFilterFromHome} = useFilter();
     const [currentPage, setCurrentPage] = useState(1);
     const mangaPerPage = 8;
 
     useEffect(() => {
         getManga(defaultFilter);
     }, [defaultFilter]);
+
+    useEffect(() => {
+        const newFilter = {
+            search: '',
+            categoryIds: [],
+            statusId: null,
+            authorId: null
+        }
+        setFilterFromHome(newFilter);
+    }, []);
 
     const indexOfLastManga = currentPage * mangaPerPage;
     const indexOfFirstManga = indexOfLastManga - mangaPerPage;
@@ -27,11 +37,13 @@ const MangaManagement = () => {
             <Box sx={{backgroundColor: '#666', padding: 3, minHeight: '100vh'}}>
                 {/*manga management*/}
                 <Box sx={{backgroundColor: '#666', padding: 3, borderRadius: 2, display: 'flex'}}>
-                    <Button sx={{flexGrow: 1}} variant="contained" color="primary" startIcon={<i className="fas fa-plus"></i>}>
+                    <Button sx={{flexGrow: 1}} variant="contained" color="primary"
+                            startIcon={<i className="fas fa-plus"></i>}>
                         <span className="material-icons">Thêm truyện</span>
                     </Button>
 
-                    <Button sx={{flexGrow: 1}} variant="contained" color="error" startIcon={<i className="fas fa-trash-alt"></i>}>
+                    <Button sx={{flexGrow: 1}} variant="contained" color="error"
+                            startIcon={<i className="fas fa-trash-alt"></i>}>
                         <span className="material-icons">Xóa truyện</span>
                     </Button>
                 </Box>
@@ -41,7 +53,7 @@ const MangaManagement = () => {
                         <Grid container spacing={3}>
                             {currentManga.map((manga) => (
                                 <Grid item xs={12} sm={6} md={4} lg={3} key={manga.id}>
-                                    <MangaCard manga={manga} type="admin-view"/>
+                                    <MangaCard manga={manga} type="admin"/>
                                 </Grid>
                             ))}
                         </Grid>

@@ -115,8 +115,7 @@ const Home = () => {
                                 <div className="row">
                                     {mangaList.map(manga => (
                                         <div key={manga.id} className="col-md-6 col-lg-4 mb-4">
-                                            <MangaCard manga={manga} type="latest"
-                                                       chapter={mangaChapters[manga.id] || []}/>
+                                            <MangaCard manga={manga} chapter={mangaChapters[manga.id] || []}/>
                                         </div>
                                     ))}
                                 </div>

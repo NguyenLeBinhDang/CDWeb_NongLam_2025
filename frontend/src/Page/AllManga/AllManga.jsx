@@ -46,7 +46,7 @@ const AllManga = () => {
                             <div className="manga-grid">
                                 {currentManga.map(manga => (
                                     <div key={manga.id} className="manga-item">
-                                        <MangaCard manga={manga} type="latest" chapter={mangaChapters[manga.id] || []}/>
+                                        <MangaCard manga={manga} chapter={mangaChapters[manga.id] || []}/>
                                     </div>
                                 ))}
                             </div>
