@@ -8,7 +8,6 @@ import {useBookmark} from "../../context/BookMarkContext";
 const MangaCard = ({manga, type = null, chapter = null, isFavorite = false}) => {
 
     const navigate = useNavigate();
-    const [isFavoriteState, setIsFavoriteState] = useState(isFavorite);
 
     const {setFilterFromHome} = useFilter();
     const {bookmarks, handleRemoveFromFavorite, handleAddToFavorite} = useBookmark();

@@ -3,6 +3,8 @@ import {Link, useNavigate} from 'react-router-dom';
 import MangaCard from '../../components/MangaCard/mangaCard';
 import {useFilter} from '../../context/FilterContext';
 import './Home.css';
+import {useBookmark} from "../../context/BookMarkContext";
+import {useUser} from "../../context/UserContext";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -19,6 +21,14 @@ const Home = () => {
     } = useFilter();
     // const [mangaChapters, setMangaChapters] = useState({});
 
+    const {
+        getIsFavorite,
+        isFavorite,
+        bookmarks,
+    } = useBookmark();
+
+    const {user} = useUser();
+
     useEffect(() => {
         const fetchData = async () => {
             await getAllManga();
@@ -32,6 +42,12 @@ const Home = () => {
             fetchChapterForAll()
         }
     }, [mangaList])
+
+    useEffect(() => {
+        mangaList.forEach((manga) => {
+            getIsFavorite(manga.id);
+        })
+    }, [mangaList, bookmarks])
 
     const handleViewAllLatest = async () => {
         const newFilter = {
@@ -115,7 +131,8 @@ const Home = () => {
                                 <div className="row">
                                     {mangaList.map(manga => (
                                         <div key={manga.id} className="col-md-6 col-lg-4 mb-4">
-                                            <MangaCard manga={manga} chapter={mangaChapters[manga.id] || []}/>
+                                            <MangaCard manga={manga} chapter={mangaChapters[manga.id] || []}
+                                                       isFavorite={isFavorite[manga.id]}/>
                                         </div>
                                     ))}
                                 </div>

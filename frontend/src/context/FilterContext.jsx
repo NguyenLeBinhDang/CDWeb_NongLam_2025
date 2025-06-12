@@ -48,7 +48,7 @@ export const FilterProvider = ({children}) => {
     const getAllUser = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:8080/api/users', {
+            const response = await axios.get('http://localhost:8080/api/users',  {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
