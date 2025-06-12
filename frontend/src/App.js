@@ -12,7 +12,7 @@ import './App.css';
 import Login from './Page/Login/Login';
 import Register from './Page/Register/Register';
 import MangaReader from './Page/MangaReader/MangaReader';
-import UserInfo from './components/UserInfo/UserInfo';
+import UserInfo from './Page/UserInfo/UserInfo';
 import {MangaReaderProvider} from "./context/MangaReaderContext";
 import BookMark from "./Page/BookMark/BookMark";
 import {BookmarkProvider} from "./context/BookMarkContext";

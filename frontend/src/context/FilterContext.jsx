@@ -45,26 +45,26 @@ export const FilterProvider = ({children}) => {
         }
 
     }
-    const getAllUser = async () => {
-        try {
-            setLoading(true);
-            const response = await axios.get('http://localhost:8080/api/users',  {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            setLoading(false)
-            setUsers(response.data);
-            return response.data;
-        } catch (error) {
-            setLoading(false);
-            console.error('Error fetching users:', error);
-            const message = error?.response?.data?.message || 'Failed to fetch users';
-            setErrorMessage(message);
-            await showErrorDialog("Lỗi", message);
-        }
-    }
+    // const getAllUser = async () => {
+    //     try {
+    //         setLoading(true);
+    //         const response = await axios.get('http://localhost:8080/api/users',  {
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${localStorage.getItem('token')}`
+    //             }
+    //         });
+    //         setLoading(false)
+    //         setUsers(response.data);
+    //         return response.data;
+    //     } catch (error) {
+    //         setLoading(false);
+    //         console.error('Error fetching users:', error);
+    //         const message = error?.response?.data?.message || 'Failed to fetch users';
+    //         setErrorMessage(message);
+    //         await showErrorDialog("Lỗi", message);
+    //     }
+    // }
 
     const getChapterOfManga = async (mangaId) => {
         try {
@@ -178,7 +178,7 @@ export const FilterProvider = ({children}) => {
             getChapterOfManga,
             getManga,
             handleCategoryChange,
-            getAllUser,
+            // getAllUser,
             fetchChapterForAll,
             handleStatusChange,
             getAllStatus,
