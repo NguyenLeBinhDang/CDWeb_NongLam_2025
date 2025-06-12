@@ -3,6 +3,7 @@ import {Link, useNavigate} from 'react-router-dom';
 import './mangaCard.css';
 import {useFilter} from "../../context/FilterContext";
 import {useBookmark} from "../../context/BookMarkContext";
+import MangaDetail from "../../Page/MangaDetail/MangaDetail";
 
 
 const MangaCard = ({manga, type = null, chapter = null, isFavorite = false}) => {
@@ -24,6 +25,10 @@ const MangaCard = ({manga, type = null, chapter = null, isFavorite = false}) => 
         }
         setFilterFromHome(newFilter);
         navigate('/all-manga');
+    }
+
+    const handleAdminRedirect = () => {
+        navigate(<MangaDetail pages={'admin'}/>);
     }
 
     const renderCard = () => {
@@ -73,8 +78,14 @@ const MangaCard = ({manga, type = null, chapter = null, isFavorite = false}) => 
                 return (
                     <div className="manga-card admin-view">
                         <div className="manga-image">
-                            <img src={manga.cover_img || "https://placehold.co/600x400"} alt={manga.name}
-                                 className="img-fluid"/>
+                            <Link
+                                to={{
+                                    pathname: `/manga/${manga.id}`,
+                                }}
+                                state={{pages: 'admin'}}
+                            >
+                                <img src={manga.cover_img} alt={manga.name}/>
+                            </Link>
                         </div>
                         <div className="manga-info">
                             <h3 className="manga-title">{manga.name}</h3>
@@ -120,7 +131,7 @@ const MangaCard = ({manga, type = null, chapter = null, isFavorite = false}) => 
                             </h3>
                             <div className="manga-update">
                                 {chapter && chapter.length > 0 ? (
-                                    chapter.map((ch) => (
+                                    chapter.slice(0, 2).map((ch) => (
                                         <Link
                                             key={ch.id}
                                             to={`/manga/${manga.id}/chapter/${ch.id}`}
