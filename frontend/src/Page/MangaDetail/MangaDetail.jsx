@@ -2,10 +2,11 @@ import React, {useEffect, useState} from 'react';
 import {useParams} from 'react-router-dom';
 import './MangaDetail.css';
 import {useFilter} from "../../context/FilterContext";
+import Loading from "../../components/Loader/Loading";
 
 const MangaDetail = () => {
     const {id} = useParams();
-    const {manga, chapters, getMangaById, getChapterOfManga} = useFilter();
+    const {manga, chapters, getMangaById, getChapterOfManga, loading} = useFilter();
     // const [chapter, setChapter] = useState([]);
 
     useEffect(() => {
@@ -31,6 +32,7 @@ const MangaDetail = () => {
 
     return (
         <div className="manga-detail-page">
+            {loading && <Loading/>}
             <div className="container">
                 <div className="manga-detail-content">
                     <div className="row">
@@ -43,8 +45,10 @@ const MangaDetail = () => {
                                 <div className="manga-meta">
                                     <p><strong>Tác giả:</strong> {manga.id_author?.author_name}</p>
                                     <p><strong>Trạng thái:</strong> {manga.id_status?.status_name}</p>
-                                    <p><strong>Thể
-                                        loại:</strong> {manga.id_category.map(cat => cat.category_name).join(", ")}
+                                    <p><strong>Thể loại:</strong>
+                                        {manga.id_category
+                                            ? manga.id_category.map(cat => cat.category_name).join(", ")
+                                            : "Đang tải..."}
                                     </p>
                                 </div>
                             </div>
@@ -79,4 +83,4 @@ const MangaDetail = () => {
     );
 };
 
-export default MangaDetail; 
+export default MangaDetail;

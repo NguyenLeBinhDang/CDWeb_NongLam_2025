@@ -1,5 +1,5 @@
 import React, {createContext, useContext, useState, useEffect} from 'react';
-import {showErrorDialog} from "../utils/Alert";
+import {showConfirmDialog, showErrorDialog, showSuccessDialog} from "../utils/Alert";
 import axios from "axios";
 import {useFilter} from "./FilterContext";
 
@@ -105,17 +105,21 @@ export const BookmarkProvider = ({children}) => {
     }
 
     const handleAddToFavorite = async (mangaId) => {
+        await showConfirmDialog("Bạn có chắc muốn thêm vào theo dõi?", "question");
         await addBookmark(mangaId);
         await getIsFavorite(mangaId); // update isFavorite state
+        await showSuccessDialog("Đã thêm vào theo dõi", "success");
     };
 
     const handleRemoveFromFavorite = async (mangaId) => {
+        await showConfirmDialog("Bạn có chắc muốn xóa khỏi theo dõi?", "question");
         await removeBookmark(mangaId);
         setIsFavorite(prev => {
             const updated = {...prev};
             delete updated[mangaId];
             return updated;
         });
+        await showSuccessDialog("Đã xóa khỏi theo dõi", "success");
     };
 
     return (
