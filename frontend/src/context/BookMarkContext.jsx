@@ -1,13 +1,25 @@
 import React, {createContext, useContext, useState, useEffect} from 'react';
 import {showErrorDialog} from "../utils/Alert";
 import axios from "axios";
+import {useFilter} from "./FilterContext";
 
 const BookmarkContext = createContext();
 
 export const BookmarkProvider = ({children}) => {
+    const {getChapterOfManga} = useFilter();
     const [bookmarks, setBookmarks] = useState([]);
     const [isFavorite, setIsFavorite] = useState({});
+    const [chapters, setChapters] = useState({});
 
+    const fetchChapterForAll = async () => {
+        const chaptersMap = {};
+        if (bookmarks !== null) {
+            await Promise.all(bookmarks.map(async (bookmark) => {
+                chaptersMap[bookmark.manga.id] = await getChapterOfManga(bookmark.manga.id);
+            }))
+            setChapters(chaptersMap);
+        }
+    };
 
     const getBookmarks = async () => {
         try {
@@ -108,7 +120,16 @@ export const BookmarkProvider = ({children}) => {
 
     return (
         <BookmarkContext.Provider
-            value={{bookmarks, isFavorite, getIsFavorite, getBookmarks, handleAddToFavorite, handleRemoveFromFavorite}}>
+            value={{
+                bookmarks,
+                isFavorite,
+                chapters,
+                getIsFavorite,
+                getBookmarks,
+                handleAddToFavorite,
+                handleRemoveFromFavorite,
+                fetchChapterForAll
+            }}>
             {children}
         </BookmarkContext.Provider>
     );

@@ -7,7 +7,7 @@ const FilterContext = createContext();
 export const FilterProvider = ({children}) => {
 
     const [mangaList, setMangaList] = useState([]);
-    const [manga, setManga] = useState(null);
+    const [manga, setManga] = useState([]);
     const [categories, setCategories] = useState([]);
     const [chapters, setChapters] = useState([]);
     const [users, setUsers] = useState([]);

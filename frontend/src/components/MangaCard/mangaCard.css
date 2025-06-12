@@ -1,4 +1,5 @@
 .manga-card {
+    position: relative;
     width: 100%;
     max-width: 300px;
     height: 100%;
@@ -107,4 +108,32 @@
 .manga-status {
     color: #666;
     font-size: 14px;
+}
+
+.icon-overlay {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 6px;
+    z-index: 2;
+}
+
+.icon-overlay i {
+    font-size: 20px;
+    color: #fff;
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 6px;
+    border-radius: 50%;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.icon-overlay i:hover {
+    background-color: rgba(240, 84, 84, 0.8);
+}
+
+.manga-card:hover .icon-overlay i{
+    opacity: 1;
 }
