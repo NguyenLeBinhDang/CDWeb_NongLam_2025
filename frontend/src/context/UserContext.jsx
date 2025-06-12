@@ -10,6 +10,7 @@ export const UserProvider = ({children}) => {
     const [loading, setLoading] = useState(true);
     // const [userInfo, setUserInfo] = useState(null);
     const [users, setUsers] = useState([]);
+    const [userInfo, setUserInfo] = useState(null);
     const [errorMassage, setErrorMessage] = useState('some error');
 
 
@@ -58,6 +59,28 @@ export const UserProvider = ({children}) => {
     //         getAllUser();  // Chỉ gọi khi token đã sẵn sàng
     //     }
     // }, [token]);
+
+    const getUserInfo = async (userId) => {
+        try {
+            setLoading(true);
+            // const currentToken = customToken || token;
+            const response = await axios.get(`http://localhost:8080/api/users/${userId}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            setUserInfo(response.data);
+            setLoading(false)
+            return response.data;
+        } catch (error) {
+            setLoading(false);
+            const message = error?.response?.data?.message || 'Failed to fetch user info';
+            setErrorMessage(message);
+            await showErrorDialog("Lỗi", message);
+            throw new Error(message);
+        }
+    }
     const getAllUser = async (customToken) => {
         try {
             setLoading(true);
@@ -83,7 +106,7 @@ export const UserProvider = ({children}) => {
     const editUserByAdmin = async (userId, editUserDTO) => {
         try {
             await axios.put(`http://localhost:8080/api/users/${userId}/admin-edit`, editUserDTO, {
-                headers: { 'Authorization': `Bearer ${token}` }
+                headers: {'Authorization': `Bearer ${token}`}
             });
             await getAllUser();
         } catch (error) {
@@ -121,7 +144,21 @@ export const UserProvider = ({children}) => {
         await getAllUser();
     };
     return (
-        <UserContext.Provider value={{user, token, login, logout, loading, users, getAllUser, editUserByAdmin, updateAvatar, banUser, changeUserRole}}>
+        <UserContext.Provider value={{
+            user,
+            token,
+            login,
+            logout,
+            loading,
+            users,
+            userInfo,
+            getAllUser,
+            editUserByAdmin,
+            updateAvatar,
+            banUser,
+            changeUserRole,
+            getUserInfo
+        }}>
             {children}
         </UserContext.Provider>
     );

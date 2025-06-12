@@ -1,11 +1,26 @@
-import React, {useState} from 'react';
-import { useUser } from '../../context/UserContext';
+import React, {useEffect, useState} from 'react';
+import {useUser} from '../../context/UserContext';
 import './UserInfo.css';
 
 const UserInfo = () => {
-    const { user } = useUser();
-    const [setOpenEdit]= useState(false);
-    const [setOpenPassword]= useState(false);
+    const {user, userInfo, getUserInfo} = useUser();
+    const [setOpenEdit] = useState(false);
+    const [setOpenPassword] = useState(false);
+
+    useEffect(() => {
+        const fetchUserInfo = async (userId) => {
+            try {
+                await getUserInfo(userId);
+                console.log('Fetched user info:', userInfo);
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        }
+        if (user) {
+            fetchUserInfo(user.id);
+        }
+    }, [user])
+
     if (!user) {
         return <div className="user-info-container">Please login to view your information</div>;
     }
@@ -14,27 +29,25 @@ const UserInfo = () => {
         <div className="user-info-container">
             <div className="user-info-card">
                 <div className="user-avatar">
-                    {user.avatar ? (
-                        <img src={"http://localhost:8080"+user.avatarUrl} alt="User avatar" />
+                    {userInfo?.avatarUrl ? (
+                        <img src={"http://localhost:8080" + userInfo.avatarUrl} alt="User avatar"/>
                     ) : (
                         <div className="avatar-placeholder">
-                            {user.fullName?.charAt(0) || user.email?.charAt(0)}
+                            {userInfo?.fullName?.charAt(0) || userInfo?.email?.charAt(0)}
                         </div>
                     )}
                 </div>
                 <div className="user-details">
-                    <h2>{user.fullName || 'No name provided'}</h2>
-                    <p className="email">{user.email}</p>
+                    <h2>{userInfo?.fullName || 'No name provided'}</h2>
+                    <p className="email">{userInfo?.email}</p>
                     <div className="user-roles">
                         <h3>Roles:</h3>
                         <ul>
-                            {user.roles?.map((role, index) => (
-                                <li key={index}>{role.name}</li>
-                            ))}
+                            {userInfo?.role?.role_name}
                         </ul>
                     </div>
                     <p className="account-status">
-                        Account Status: {user.isActive ? 'Active' : 'Inactive'}
+                        Account Status: {userInfo?.active ? 'Active' : 'Inactive'}
                     </p>
                 </div>
 
