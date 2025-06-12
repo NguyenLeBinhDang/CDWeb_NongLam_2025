@@ -4,9 +4,24 @@ import FilterSidebar from '../../components/FilterSidebar';
 import {useFilter} from '../../context/FilterContext';
 import './AllManga.css';
 import Loading from "../../components/Loader/Loading";
+import {useBookmark} from "../../context/BookMarkContext";
 
 const AllManga = () => {
-    const {mangaList, getAllManga, getManga, defaultFilter, mangaChapters, fetchChapterForAll, loading} = useFilter();
+    const {
+        mangaList,
+        getAllManga,
+        getManga,
+        defaultFilter,
+        mangaChapters,
+        fetchChapterForAll,
+        loading,
+
+    } = useFilter();
+    const {
+        bookmarks,
+        getIsFavorite,
+        isFavorite,
+    } = useBookmark();
     const [currentPage, setCurrentPage] = useState(1);
     // const [filters, setFilters] = useState(defaultFilter);
     const mangaPerPage = 10;
@@ -20,6 +35,12 @@ const AllManga = () => {
             fetchChapterForAll();
         }
     }, [mangaList]);
+
+    useEffect(() => {
+        mangaList.forEach((manga) => {
+            getIsFavorite(manga.id);
+        })
+    }, [mangaList, bookmarks]);
 
     // const handleFilterChange = (newFilters) => {
     //     setFilters(newFilters);
@@ -46,7 +67,8 @@ const AllManga = () => {
                             <div className="manga-grid">
                                 {currentManga.map(manga => (
                                     <div key={manga.id} className="manga-item">
-                                        <MangaCard manga={manga} chapter={mangaChapters[manga.id] || []}/>
+                                        <MangaCard manga={manga} chapter={mangaChapters[manga.id] || []}
+                                                   isFavorite={isFavorite[manga.id]}/>
                                     </div>
                                 ))}
                             </div>
