@@ -30,6 +30,7 @@ const VerificationModal = ({isOpen, onClose, email}) => {
     const onSubmit = () => {
         const fullCode = code.join('');
         verifyCode(email, fullCode);
+        onClose();
     };
 
     return (

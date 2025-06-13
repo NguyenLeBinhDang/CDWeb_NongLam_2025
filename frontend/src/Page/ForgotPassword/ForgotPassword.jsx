@@ -8,14 +8,16 @@ import VerifyCodeModal from "../../Modals/VerifyCodeModal";
 const ForgotPassword = () => {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
-    const {loading, error, checkEmail} = useForgotPassword();
+    const {loading, error, checkEmail, isPasswordChange} = useForgotPassword();
     const [openVerification, setOpenVerification] = useState(false);
 
     const handleSendCode = async (e) => {
         e.preventDefault();
         try {
             await checkEmail(email);
-            if(checkEmail){setOpenVerification(true)};
+            if (checkEmail) {
+                setOpenVerification(true)
+            }
         } catch (err) {
             console.error('Error sending verification code:', err);
             // Handle error if needed, e.g., show a notification
