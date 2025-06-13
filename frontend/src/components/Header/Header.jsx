@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useUser } from '../../context/UserContext';
+import {Link, useNavigate} from 'react-router-dom';
+import {useUser} from '../../context/UserContext';
 import axios from 'axios';
 import './Header.css';
 import {useFilter} from "../../context/FilterContext";
@@ -8,22 +8,22 @@ import {useFilter} from "../../context/FilterContext";
 const Header = () => {
     const navigate = useNavigate();
     const [showMobileMenu, setShowMobileMenu] = useState(false);
-    const { user, logout } = useUser();
-    const {categories, getAllCategories,getManga, setFilterFromHome} = useFilter();
+    const {user, logout} = useUser();
+    const {categories, getAllCategories, getManga, setFilterFromHome} = useFilter();
     const [searchTerm, setSearchTerm] = useState('');
     const [searchSuggestions, setSearchSuggestions] = useState([]);
     const [typingTimeout, setTypingTimeout] = useState(null);
     useEffect(() => {
         getAllCategories();
-    },[]);
+    }, []);
 
     const toggleMobileMenu = () => {
         setShowMobileMenu(!showMobileMenu);
     };
-
-    const handleSelectedCategory = (categoryId) => {
-        navigate(`/manga/category/${categoryId}`);
-    };
+    //
+    // const handleSelectedCategory = (categoryId) => {
+    //     navigate(`/manga/category/${categoryId}`);
+    // };
 
     const handleBookmarkClick = () => {
         navigate('/bookmark');
@@ -81,6 +81,18 @@ const Header = () => {
         navigate('/all-manga');// Điều hướng tới trang danh sách
         setSearchSuggestions([]);
     };
+
+    const handleCategoryRedirect = async (id) => {
+        const newFilter = {
+            search: '',
+            categoryIds: [id],
+            statusId: null,
+            authorId: null
+        }
+        setFilterFromHome(newFilter);
+        navigate('/all-manga');
+    }
+
     return (
         <header className="site-header">
             <div className="container">
@@ -89,7 +101,7 @@ const Header = () => {
                         <div className="col-lg-3 col-md-4 col-8">
                             <div className="site-branding">
                                 <Link to="/" className="logo">
-                                    <img src="/img.png" alt="LowQuality" className="img-fluid" />
+                                    <img src="/img.png" alt="LowQuality" className="img-fluid"/>
                                     <span className="site-name">LowQuality</span>
                                 </Link>
                             </div>
@@ -116,7 +128,7 @@ const Header = () => {
                                                     }}
 
                                                 >
-                                                    <img src={manga.cover_img} alt={manga.name} />
+                                                    <img src={manga.cover_img} alt={manga.name}/>
                                                     <span className="suggestion-text">{manga.name}</span>
                                                 </li>
                                             ))}
@@ -158,12 +170,11 @@ const Header = () => {
                             <Link to="#" className="dropdown-toggle">
                                 <i className="fas fa-list"></i> Thể loại
                             </Link>
-                            {/*<span className="dropdown-toggle"> <i className="fas fa-list"></i> Thể loại</span>*/}
                             <ul className="dropdown-menu">
                                 {categories.map((cat) => (
                                     <li key={cat.id}>
                                         <button
-                                            onClick={() => handleSelectedCategory(cat.id)}
+                                            onClick={() => handleCategoryRedirect(cat.id)}
                                             className="dropdown-item-btn"
                                         >
                                             {cat.category_name}
@@ -172,7 +183,11 @@ const Header = () => {
                                 ))}
                             </ul>
                         </li>
-                        <li className="d-flex gap-2"><Link to="/bookmark"><i className="fas fa-bookmark"></i> Theo dõi </Link></li>
+                        <li className="d-flex gap-2"><Link to="/bookmark"><i className="fas fa-bookmark"></i> Theo dõi
+                        </Link></li>
+
+                        <li className="d-flex gap-2"><Link to="/admin"><i className="fas fa-cog"></i> Admin </Link></li>
+
                         {/*<li><span className="d-flex gap-2" onClick={handleBookmarkClick}><i className="fas fa-bookmark"></i> Theo dõi</span></li>*/}
                     </ul>
                 </nav>

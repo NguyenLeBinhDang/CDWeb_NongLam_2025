@@ -3,14 +3,24 @@ import {useFilter} from '../../../context/FilterContext';
 import MangaCard from '../../../components/MangaCard/mangaCard';
 import {Grid, Pagination, Box, Button} from '@mui/material';
 import FilterSidebar from "../../../components/FilterSidebar";
-
+import AddMangaModal from "../../Modals/AddMangaModal";
 const MangaManagement = () => {
-    const {mangaList, getAllManga, defaultFilter, getManga} = useFilter();
+    const {mangaList, getAllManga, defaultFilter, getManga, setFilterFromHome} = useFilter();
     const [currentPage, setCurrentPage] = useState(1);
     const mangaPerPage = 8;
+    const [openAddManga, setOpenAddManga] = useState(false);
+    useEffect(() => {
+        getManga(defaultFilter);
+    }, [defaultFilter]);
 
     useEffect(() => {
-        getAllManga();
+        const newFilter = {
+            search: '',
+            categoryIds: [],
+            statusId: null,
+            authorId: null
+        }
+        setFilterFromHome(newFilter);
     }, []);
 
     const indexOfLastManga = currentPage * mangaPerPage;
@@ -22,26 +32,34 @@ const MangaManagement = () => {
         setCurrentPage(value);
     };
 
+    const handleOpenAdd = () => setOpenAddManga(true);
+    const handleCloseAdd = () => setOpenAddManga(false);
+    const handleAddSuccess = () => {
+        getManga(defaultFilter); // refresh list
+    };
     return (
         <>
-            <Box sx={{backgroundColor: '#666', padding: 3, minHeight: '100vh'}}>
+            {/*<Box sx={{backgroundColor: '#666', padding: 3, minHeight: '100vh'}}>*/}
                 {/*manga management*/}
-                <Box sx={{backgroundColor: '#666', padding: 3, borderRadius: 2, display: 'flex'}}>
-                    <Button sx={{flexGrow: 1}} variant="contained" color="primary" startIcon={<i className="fas fa-plus"></i>}>
-                        <span className="material-icons">Thêm truyện</span>
-                    </Button>
+                <Box sx={{ backgroundColor: '#666', padding: 3, minHeight: '100vh' }}>
+                    <Box sx={{ backgroundColor: '#666', padding: 3, borderRadius: 2, display: 'flex' }}>
+                        <Button sx={{ flexGrow: 1 }} variant="contained" color="primary"
+                                startIcon={<i className="fas fa-plus"></i>} onClick={handleOpenAdd}>
+                            Thêm truyện
+                        </Button>
 
-                    <Button sx={{flexGrow: 1}} variant="contained" color="error" startIcon={<i className="fas fa-trash-alt"></i>}>
-                        <span className="material-icons">Xóa truyện</span>
-                    </Button>
-                </Box>
+                        <Button sx={{ flexGrow: 1 }} variant="contained" color="error"
+                                startIcon={<i className="fas fa-trash-alt"></i>}>
+                            Xóa truyện
+                        </Button>
+                    </Box>
                 <Box sx={{display: 'flex', gap: 3, mt: 2}}>
                     {/* Manga grid column */}
                     <Box sx={{flexGrow: 1}}>
                         <Grid container spacing={3}>
                             {currentManga.map((manga) => (
                                 <Grid item xs={12} sm={6} md={4} lg={3} key={manga.id}>
-                                    <MangaCard manga={manga} type="admin-view"/>
+                                    <MangaCard manga={manga} type="admin"/>
                                 </Grid>
                             ))}
                         </Grid>
@@ -63,6 +81,7 @@ const MangaManagement = () => {
                     </Box>
                 </Box>
             </Box>
+            <AddMangaModal open={openAddManga} onClose={handleCloseAdd} onSuccess={handleAddSuccess} />
         </>
     );
 };

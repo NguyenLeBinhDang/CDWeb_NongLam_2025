@@ -1,85 +1,174 @@
-import {Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography} from "@mui/material";
-import {useFilter} from "../../../context/FilterContext";
-import {useEffect} from "react";
+import {
+    Box,
+    Button,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TableRow,
+    Typography,
+    IconButton,
+    Menu,
+    MenuItem,
+} from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import {useEffect, useState, useContext} from "react";
+import EditUserModal from "../../Modals/EditUserModal";
+import UpdateAvatarModal from "../../Modals/UpdateAvatarModal";
+import {useUser} from "../../../context/UserContext";
+import Loading from "../../../components/Loader/Loading";
 
 const UserManagement = () => {
-    const {users, getAllUsers} = useFilter();
+    const {
+        users,
+        getAllUser,
+        editUserByAdmin,
+        updateAvatar,
+        banUser,
+        changeUserRole,
+        loading,
+    } = useUser();
 
     useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                await getAllUsers();
-            } catch (error) {
-                console.error("Error fetching users:", error);
-            }
-        }
-        fetchUsers();
-    });
+        getAllUser(localStorage.getItem("token"));
+    }, []);
 
-    // Table cell styles
-    const tableCellStyle = {
-        whiteSpace: 'normal',
-        wordWrap: 'break-word',
-        maxWidth: '200px', // Adjust this value as needed
-        padding: '12px 16px',
-        borderBottom: '1px solid rgba(224, 224, 224, 1)'
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [openEditModal, setOpenEditModal] = useState(false);
+    const [openAvatarModal, setOpenAvatarModal] = useState(false);
+
+    const handleMenuClick = (event, user) => {
+        setAnchorEl(event.currentTarget);
+        setSelectedUser(user);
     };
 
-    // Table header styles
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const handleOpenEditModal = () => {
+        setOpenEditModal(true);
+        handleClose();
+    };
+
+    const handleOpenAvatarModal = () => {
+        setOpenAvatarModal(true);
+        handleClose();
+    };
+
+    const handleBanUser = async () => {
+        if (selectedUser) {
+            handleClose();
+            await banUser(selectedUser.id);
+        }
+    };
+
+    const handleChangeRole = async () => {
+        if (selectedUser) {
+            const newRoleId = selectedUser.role.id === 1 ? 2 : 1; // ví dụ đổi role: 1 <=> 2
+            handleClose();
+            await changeUserRole(selectedUser.id, newRoleId);
+        }
+    };
+
+    const handleSaveEdit = async (userId, data) => {
+        await editUserByAdmin(userId, data);
+    };
+
+    const handleUploadAvatar = async (userId, file) => {
+        await updateAvatar(userId, file);
+    };
+
+    const tableCellStyle = {
+        whiteSpace: 'normal',
+        backgroundColor: '#fff',
+        wordWrap: 'break-word',
+        maxWidth: '100%',
+        padding: '12px 16px',
+        borderBottom: '1px solid rgba(224, 224, 224, 1)',
+        zIndex: 1,
+    };
+
     const tableHeaderStyle = {
         fontWeight: 'bold',
-        backgroundColor: '#f5f5f5',
+        width: '10%',
         position: 'sticky',
         top: 0,
-        zIndex: 1,
-        ...tableCellStyle
+        zIndex: 2,
+        backgroundColor: '#f4f4f4',
     };
 
     return (
-        <>
-            <Box sx={{backgroundColor: '#666', padding: 3, minHeight: '100vh'}}>
-                <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
-                    <Typography variant="h4">Danh sách người dùng</Typography>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        // onClick={handleAddUser}
-                    >
-                        Thêm User
-                    </Button>
-                </Box>
-                {/*user table*/}
-                <TableContainer sx={{maxHeight: 'calc(100vh - 200px)', overflowY: 'auto', backgroundColor: '#666'}}>
-                    <Table stickyHeader>
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>UserID</TableCell>
-                                <TableCell>Email</TableCell>
-                                <TableCell>FullName</TableCell>
-                                <TableCell>Status</TableCell>
-                                <TableCell>Role</TableCell>
-                                <TableCell>Actions</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {users
-                                // .slice((page - 1) * resultsPerPage, page * resultsPerPage)
-                                .map((user) => (
-                                    <TableRow key={user.id} hover>
-                                        <TableCell sx={tableCellStyle}>{user.id}</TableCell>
-                                        <TableCell sx={tableCellStyle}>{user.email}</TableCell>
-                                        <TableCell sx={tableCellStyle}>{user.fullName}</TableCell>
-                                        <TableCell sx={tableCellStyle}>{user.isActive}</TableCell>
-                                        <TableCell sx={tableCellStyle}>temp</TableCell>
-                                    </TableRow>
-                                ))}
-                        </TableBody>
-                    </Table>
-                </TableContainer>
+        <Box sx={{backgroundColor: '#666', padding: 3, minHeight: '100vh'}}>
+            {loading && <Loading/>}
+            <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
+                <Typography variant="h4" sx={{color: '#fff'}}>Danh sách người dùng</Typography>
+                <Button variant="contained" color="primary">Thêm User</Button>
             </Box>
-        </>
-    );
 
-}
+            <TableContainer sx={{maxHeight: 'calc(100vh - 200px)', overflowY: 'auto'}}>
+                <Table stickyHeader>
+                    <TableHead>
+                        <TableRow>
+                            <TableCell sx={tableHeaderStyle}>UserID</TableCell>
+                            <TableCell sx={tableHeaderStyle}>Avatar</TableCell>
+                            <TableCell sx={tableHeaderStyle}>Email</TableCell>
+                            <TableCell sx={tableHeaderStyle}>FullName</TableCell>
+                            <TableCell sx={tableHeaderStyle}>Status</TableCell>
+                            <TableCell sx={tableHeaderStyle}>Role</TableCell>
+                            <TableCell sx={tableHeaderStyle}>Actions</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {users.map((user) => (
+                            <TableRow key={user.id} hover>
+                                <TableCell sx={tableCellStyle}>{user.id}</TableCell>
+                                <TableCell sx={tableCellStyle}>
+                                    <img
+                                        src={"http://localhost:8080" + user.avatarUrl || null}
+                                        alt="avatar"
+                                        style={{width: 40, height: 40, borderRadius: '50%', objectFit: 'cover'}}
+                                    />
+                                </TableCell>
+                                <TableCell sx={tableCellStyle}>{user.email}</TableCell>
+                                <TableCell sx={tableCellStyle}>{user.fullName}</TableCell>
+                                <TableCell sx={tableCellStyle}>{user.active ? 'Hoạt động' : 'Bị khóa'}</TableCell>
+                                <TableCell sx={tableCellStyle}>{user.role.role_name}</TableCell>
+                                <TableCell sx={tableCellStyle}>
+                                    <IconButton onClick={(e) => handleMenuClick(e, user)}>
+                                        <MoreVertIcon/>
+                                    </IconButton>
+                                </TableCell>
+                            </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+
+            <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
+                <MenuItem onClick={handleOpenEditModal}>Chỉnh sửa thông tin</MenuItem>
+                <MenuItem onClick={handleOpenAvatarModal}>Cập nhật avatar</MenuItem>
+                <MenuItem onClick={handleBanUser}>Ban</MenuItem>
+                <MenuItem onClick={handleChangeRole}>Thay đổi role</MenuItem>
+            </Menu>
+
+            <EditUserModal
+                open={openEditModal}
+                handleClose={() => setOpenEditModal(false)}
+                user={selectedUser}
+                onSave={editUserByAdmin}       // function gọi API PUT /admin-edit
+            />
+
+            <UpdateAvatarModal
+                open={openAvatarModal}
+                handleClose={() => setOpenAvatarModal(false)}
+                userId={selectedUser?.id}
+                onUpload={handleUploadAvatar}
+            />
+        </Box>
+    );
+};
 
 export default UserManagement;

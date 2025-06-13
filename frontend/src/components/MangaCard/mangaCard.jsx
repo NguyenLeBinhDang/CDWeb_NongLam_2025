@@ -2,66 +2,37 @@ import React, {useEffect, useState} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import './mangaCard.css';
 import {useFilter} from "../../context/FilterContext";
-// import {navigate} from "next/dist/client/components/segment-cache";
+import {useBookmark} from "../../context/BookMarkContext";
+import MangaDetail from "../../Page/MangaDetail/MangaDetail";
 
 
-
-const MangaCard = ({manga, type = null, chapter = null}) => {
+const MangaCard = ({manga, type = null, chapter = null, isFavorite = false}) => {
 
     const navigate = useNavigate();
 
-    const handleSelectedCategory = (categoryId) => {
-        navigate(`/manga/category/${categoryId}`);
-    };
+    const {setFilterFromHome} = useFilter();
+    const {bookmarks, handleRemoveFromFavorite, handleAddToFavorite} = useBookmark();
+
+
+    // console.log(isFavorite);
+
+    const handleCategoryRedirect = async (id) => {
+        const newFilter = {
+            search: '',
+            categoryIds: [id],
+            statusId: null,
+            authorId: null
+        }
+        setFilterFromHome(newFilter);
+        navigate('/all-manga');
+    }
+
+    const handleAdminRedirect = () => {
+        navigate(<MangaDetail pages={'admin'}/>);
+    }
 
     const renderCard = () => {
         switch (type) {
-            case 'latest':
-                return (
-                    <div className="manga-card">
-                        <div className="manga-image">
-                            <Link to={`/manga/${manga.id}`}>
-                                <img src={manga.cover_img || "https://placehold.co/600x400"} alt={manga.name}
-                                     className="img-fluid"/>
-                            </Link>
-                        </div>
-                        <div className="manga-info">
-                            <h3 className="manga-title">
-                                <Link to={`/manga/${manga.id}`}>{manga.name}</Link>
-                            </h3>
-                            <div className="manga-update">
-                                {chapter && chapter.length > 0 ? (
-                                    chapter.map((ch) => (
-                                        <Link
-                                            key={ch.id}
-                                            to={`/manga/${manga.id}/chapter/${ch.id}`}
-                                            className="chapter-link"
-                                        >
-                                            {ch.chapter_name || `Chapter ${ch.chap_number}`}
-                                        </Link>
-                                    ))
-                                ) : (
-                                    <span className="no-chapters">Chưa có chương nào</span>
-                                )}
-                            </div>
-                            <div className="manga-categories">
-                                {manga.id_category?.slice(0, 3).map(category => (
-                                    // <li key={category.id}>
-                                    //     <button
-                                    //         onClick={() => handleSelectedCategory(category.id)}
-                                    //         className="category-tag"
-                                    //     >
-                                    //         {category.category_name}
-                                    //     </button>
-                                    // </li>
-                                    <span key={category.id} className="category-tag" onClick={() => handleSelectedCategory(category.id)}>
-                                    {category.category_name}
-                                </span>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                );
             case 'popular':
                 return (
                     <div className="popular-card">
@@ -83,6 +54,7 @@ const MangaCard = ({manga, type = null, chapter = null}) => {
                         </div>
                     </div>
                 );
+
             case 'recommended':
                 return (
                     <div className="manga-card recommended">
@@ -101,9 +73,52 @@ const MangaCard = ({manga, type = null, chapter = null}) => {
                         </div>
                     </div>
                 );
-            case 'all':
+
+            case 'admin':
+                return (
+                    <div className="manga-card admin-view">
+                        <div className="manga-image">
+                            <Link
+                                to={{
+                                    pathname: `/manga/${manga.id}`,
+                                }}
+                                state={{pages: 'admin'}}
+                            >
+                                <img src={manga.cover_img} alt={manga.name}/>
+                            </Link>
+                        </div>
+                        <div className="manga-info">
+                            <h3 className="manga-title">{manga.name}</h3>
+                            <p className="manga-author">Tác giả: {manga.id_author?.author_name || 'Không rõ'}</p>
+                            <div className="manga-categories">
+                                {manga.id_category?.slice(0, 3).map(category => (
+                                    <span key={category.id} className="category-tag"
+                                          onClick={() => handleCategoryRedirect(category.id)}>
+                                    {category.category_name}
+                                </span>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                );
+            default:
                 return (
                     <div className="manga-card">
+                        <div className="icon-overlay">
+                            <span onClick={() => {
+                                if (isFavorite) {
+                                    handleRemoveFromFavorite(manga.id);
+                                } else {
+                                    handleAddToFavorite(manga.id);
+                                }
+                            }}>
+                                {isFavorite ? (
+                                    <i className="fa-solid fa-bookmark"></i>
+                                ) : (
+                                    <i className="fa-regular fa-bookmark"></i>
+                                )}
+                            </span>
+                        </div>
                         <div className="manga-image">
                             <Link to={`/manga/${manga.id}`}>
                                 <img src={manga.cover_img || "https://placehold.co/600x400"} alt={manga.name}
@@ -116,7 +131,7 @@ const MangaCard = ({manga, type = null, chapter = null}) => {
                             </h3>
                             <div className="manga-update">
                                 {chapter && chapter.length > 0 ? (
-                                    chapter.map((ch) => (
+                                    chapter.slice(0, 2).map((ch) => (
                                         <Link
                                             key={ch.id}
                                             to={`/manga/${manga.id}/chapter/${ch.id}`}
@@ -131,38 +146,10 @@ const MangaCard = ({manga, type = null, chapter = null}) => {
                             </div>
                             <div className="manga-categories">
                                 {manga.id_category?.slice(0, 3).map(category => (
-                                    // <li key={category.id}>
-                                    //     <button
-                                    //         onClick={() => handleSelectedCategory(category.id)}
-                                    //         className="category-tag"
-                                    //     >
-                                    //         {category.category_name}
-                                    //     </button>
-                                    // </li>
-
-                                    <span key={category.id} className="category-tag" onClick={() => handleSelectedCategory(category.id)}>
-                                {category.category_name}
-                            </span>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                );
-            default:
-                return (
-                    <div className="manga-card admin-view">
-                        <div className="manga-image">
-                            <img src={manga.cover_img || "https://placehold.co/600x400"} alt={manga.name}
-                                 className="img-fluid"/>
-                        </div>
-                        <div className="manga-info">
-                            <h3 className="manga-title">{manga.name}</h3>
-                            <p className="manga-author">Tác giả: {manga.id_author?.author_name || 'Không rõ'}</p>
-                            <div className="manga-categories">
-                                {manga.id_category?.slice(0, 3).map(category => (
-                                    <span key={category.id} className="category-tag">
-                                    {category.category_name}
-                                </span>
+                                    <span key={category.id} className="category-tag"
+                                          onClick={() => handleCategoryRedirect(category.id)}>
+                                        {category.category_name}
+                                    </span>
                                 ))}
                             </div>
                         </div>
@@ -173,10 +160,5 @@ const MangaCard = ({manga, type = null, chapter = null}) => {
 
     return renderCard();
 };
-//
-// MangaCard.defaultProps = {
-//     type: null,
-//     chapter: null,
-// }
 
 export default MangaCard;

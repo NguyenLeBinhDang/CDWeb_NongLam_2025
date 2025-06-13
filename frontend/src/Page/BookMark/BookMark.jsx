@@ -1,10 +1,25 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import MangaCard from '../../components/MangaCard/mangaCard';
-import { useBookmark } from '../../context/BookMarkContext';
+import {useBookmark} from '../../context/BookMarkContext';
 import './BookMark.css';
+import {useFilter} from "../../context/FilterContext";
 
 const BookMark = () => {
-    const { bookmarks } = useBookmark();
+    const {bookmarks, chapters, fetchChapterForAll, getBookmarks} = useBookmark();
+
+
+    useEffect(() => {
+        const fetchBookmarks = async () => {
+            await getBookmarks();
+        }
+        fetchBookmarks();
+    }, []);
+
+    useEffect(() => {
+        if (bookmarks.length > 0) {
+            fetchChapterForAll();
+        }
+    }, [bookmarks]);
 
     return (
         <div className="bookmark-page">
@@ -19,14 +34,8 @@ const BookMark = () => {
                         <div className="manga-grid">
                             {bookmarks.map(bookmark => (
                                 <div key={bookmark.id} className="manga-item">
-                                    <MangaCard
-                                        manga={{
-                                            ...bookmark,
-                                            chapter: bookmark.lastChapter || "Chapter 1",
-                                            time: bookmark.lastRead || "Not read yet"
-                                        }}
-                                        type="latest"
-                                    />
+                                    <MangaCard manga={bookmark.manga} chapter={chapters[bookmark.manga.id] || []}
+                                               isFavorite={true}/>
                                 </div>
                             ))}
                         </div>

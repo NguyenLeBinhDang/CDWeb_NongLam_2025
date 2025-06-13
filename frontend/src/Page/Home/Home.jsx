@@ -3,6 +3,8 @@ import {Link, useNavigate} from 'react-router-dom';
 import MangaCard from '../../components/MangaCard/mangaCard';
 import {useFilter} from '../../context/FilterContext';
 import './Home.css';
+import {useBookmark} from "../../context/BookMarkContext";
+import {useUser} from "../../context/UserContext";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -11,11 +13,21 @@ const Home = () => {
         categories,
         getAllCategories,
         getAllManga,
+        getManga,
         getChapterOfManga,
         mangaChapters,
-        fetchChapterForAll
+        fetchChapterForAll,
+        setFilterFromHome
     } = useFilter();
     // const [mangaChapters, setMangaChapters] = useState({});
+
+    const {
+        getIsFavorite,
+        isFavorite,
+        bookmarks,
+    } = useBookmark();
+
+    const {user} = useUser();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -31,9 +43,34 @@ const Home = () => {
         }
     }, [mangaList])
 
-    const handleViewAllLatest = () => {
+    useEffect(() => {
+        mangaList.forEach((manga) => {
+            getIsFavorite(manga.id);
+        })
+    }, [mangaList, bookmarks])
+
+    const handleViewAllLatest = async () => {
+        const newFilter = {
+            search: '',
+            categoryIds: [],
+            statusId: null,
+            authorId: null
+        }
+        setFilterFromHome(newFilter);
+        await getManga(newFilter);
         navigate('/all-manga');
     };
+
+    const handleCategoryRedirect = async (id) => {
+        const newFilter = {
+            search: '',
+            categoryIds: [id],
+            statusId: null,
+            authorId: null
+        }
+        setFilterFromHome(newFilter);
+        navigate('/all-manga');
+    }
 
     return (
         <div className="home-page">
@@ -87,14 +124,15 @@ const Home = () => {
                                     onClick={handleViewAllLatest}
                                 >
                                     Xem tất cả <i className="fas fa-angle-right"></i>
+
                                 </button>
                             </div>
                             <div className="manga-list">
                                 <div className="row">
                                     {mangaList.map(manga => (
                                         <div key={manga.id} className="col-md-6 col-lg-4 mb-4">
-                                            <MangaCard manga={manga} type="latest"
-                                                       chapter={mangaChapters[manga.id] || []}/>
+                                            <MangaCard manga={manga} chapter={mangaChapters[manga.id] || []}
+                                                       isFavorite={isFavorite[manga.id]}/>
                                         </div>
                                     ))}
                                 </div>
@@ -112,7 +150,9 @@ const Home = () => {
                                 </div>
                                 <div className="recommended-list">
                                     {mangaList.slice(0, 5).map(manga => (
-                                        <MangaCard key={manga.id} manga={manga} type="recommended"/>
+                                        <div key={manga.id}>
+                                            <MangaCard manga={manga} type="recommended"/>
+                                        </div>
                                     ))}
                                 </div>
                             </div>
@@ -124,13 +164,8 @@ const Home = () => {
                                 </div>
                                 <div className="categories-list">
                                     {categories.map(({id, category_name}) => (
-                                        <Link
-                                            key={id}
-                                            to={`/manga/category/${id}`}
-                                            className="category-tag"
-                                        >
-                                            {category_name}
-                                        </Link>
+                                        <span key={id} className="category-tag"
+                                              onClick={() => handleCategoryRedirect(id)}>{category_name}</span>
                                     ))}
                                 </div>
                             </div>

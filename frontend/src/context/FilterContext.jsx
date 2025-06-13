@@ -1,17 +1,21 @@
-import React, {createContext, useState, useContext} from 'react';
+import React, {createContext, useContext, useState} from 'react';
 import axios from "axios";
+import {showConfirmDialog, showErrorDialog} from "../utils/Alert";
 
-const FilterContext = createContext();
+export const FilterContext = createContext();
 
 export const FilterProvider = ({children}) => {
 
     const [mangaList, setMangaList] = useState([]);
-    const [manga, setManga] = useState(null);
+    const [manga, setManga] = useState([]);
     const [categories, setCategories] = useState([]);
     const [chapters, setChapters] = useState([]);
     const [users, setUsers] = useState([]);
     const [mangaChapters, setMangaChapters] = useState({});
-
+    const [status, setStatus] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [errorMassage, setErrorMessage] = useState('some error');
+    const [authors, setAuthors] = useState([]);
     const [defaultFilter, setDefaultFilter] = useState({
         search: '',
         categoryIds: [],
@@ -19,26 +23,47 @@ export const FilterProvider = ({children}) => {
         authorId: null
     });
 
+
     const fetchChapterForAll = async () => {
         const chaptersMap = {};
-        if(mangaList !== null) {
+        if (mangaList !== null) {
             await Promise.all(mangaList.map(async (manga) => {
                 chaptersMap[manga.id] = await getChapterOfManga(manga.id);
             }))
             setMangaChapters(chaptersMap);
         }
     };
-
-    const getAllUser = async () => {
+    //fetch status
+    const getAllStatus = async () => {
         try {
-            const response = await axios.get('http://localhost:8080/api/users');
-            setUsers(response.data);
+            const response = await axios.get('http://localhost:8080/api/status');
+            setStatus(response.data);
             return response.data;
         } catch (error) {
-            console.error('Error fetching users:', error);
-            throw new Error('Failed to fetch users');
+            console.error('Error fetching status:', error);
+            throw new Error('Failed to fetch status');
         }
     }
+    // const getAllUser = async () => {
+    //     try {
+    //         setLoading(true);
+    //         const response = await axios.get('http://localhost:8080/api/users',  {
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Bearer ${localStorage.getItem('token')}`
+    //             }
+    //         });
+    //         setLoading(false)
+    //         setUsers(response.data);
+    //         return response.data;
+    //     } catch (error) {
+    //         setLoading(false);
+    //         console.error('Error fetching users:', error);
+    //         const message = error?.response?.data?.message || 'Failed to fetch users';
+    //         setErrorMessage(message);
+    //         await showErrorDialog("Lỗi", message);
+    //     }
+    // }
 
     const getChapterOfManga = async (mangaId) => {
         try {
@@ -83,6 +108,7 @@ export const FilterProvider = ({children}) => {
 
     const getManga = async (filter = defaultFilter) => {
         try {
+            // setLoading(true);
             const params = new URLSearchParams();
 
             if (filter.search) params.append("search", filter.search);
@@ -90,14 +116,28 @@ export const FilterProvider = ({children}) => {
             if (Array.isArray(filter.categoryIds)) {
                 filter.categoryIds.forEach(id => params.append("categoryIds", id));
             }
+            setLoading(true);
             const response = await axios.get(`http://localhost:8080/api/manga?${params.toString()}`);
             setMangaList(response.data);
+            setLoading(false);
         } catch (error) {
+            setLoading(true);
             console.error('Error fetching manga:', error);
-            throw new Error('Failed to fetch manga');
+            const message = error?.response?.data?.message || 'Failed to fetch manga';
+            await setErrorMessage(message);
+            await showErrorDialog('', message)
         }
     };
+    const getAllAuthor  = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/authors`);
+            setAuthors(response.data);
+        } catch (error) {
+            console.error(`Error fetching :`, error);
+            throw new Error(`Failed to fetch`);
+        }
 
+    };
     const handleCategoryChange = (categoryId) => {
         setDefaultFilter(prevFilter => {
             const isSelected = prevFilter.categoryIds.includes(categoryId);
@@ -105,16 +145,24 @@ export const FilterProvider = ({children}) => {
                 ? prevFilter.categoryIds.filter(id => id !== categoryId)
                 : [...prevFilter.categoryIds, categoryId];
 
-            const newFilter = {
+            // Fetch new manga based on updated filters
+            return {
                 ...prevFilter,
                 categoryIds: updatedCategories
             };
-
-            // Fetch new manga based on updated filters
-            getManga(newFilter);
-            return newFilter;
         });
     };
+
+    const handleStatusChange = (statusId) => {
+        setDefaultFilter(prevFilter => {
+
+            // Fetch new manga based on updated filters
+            return {
+                ...prevFilter,
+                statusId: statusId
+            };
+        });
+    }
 
     const setFilterFromHome = (filter) => {
         setDefaultFilter(filter);
@@ -129,6 +177,9 @@ export const FilterProvider = ({children}) => {
             chapters,
             users,
             mangaChapters,
+            authors,
+            status,
+            loading,
             getAllCategories,
             setFilterFromHome,
             getAllManga,
@@ -136,8 +187,11 @@ export const FilterProvider = ({children}) => {
             getChapterOfManga,
             getManga,
             handleCategoryChange,
-            getAllUser,
-            fetchChapterForAll
+            // getAllUser,
+            fetchChapterForAll,
+            handleStatusChange,
+            getAllStatus,
+            getAllAuthor
         }}>
             {children}
         </FilterContext.Provider>
