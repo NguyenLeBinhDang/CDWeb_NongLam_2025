@@ -21,6 +21,8 @@ import Category from "./Page/Category/Category";
 import Admin from "./Admin";
 import MangaManagement from './Admin/Pages/MangaManagement/MangaManagement';
 import UserManagement from "./Admin/Pages/UserManagement/UserManagement";
+import ForgotPassword from "./Page/ForgotPassword/ForgotPassword";
+import {ForgotPasswordProvider} from "./context/ForgotPasswordContext";
 
 
 const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID'; // Thay thế bằng Client ID của bạn
@@ -28,38 +30,41 @@ const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID'; // Thay thế bằng Client ID
 function App() {
     return (
         <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-            <UserProvider>
-                <FilterProvider>
-                    <MangaReaderProvider>
-                        <FloatingNavBarProvider>
-                            <BookmarkProvider>
-                                <div className="App">
-                                    <Header/>
-                                    <main className="main-content">
-                                        <Routes>
-                                            <Route path="/" element={<Home/>}/>
-                                            <Route path="/all-manga" element={<AllManga/>}/>
-                                            <Route path="/manga/:id" element={<MangaDetail/>}/>
-                                            <Route path="/manga/category/:categoryId" element={<Category/>}/>
-                                            <Route path="/manga/:mangaId/chapter/:chapNum" element={<MangaReader/>}/>
-                                            <Route path="/login" element={<Login/>}/>
-                                            <Route path="/register" element={<Register/>}/>
-                                            <Route path="/profile" element={<UserInfo/>}/>
-                                            <Route path="/bookmark" element={<BookMark/>}/>
-                                            <Route path="/admin" element={<Admin/>}>
-                                                <Route path="manga-management" element={<MangaManagement/>}/>
-                                                <Route path="user-management" element={<UserManagement/>}/>
-                                                <Route path="button3" element={<div>Button 3 Content</div>}/>
-                                            </Route>
-                                        </Routes>
-                                    </main>
-                                    <Footer/>
-                                </div>
-                            </BookmarkProvider>
-                        </FloatingNavBarProvider>
-                    </MangaReaderProvider>
-                </FilterProvider>
-            </UserProvider>
+            <ForgotPasswordProvider>
+                <UserProvider>
+                    <FilterProvider>
+                        <MangaReaderProvider>
+                            <FloatingNavBarProvider>
+                                <BookmarkProvider>
+                                    <div className="App">
+                                        <Header/>
+                                        <main className="main-content">
+                                            <Routes>
+                                                <Route path="/" element={<Home/>}/>
+                                                <Route path="/all-manga" element={<AllManga/>}/>
+                                                <Route path="/manga/:id" element={<MangaDetail/>}/>
+                                                <Route path="/manga/category/:categoryId" element={<Category/>}/>
+                                                <Route path="/manga/:id/chapter/:chapterId" element={<MangaReader/>}/>
+                                                <Route path="/login" element={<Login/>}/>
+                                                <Route path="/register" element={<Register/>}/>
+                                                <Route path="/profile" element={<UserInfo/>}/>
+                                                <Route path="/bookmark" element={<BookMark/>}/>
+                                                <Route path="/forgot-password" element={<ForgotPassword/>}/>
+                                                <Route path="/admin" element={<Admin/>}>
+                                                    <Route path="manga-management" element={<MangaManagement/>}/>
+                                                    <Route path="user-management" element={<UserManagement/>}/>
+                                                    <Route path="button3" element={<div>Button 3 Content</div>}/>
+                                                </Route>
+                                            </Routes>
+                                        </main>
+                                        <Footer/>
+                                    </div>
+                                </BookmarkProvider>
+                            </FloatingNavBarProvider>
+                        </MangaReaderProvider>
+                    </FilterProvider>
+                </UserProvider>
+            </ForgotPasswordProvider>
         </GoogleOAuthProvider>
     );
 }
