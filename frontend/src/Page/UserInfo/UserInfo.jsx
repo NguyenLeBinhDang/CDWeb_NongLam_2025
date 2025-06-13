@@ -6,8 +6,9 @@ import Loading from "../../components/Loader/Loading";
 
 const UserInfo = () => {
     const {user, userInfo, getUserInfo, loading} = useUser();
-    const [setOpenEdit] = useState(false);
-    const [setOpenPassword] = useState(false);
+    const [openEditInfo, setOpenEditInfo] = useState(false);
+    const [openChangePassword, setOpenChangePassword] = useState(false);
+
     useEffect(() => {
         const fetchUserInfo = async (userId) => {
             try {
@@ -55,9 +56,11 @@ const UserInfo = () => {
 
             </div>
             <div className="user-actions">
-                <button onClick={() => setOpenEdit(true)}>Chỉnh sửa thông tin</button>
-                <button onClick={() => setOpenPassword(true)}>Đổi mật khẩu</button>
+                <button onClick={() => setOpenEditInfo(true)}>Chỉnh sửa thông tin</button>
+                <button onClick={() => setOpenChangePassword(true)}>Đổi mật khẩu</button>
             </div>
+
+
         </div>
     );
 };
