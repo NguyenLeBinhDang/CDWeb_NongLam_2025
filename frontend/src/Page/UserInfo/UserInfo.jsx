@@ -6,7 +6,6 @@ const UserInfo = () => {
     const {user, userInfo, getUserInfo} = useUser();
     const [setOpenEdit] = useState(false);
     const [setOpenPassword] = useState(false);
-
     useEffect(() => {
         const fetchUserInfo = async (userId) => {
             try {
