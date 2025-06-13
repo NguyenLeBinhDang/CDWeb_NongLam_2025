@@ -10,13 +10,15 @@ import {
     Typography,
     IconButton,
     Menu,
-    MenuItem
+    MenuItem,
+    // MoreVertIcon
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { useEffect, useState, useContext } from "react";
-import EditUserModal from "../../Modal/EditUserModal";
-import UpdateAvatarModal from "../../../components/UpdateAvatarModal";
-import { UserContext } from "../../../context/UserContext";
+import {useEffect, useState, useContext} from "react";
+import EditUserModal from "../../Modals/EditUserModal";
+import UpdateAvatarModal from "../../Modals/UpdateAvatarModal";
+import {UserContext} from "../../../context/UserContext";
+import Loading from "../../../components/Loader/Loading";
 
 const UserManagement = () => {
     const {
@@ -25,7 +27,8 @@ const UserManagement = () => {
         editUserByAdmin,
         updateAvatar,
         banUser,
-        changeUserRole
+        changeUserRole,
+        loading,
     } = useContext(UserContext);
 
     useEffect(() => {
@@ -99,13 +102,14 @@ const UserManagement = () => {
     };
 
     return (
-        <Box sx={{ backgroundColor: '#666', padding: 3, minHeight: '100vh' }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                <Typography variant="h4" sx={{ color: '#fff' }}>Danh sách người dùng</Typography>
+        <Box sx={{backgroundColor: '#666', padding: 3, minHeight: '100vh'}}>
+            {loading && <Loading/>}
+            <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
+                <Typography variant="h4" sx={{color: '#fff'}}>Danh sách người dùng</Typography>
                 <Button variant="contained" color="primary">Thêm User</Button>
             </Box>
 
-            <TableContainer sx={{ maxHeight: 'calc(100vh - 200px)', overflowY: 'auto' }}>
+            <TableContainer sx={{maxHeight: 'calc(100vh - 200px)', overflowY: 'auto'}}>
                 <Table stickyHeader>
                     <TableHead>
                         <TableRow>
@@ -124,18 +128,18 @@ const UserManagement = () => {
                                 <TableCell sx={tableCellStyle}>{user.id}</TableCell>
                                 <TableCell sx={tableCellStyle}>
                                     <img
-                                        src={"http://localhost:8080"+user.avatarUrl}
+                                        src={"http://localhost:8080" + user.avatarUrl || null}
                                         alt="avatar"
-                                        style={{ width: 40, height: 40, borderRadius: '50%', objectFit: 'cover' }}
+                                        style={{width: 40, height: 40, borderRadius: '50%', objectFit: 'cover'}}
                                     />
                                 </TableCell>
                                 <TableCell sx={tableCellStyle}>{user.email}</TableCell>
                                 <TableCell sx={tableCellStyle}>{user.fullName}</TableCell>
-                                <TableCell sx={tableCellStyle}>{user.isActive ?  'Hoạt động'    : 'Bị khóa'}</TableCell>
+                                <TableCell sx={tableCellStyle}>{user.active ? 'Hoạt động' : 'Bị khóa'}</TableCell>
                                 <TableCell sx={tableCellStyle}>{user.role.role_name}</TableCell>
                                 <TableCell sx={tableCellStyle}>
                                     <IconButton onClick={(e) => handleMenuClick(e, user)}>
-                                        <MoreVertIcon />
+                                        <MoreVertIcon/>
                                     </IconButton>
                                 </TableCell>
                             </TableRow>
@@ -153,10 +157,10 @@ const UserManagement = () => {
 
             <EditUserModal
                 open={openEditModal}
-                handleClose={handleClose}
+                handleClose={() => setOpenEditModal(false)}
                 user={selectedUser}
                 onSave={editUserByAdmin}       // function gọi API PUT /admin-edit
-                onChangeAvatar={updateAvatar}  // function POST avatar
+                // onChangeAvatar={updateAvatar}  // function POST avatar
             />
 
             <UpdateAvatarModal

@@ -109,6 +109,7 @@ export const FilterProvider = ({children}) => {
 
     const getManga = async (filter = defaultFilter) => {
         try {
+            // setLoading(true);
             const params = new URLSearchParams();
 
             if (filter.search) params.append("search", filter.search);

@@ -150,7 +150,9 @@ const Home = () => {
                                 </div>
                                 <div className="recommended-list">
                                     {mangaList.slice(0, 5).map(manga => (
-                                        <MangaCard key={manga.id} manga={manga} type="recommended"/>
+                                        <div key={manga.id}>
+                                            <MangaCard manga={manga} type="recommended"/>
+                                        </div>
                                     ))}
                                 </div>
                             </div>
