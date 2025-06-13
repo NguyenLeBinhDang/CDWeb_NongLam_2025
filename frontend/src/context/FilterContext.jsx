@@ -2,7 +2,7 @@ import React, {createContext, useContext, useState} from 'react';
 import axios from "axios";
 import {showConfirmDialog, showErrorDialog} from "../utils/Alert";
 
-const FilterContext = createContext();
+export const FilterContext = createContext();
 
 export const FilterProvider = ({children}) => {
 
@@ -15,7 +15,7 @@ export const FilterProvider = ({children}) => {
     const [status, setStatus] = useState([]);
     const [loading, setLoading] = useState(false);
     const [errorMassage, setErrorMessage] = useState('some error');
-
+    const [authors, setAuthors] = useState([]);
     const [defaultFilter, setDefaultFilter] = useState({
         search: '',
         categoryIds: [],
@@ -43,7 +43,6 @@ export const FilterProvider = ({children}) => {
             console.error('Error fetching status:', error);
             throw new Error('Failed to fetch status');
         }
-
     }
     // const getAllUser = async () => {
     //     try {
@@ -129,7 +128,16 @@ export const FilterProvider = ({children}) => {
             await showErrorDialog('', message)
         }
     };
+    const getAllAuthor  = async () => {
+        try {
+            const response = await axios.get(`http://localhost:8080/api/authors`);
+            setAuthors(response.data);
+        } catch (error) {
+            console.error(`Error fetching :`, error);
+            throw new Error(`Failed to fetch`);
+        }
 
+    };
     const handleCategoryChange = (categoryId) => {
         setDefaultFilter(prevFilter => {
             const isSelected = prevFilter.categoryIds.includes(categoryId);
@@ -169,6 +177,7 @@ export const FilterProvider = ({children}) => {
             chapters,
             users,
             mangaChapters,
+            authors,
             status,
             loading,
             getAllCategories,
@@ -182,6 +191,7 @@ export const FilterProvider = ({children}) => {
             fetchChapterForAll,
             handleStatusChange,
             getAllStatus,
+            getAllAuthor
         }}>
             {children}
         </FilterContext.Provider>

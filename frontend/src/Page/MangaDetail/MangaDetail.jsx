@@ -1,13 +1,17 @@
-import React, {useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {useLocation, useParams} from 'react-router-dom';
 import './MangaDetail.css';
 import {useFilter} from "../../context/FilterContext";
 import Loading from "../../components/Loader/Loading";
-
+import {UserContext} from "../../context/UserContext";
+import AddChapterModal from "../../Admin/Modals/AddChapterModal";
 const MangaDetail = () => {
     const location = useLocation();
     const pages = location.state?.pages;
+    const [showAddChapterModal, setShowAddChapterModal] = useState(false);
 
+    const {user} = useContext(UserContext);
+    const canEdit = ['ADMIN', 'MOD', 'UPLOADER'].includes(user?.role?.role_name);
     const {id} = useParams();
     const {manga, chapters, getMangaById, getChapterOfManga, loading} = useFilter();
     // const [chapter, setChapter] = useState([]);
@@ -31,7 +35,12 @@ const MangaDetail = () => {
     }, [id]);
 
     if (!manga) return <div>Loading manga...</div>;
-
+    const renderAdminButtons = () => (
+        <div className="edit-manga-buttons-container">
+            <button className="edit-manga-button">Chỉnh sửa thông tin truyện</button>
+            <button className="add-chapter-button" onClick={() => setShowAddChapterModal(true)}>Thêm chapter</button>
+        </div>
+    );
     const renderMangaDetail = () => {
         switch (pages) {
             case 'admin':
@@ -67,9 +76,9 @@ const MangaDetail = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="edit-manga-buttons-container">
-                                <button className="edit-manga-button">Chỉnh sửa thông tin truyện</button>
-                            </div>
+                            {pages === 'admin' && canEdit && renderAdminButtons()}
+
+
                             <div className="manga-chapters">
                                 <div className="chapters-list">
                                     {chapters.map((ch) => (
@@ -84,9 +93,16 @@ const MangaDetail = () => {
                                     ))}
                                 </div>
                             </div>
-
                         </div>
+                        {showAddChapterModal && (
+                            <AddChapterModal
+                                mangaId={manga.id}
+                                onClose={() => setShowAddChapterModal(false)}
+                            />
+                        )}
+
                     </div>
+
                 );
             default:
                 return (
