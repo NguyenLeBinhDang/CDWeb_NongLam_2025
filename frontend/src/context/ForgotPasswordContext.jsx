@@ -8,6 +8,7 @@ export const ForgotPasswordProvider = ({children}) => {
         const [error, setError] = useState('');
         const [loading, setLoading] = useState(false);
         const [isUserExist, setIsUserExist] = useState(false);
+        const [isPasswordChange, setIsPasswordChange] = useState(false);
 
         const checkEmail = async (email) => {
             try {
@@ -36,10 +37,13 @@ export const ForgotPasswordProvider = ({children}) => {
 
         const sendCode = async (email) => {
             try {
-                const response = await axios.post('http://localhost:8080/api/auth/send-code', {
+                setLoading(true);
+                const response = await axios.post('http://localhost:8080/api/auth/send-code', {}, {
                     params: {email: email}
                 });
+                setLoading(false);
             } catch (error) {
+                setLoading(false);
                 console.error('Error sending code:', error);
                 const message = error.response?.data?.message || 'Failed to send code';
                 await showErrorDialog('Lỗi khi gửi mã xác thực', message);
@@ -49,16 +53,38 @@ export const ForgotPasswordProvider = ({children}) => {
         const verifyCode = async (email, code) => {
             try {
                 setLoading(true);
-                const response = await axios.post('http://localhost:8080/api/auth/verify-code', {
+                const response = await axios.post('http://localhost:8080/api/auth/verify-code', {}, {
                     params: {email: email, code: code}
                 })
+                if (response.status === 200) {
+                    await changePassword(email, true);
+                }
                 setLoading(false);
                 await showSuccessDialog('Xác thực thành công', `Password đã được gửi về email: ${email}`)
+
             } catch (error) {
                 setLoading(false);
                 console.error('Error verifying code:', error);
                 const message = error.response?.data?.message || 'Failed to verify code';
                 await showErrorDialog('Mã xác thực không hợp lệ', message)
+            }
+        }
+
+        const changePassword = async (email, code) => {
+            try {
+                const response = await axios.post('http://localhost:8080/api/auth/change-password', {
+                    email: email
+                });
+                setIsPasswordChange(true);
+                if (!code) {
+                    await showSuccessDialog('Thành công', 'Thay đổi mật khẩu thành công');
+                }
+
+            } catch (error) {
+                setIsPasswordChange(false);
+                console.error('Error changing password:', error);
+                const message = error.response?.data?.message || 'Failed to change password';
+                await showErrorDialog('Lỗi khi đổi mật khẩu', message);
             }
         }
 
@@ -69,6 +95,7 @@ export const ForgotPasswordProvider = ({children}) => {
                 loading,
                 isUserExist,
                 verifyCode,
+                isPasswordChange,
             }}>
                 {children}
             </ForgotPasswordContext.Provider>
