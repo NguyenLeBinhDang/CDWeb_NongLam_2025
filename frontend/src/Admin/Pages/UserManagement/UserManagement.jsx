@@ -135,7 +135,7 @@ const UserManagement = () => {
                                 </TableCell>
                                 <TableCell sx={tableCellStyle}>{user.email}</TableCell>
                                 <TableCell sx={tableCellStyle}>{user.fullName}</TableCell>
-                                <TableCell sx={tableCellStyle}>{user.isActive ? 'Hoạt động' : 'Bị khóa'}</TableCell>
+                                <TableCell sx={tableCellStyle}>{user.active ? 'Hoạt động' : 'Bị khóa'}</TableCell>
                                 <TableCell sx={tableCellStyle}>{user.role.role_name}</TableCell>
                                 <TableCell sx={tableCellStyle}>
                                     <IconButton onClick={(e) => handleMenuClick(e, user)}>
@@ -157,10 +157,10 @@ const UserManagement = () => {
 
             <EditUserModal
                 open={openEditModal}
-                handleClose={handleClose}
+                handleClose={() => setOpenEditModal(false)}
                 user={selectedUser}
                 onSave={editUserByAdmin}       // function gọi API PUT /admin-edit
-                onChangeAvatar={updateAvatar}  // function POST avatar
+                // onChangeAvatar={updateAvatar}  // function POST avatar
             />
 
             <UpdateAvatarModal

@@ -1,14 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import { Modal, Box, TextField, Button, Typography, FormControlLabel, Checkbox, InputLabel, Select, MenuItem } from '@mui/material';
+import React, {useState, useEffect} from 'react';
+import {
+    Modal,
+    Box,
+    TextField,
+    Button,
+    Typography,
+    FormControlLabel,
+    Checkbox,
+    InputLabel,
+    Select,
+    MenuItem
+} from '@mui/material';
 
-const EditUserModal = ({ open, handleClose, user, onSave, onChangeAvatar }) => {
+const EditUserModal = ({open, handleClose, user, onSave, onChangeAvatar}) => {
     const [formData, setFormData] = useState({
         fullName: '',
         password: '',
         roleId: '',
         isActive: false
     });
-    const [avatarFile, setAvatarFile] = useState(null);
+    // const [avatarFile, setAvatarFile] = useState(null);
 
     useEffect(() => {
         if (user) {
@@ -22,30 +33,52 @@ const EditUserModal = ({ open, handleClose, user, onSave, onChangeAvatar }) => {
     }, [user]);
 
     const handleChange = (e) => {
-        const { name, value, type, checked } = e.target;
+        const {name, value, type, checked} = e.target;
         setFormData({
             ...formData,
             [name]: type === 'checkbox' ? checked : value
         });
     };
 
-    const handleAvatarChange = (e) => {
-        if (e.target.files && e.target.files[0]) {
-            setAvatarFile(e.target.files[0]);
-        }
-    };
+    // const handleAvatarChange = (e) => {
+    //     if (e.target.files && e.target.files[0]) {
+    //         setAvatarFile(e.target.files[0]);
+    //     }
+    // };
 
     const handleSubmit = async () => {
         await onSave(user.id, formData);
-        if (avatarFile) {
-            await onChangeAvatar(user.id, avatarFile);
-        }
-        handleClose();
+        // if (avatarFile) {
+        //     await onChangeAvatar(user.id, avatarFile);
+        // }
+        handleCloseModal();
     };
+
+    const handleCloseModal = () => {
+        setFormData({
+            fullName: '',
+            password: '',
+            roleId: '',
+            isActive: false
+        });
+        // setAvatarFile(null);
+        handleClose();
+    }
 
     return (
         <Modal open={open} onClose={handleClose}>
-            <Box className="user-modal">
+            <Box sx={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                backgroundColor: 'background.paper',
+                width: '80%',
+                maxWidth: 500,
+                boxShadow: 24,
+                p: 4,
+                borderRadius: 2,
+            }} className="user-modal">
                 <Typography variant="h6">Chỉnh sửa thông tin người dùng</Typography>
 
                 <TextField
@@ -77,6 +110,7 @@ const EditUserModal = ({ open, handleClose, user, onSave, onChangeAvatar }) => {
                 />
 
                 <InputLabel id="role-label">Vai trò</InputLabel>
+
                 <Select
                     labelId="role-label"
                     name="roleId"
@@ -84,7 +118,7 @@ const EditUserModal = ({ open, handleClose, user, onSave, onChangeAvatar }) => {
                     onChange={handleChange}
                     fullWidth
                     margin="dense"
-                >
+                    variant='outlined'>
                     <MenuItem value={1}>ADMIN</MenuItem>
                     <MenuItem value={2}>MOD</MenuItem>
                     <MenuItem value={0}>USER</MenuItem>
@@ -101,15 +135,15 @@ const EditUserModal = ({ open, handleClose, user, onSave, onChangeAvatar }) => {
                     label="Đã kích hoạt"
                 />
 
-                <InputLabel sx={{ mt: 2 }}>Avatar (nếu muốn đổi)</InputLabel>
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleAvatarChange}
-                />
+                {/*<InputLabel sx={{ mt: 2 }}>Avatar (nếu muốn đổi)</InputLabel>*/}
+                {/*<input*/}
+                {/*    type="file"*/}
+                {/*    accept="image/*"*/}
+                {/*    onChange={handleAvatarChange}*/}
+                {/*/>*/}
 
-                <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 1, mt: 2 }}>
-                    <Button onClick={handleClose}>Hủy</Button>
+                <Box sx={{display: 'flex', justifyContent: 'flex-end', gap: 1, mt: 2}}>
+                    <Button onClick={handleCloseModal}>Hủy</Button>
                     <Button variant="contained" color="primary" onClick={handleSubmit}>Lưu</Button>
                 </Box>
             </Box>
