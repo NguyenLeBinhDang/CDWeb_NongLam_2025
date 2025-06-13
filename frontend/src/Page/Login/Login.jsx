@@ -1,19 +1,19 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { GoogleLogin } from '@react-oauth/google';
-import { useUser } from '../../context/UserContext';
+import React, {useState} from 'react';
+import {useNavigate, Link} from 'react-router-dom';
+import {GoogleLogin} from '@react-oauth/google';
+import {useUser} from '../../context/UserContext';
 import axios from 'axios';
 import Loading from '../../components/Loader/Loading';
 import './Login.css';
 
 const Login = () => {
     const navigate = useNavigate();
-    const { login } = useUser();
+    const {login} = useUser();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    
+
     const handleEmailLogin = async (e) => {
         e.preventDefault();
         setError('');
@@ -23,8 +23,8 @@ const Login = () => {
                 email,
                 password
             });
-            
-            const { token, user } = response.data;
+
+            const {token, user} = response.data;
             login(user, token);
             navigate('/');
         } catch (err) {
@@ -39,8 +39,8 @@ const Login = () => {
             const response = await axios.post('http://localhost:8080/api/auth/google', {
                 credential: credentialResponse.credential
             });
-            
-            const { token, user } = response.data;
+
+            const {token, user} = response.data;
             login(user, token);
             navigate('/');
         } catch (err) {
@@ -53,16 +53,16 @@ const Login = () => {
     };
 
     if (loading) {
-        return <Loading size="large" />;
+        return <Loading size="large"/>;
     }
 
     return (
         <div className="login-page">
             <div className="login-container">
                 <h1 className="login-title">Đăng Nhập</h1>
-                
+
                 {error && <div className="login-error">{error}</div>}
-                
+
                 <form onSubmit={handleEmailLogin} className="login-form">
                     <div className="form-group">
                         <label htmlFor="email">Email</label>
@@ -74,7 +74,7 @@ const Login = () => {
                             required
                         />
                     </div>
-                    
+
                     <div className="form-group">
                         <label htmlFor="password">Mật khẩu</label>
                         <input
@@ -85,16 +85,22 @@ const Login = () => {
                             required
                         />
                     </div>
-                    
+
+
+                    <span>
+                      <a href="/forgot-password" style={{ display: 'inline' }}>
+                        Quên mật khẩu?
+                      </a>
+                    </span>
                     <button type="submit" className="login-btn" disabled={loading}>
                         {loading ? 'Đang xử lý...' : 'Đăng Nhập'}
                     </button>
                 </form>
-                
+
                 <div className="divider">
                     <span>hoặc</span>
                 </div>
-                
+
                 <div className="google-login">
                     <GoogleLogin
                         onSuccess={handleGoogleSuccess}
@@ -102,7 +108,7 @@ const Login = () => {
                         useOneTap
                     />
                 </div>
-                
+
                 <div className="register-link">
                     Chưa có tài khoản? <Link to="/register">Đăng ký</Link>
                 </div>
