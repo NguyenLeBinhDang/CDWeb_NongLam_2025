@@ -11,13 +11,12 @@ import {
     IconButton,
     Menu,
     MenuItem,
-    // MoreVertIcon
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {useEffect, useState, useContext} from "react";
 import EditUserModal from "../../Modals/EditUserModal";
 import UpdateAvatarModal from "../../Modals/UpdateAvatarModal";
-import {UserContext} from "../../../context/UserContext";
+import {useUser} from "../../../context/UserContext";
 import Loading from "../../../components/Loader/Loading";
 
 const UserManagement = () => {
@@ -29,7 +28,7 @@ const UserManagement = () => {
         banUser,
         changeUserRole,
         loading,
-    } = useContext(UserContext);
+    } = useUser();
 
     useEffect(() => {
         getAllUser(localStorage.getItem("token"));
@@ -61,16 +60,16 @@ const UserManagement = () => {
 
     const handleBanUser = async () => {
         if (selectedUser) {
-            await banUser(selectedUser.id);
             handleClose();
+            await banUser(selectedUser.id);
         }
     };
 
     const handleChangeRole = async () => {
         if (selectedUser) {
             const newRoleId = selectedUser.role.id === 1 ? 2 : 1; // ví dụ đổi role: 1 <=> 2
-            await changeUserRole(selectedUser.id, newRoleId);
             handleClose();
+            await changeUserRole(selectedUser.id, newRoleId);
         }
     };
 
@@ -160,7 +159,6 @@ const UserManagement = () => {
                 handleClose={() => setOpenEditModal(false)}
                 user={selectedUser}
                 onSave={editUserByAdmin}       // function gọi API PUT /admin-edit
-                // onChangeAvatar={updateAvatar}  // function POST avatar
             />
 
             <UpdateAvatarModal
