@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useUser} from '../../context/UserContext';
 import './UserInfo.css';
 import Loading from "../../components/Loader/Loading";
+import ChangePasswordModal from "../../Modals/ChangePasswordModal";
 
 
 const UserInfo = () => {
@@ -59,6 +60,11 @@ const UserInfo = () => {
                 <button onClick={() => setOpenEditInfo(true)}>Chỉnh sửa thông tin</button>
                 <button onClick={() => setOpenChangePassword(true)}>Đổi mật khẩu</button>
             </div>
+
+            <ChangePasswordModal
+                open={openChangePassword}
+                onClose={() => setOpenChangePassword(false)}
+            />
 
 
         </div>
