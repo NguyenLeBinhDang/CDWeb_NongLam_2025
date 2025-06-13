@@ -198,6 +198,26 @@ export const UserProvider = ({children}) => {
         }
     }
 
+    const getUserInfo = async (userId) => {
+        try {
+            setLoading(true);
+            const response = await axios.get(`http://localhost:8080/api/users/${userId}`, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            setLoading(false);
+            setUserInfo(response.data);
+            return response.data;
+        } catch (error) {
+            setLoading(false);
+            const message = error?.response?.data?.message || 'Failed to fetch user info';
+            await showErrorDialog("Lỗi", message);
+            throw new Error(message);
+        }
+    }
+
     return (
         <UserContext.Provider value={{
             user,
@@ -206,6 +226,7 @@ export const UserProvider = ({children}) => {
             logout,
             loading,
             users,
+            userInfo,
             getAllUser,
             editUserByAdmin,
             updateAvatar,
@@ -213,7 +234,8 @@ export const UserProvider = ({children}) => {
             changeUserRole,
             roles,
             getAllRole,
-            addUser
+            addUser,
+            getUserInfo
         }}>
             {children}
         </UserContext.Provider>
@@ -226,4 +248,4 @@ export const useUser = () => {
         throw new Error('useUser must be used within a UserProvider');
     }
     return context;
-}; 
+};

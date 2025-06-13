@@ -1,9 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {useUser} from '../../context/UserContext';
 import './UserInfo.css';
+import Loading from "../../components/Loader/Loading";
+
 
 const UserInfo = () => {
-    const {user, userInfo, getUserInfo} = useUser();
+    const {user, userInfo, getUserInfo, loading} = useUser();
     const [setOpenEdit] = useState(false);
     const [setOpenPassword] = useState(false);
     useEffect(() => {
@@ -26,6 +28,7 @@ const UserInfo = () => {
 
     return (
         <div className="user-info-container">
+            {loading && <Loading/>}
             <div className="user-info-card">
                 <div className="user-avatar">
                     {userInfo?.avatarUrl ? (
