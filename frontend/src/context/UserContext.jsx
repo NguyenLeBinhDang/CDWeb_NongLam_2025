@@ -91,6 +91,7 @@ export const UserProvider = ({children}) => {
                     'Authorization': `Bearer ${currentToken}`
                 }
             });
+            setLoading(false);
             setUsers(response.data);
             return response.data;
         } catch (error) {
@@ -116,14 +117,22 @@ export const UserProvider = ({children}) => {
     };
 
     const updateAvatar = async (userId, avatarFile) => {
-        const formData = new FormData();
-        formData.append('avatar', avatarFile);
-        await axios.post(`http://localhost:8080/api/users/${userId}/avatar`, formData, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        await getAllUser();
+        try {
+            setLoading(true);
+            const formData = new FormData();
+            formData.append('avatar', avatarFile);
+            await axios.post(`http://localhost:8080/api/users/${userId}/avatar`, formData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            setLoading(false);
+            await getAllUser();
+        } catch (error) {
+            setLoading(false);
+            const message = error?.response?.data?.message || 'Cập nhật ảnh đại diện thất bại';
+            await showErrorDialog("Lỗi", message);
+        }
     };
 
     const banUser = async (id) => {
