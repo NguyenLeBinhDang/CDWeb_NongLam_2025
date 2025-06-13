@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {
     Modal,
     Box,
@@ -11,6 +11,7 @@ import {
     Select,
     MenuItem
 } from '@mui/material';
+import {UserContext} from "../../context/UserContext";
 
 const EditUserModal = ({open, handleClose, user, onSave, onChangeAvatar}) => {
     const [formData, setFormData] = useState({
@@ -19,15 +20,25 @@ const EditUserModal = ({open, handleClose, user, onSave, onChangeAvatar}) => {
         roleId: '',
         isActive: false
     });
-    // const [avatarFile, setAvatarFile] = useState(null);
+
+
+    const {roles, getAllRole} = useContext(UserContext);
+
+    useEffect(() => {
+        const fetchRoles = async () => {
+            getAllRole();
+        }
+        fetchRoles();
+    }, []);
+
 
     useEffect(() => {
         if (user) {
             setFormData({
                 fullName: user.fullName || '',
                 password: '',
-                roleId: user.role?.role_Id || '',
-                isActive: user.isActive
+                roleId: user.role?.id || null,
+                isActive: user.active
             });
         }
     }, [user]);
@@ -47,21 +58,17 @@ const EditUserModal = ({open, handleClose, user, onSave, onChangeAvatar}) => {
     // };
 
     const handleSubmit = async () => {
-        await onSave(user.id, formData);
-        // if (avatarFile) {
-        //     await onChangeAvatar(user.id, avatarFile);
-        // }
         handleCloseModal();
+        await onSave(user.id, formData);
     };
 
     const handleCloseModal = () => {
-        setFormData({
-            fullName: '',
-            password: '',
-            roleId: '',
-            isActive: false
-        });
-        // setAvatarFile(null);
+        // setFormData({
+        //     fullName: '',
+        //     password: '',
+        //     roleId: '',
+        //     isActive: false
+        // });
         handleClose();
     }
 
@@ -109,7 +116,7 @@ const EditUserModal = ({open, handleClose, user, onSave, onChangeAvatar}) => {
                     onChange={handleChange}
                 />
 
-                <InputLabel id="role-label">Vai trò</InputLabel>
+                <InputLabel >Vai trò</InputLabel>
 
                 <Select
                     labelId="role-label"
@@ -119,9 +126,11 @@ const EditUserModal = ({open, handleClose, user, onSave, onChangeAvatar}) => {
                     fullWidth
                     margin="dense"
                     variant='outlined'>
-                    <MenuItem value={1}>ADMIN</MenuItem>
-                    <MenuItem value={2}>MOD</MenuItem>
-                    <MenuItem value={0}>USER</MenuItem>
+                    {roles.map(role => (
+                        <MenuItem key={role.id} value={role.id}>
+                            {role.role_name}
+                        </MenuItem>
+                    ))}
                 </Select>
 
                 <FormControlLabel

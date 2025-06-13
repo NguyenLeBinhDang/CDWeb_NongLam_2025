@@ -1,6 +1,6 @@
 import React, {createContext, useState, useContext, useEffect} from 'react';
 import axios from "axios";
-import {showErrorDialog} from "../utils/Alert";
+import {showErrorDialog, showSuccessDialog} from "../utils/Alert";
 
 export const UserContext = createContext();
 
@@ -8,9 +8,9 @@ export const UserProvider = ({children}) => {
     const [user, setUser] = useState(null);
     const [token, setToken] = useState(null);
     const [loading, setLoading] = useState(true);
-    // const [userInfo, setUserInfo] = useState(null);
-    const [users, setUsers] = useState([]);
     const [userInfo, setUserInfo] = useState(null);
+    const [users, setUsers] = useState([]);
+    const [roles, setRoles] = useState([]);
     const [errorMassage, setErrorMessage] = useState('some error');
 
 
@@ -106,9 +106,11 @@ export const UserProvider = ({children}) => {
 
     const editUserByAdmin = async (userId, editUserDTO) => {
         try {
-            await axios.put(`http://localhost:8080/api/users/${userId}/admin-edit`, editUserDTO, {
+            const res = await axios.put(`http://localhost:8080/api/users/${userId}/admin-edit`, editUserDTO, {
                 headers: {'Authorization': `Bearer ${token}`}
             });
+            const message = res?.data?.message || "Thay đổi thông tin thành công!";
+            await showSuccessDialog("Thành công", message);
             await getAllUser();
         } catch (error) {
             const message = error?.response?.data?.message || 'Chỉnh sửa người dùng thất bại';
@@ -116,6 +118,26 @@ export const UserProvider = ({children}) => {
         }
     };
 
+    const updateAvatar = async (userId, avatarFile) => {
+        try {
+            setLoading(true);
+            const formData = new FormData();
+            formData.append('avatar', avatarFile);
+            await axios.post(`http://localhost:8080/api/users/${userId}/avatar`, formData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            setLoading(false);
+            await showSuccessDialog("Avatar updated successfully!", "");
+            await getAllUser();
+        } catch (error) {
+            setLoading(false);
+            const message = error?.response?.data?.message || 'Failed to update avatar';
+            await showErrorDialog(message);
+        }
+
+    };
 
     const banUser = async (id) => {
         await axios.put(`http://localhost:8080/api/users/ban/${id}`, {}, {
@@ -133,7 +155,28 @@ export const UserProvider = ({children}) => {
             }
         });
         await getAllUser();
+        try {
+            const res = await axios.put(`http://localhost:8080/api/users/${userId}/change-role?roleId=${roleId}`, {}, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            await getAllUser();
+            const message = res?.data?.message || "Thay đổi vai trò thành công!";
+            await showSuccessDialog("Thành công", message);
+        } catch (error) {
+            const message = error?.response?.data?.message;
+            await showErrorDialog("Lỗi", message);
+        }
     };
+    const getAllRole = async () => {
+        const response = await axios.get(`http://localhost:8080/api/roles`, {}, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        setRoles(response.data);
+    }
     return (
         <UserContext.Provider value={{
             user,
@@ -142,13 +185,13 @@ export const UserProvider = ({children}) => {
             logout,
             loading,
             users,
-            userInfo,
             getAllUser,
             editUserByAdmin,
             updateAvatar,
             banUser,
             changeUserRole,
-            getUserInfo
+            roles,
+            getAllRole
         }}>
             {children}
         </UserContext.Provider>
