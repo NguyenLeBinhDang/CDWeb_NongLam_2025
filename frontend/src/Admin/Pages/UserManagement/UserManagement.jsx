@@ -13,11 +13,13 @@ import {
     MenuItem,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+// import "/img.png";
 import {useEffect, useState, useContext} from "react";
 import EditUserModal from "../../Modals/EditUserModal";
 import UpdateAvatarModal from "../../Modals/UpdateAvatarModal";
 import {useUser} from "../../../context/UserContext";
 import Loading from "../../../components/Loader/Loading";
+import AddUserModal from "../../Modals/AddUserModal";
 
 const UserManagement = () => {
     const {
@@ -28,6 +30,7 @@ const UserManagement = () => {
         banUser,
         changeUserRole,
         loading,
+        addUser,
     } = useUser();
 
     useEffect(() => {
@@ -38,6 +41,7 @@ const UserManagement = () => {
     const [selectedUser, setSelectedUser] = useState(null);
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openAvatarModal, setOpenAvatarModal] = useState(false);
+    const [openAddUserModal, setOpenAddUserModal] = useState(false);
 
     const handleMenuClick = (event, user) => {
         setAnchorEl(event.currentTarget);
@@ -73,6 +77,14 @@ const UserManagement = () => {
         }
     };
 
+    const handleAddUserClick = () => {
+        setOpenAddUserModal(true);
+    }
+
+    const handleAddUser = async (data) => {
+        await addUser(data);
+    }
+
     const handleSaveEdit = async (userId, data) => {
         await editUserByAdmin(userId, data);
     };
@@ -105,7 +117,7 @@ const UserManagement = () => {
             {loading && <Loading/>}
             <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
                 <Typography variant="h4" sx={{color: '#fff'}}>Danh sách người dùng</Typography>
-                <Button variant="contained" color="primary">Thêm User</Button>
+                <Button variant="contained" color="primary" onClick={handleAddUserClick}>Thêm User</Button>
             </Box>
 
             <TableContainer sx={{maxHeight: 'calc(100vh - 200px)', overflowY: 'auto'}}>
@@ -127,7 +139,7 @@ const UserManagement = () => {
                                 <TableCell sx={tableCellStyle}>{user.id}</TableCell>
                                 <TableCell sx={tableCellStyle}>
                                     <img
-                                        src={"http://localhost:8080" + user.avatarUrl || null}
+                                        src={ user.avatarUrl ?  "http://localhost:8080" + user.avatarUrl : '/img.png'}
                                         alt="avatar"
                                         style={{width: 40, height: 40, borderRadius: '50%', objectFit: 'cover'}}
                                     />
@@ -166,6 +178,13 @@ const UserManagement = () => {
                 handleClose={() => setOpenAvatarModal(false)}
                 userId={selectedUser?.id}
                 onUpload={handleUploadAvatar}
+            />
+
+            <AddUserModal
+                open={openAddUserModal}
+                handleClose={() => setOpenAddUserModal(false)}
+                onSave={addUser} // function gọi API POST /users
+                onUpload={handleUploadAvatar} // function gọi API POST /users/avatar
             />
         </Box>
     );

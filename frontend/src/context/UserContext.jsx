@@ -147,7 +147,28 @@ export const UserProvider = ({children}) => {
             }
         });
         setRoles(response.data);
+    };
+
+    const addUser = async (userData) => {
+        try {
+            setLoading(true);
+            const response = await axios.post('http://localhost:8080/api/users/add', userData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            setLoading(false);
+            await showSuccessDialog("Thêm người dùng thành công!", "");
+            await getAllUser();
+            return response.data;
+        } catch (error) {
+            setLoading(false);
+            const message = error?.response?.data?.message || 'Thêm người dùng thất bại';
+            await showErrorDialog("Lỗi", message);
+        }
     }
+
     return (
         <UserContext.Provider value={{
             user,
@@ -162,7 +183,8 @@ export const UserProvider = ({children}) => {
             banUser,
             changeUserRole,
             roles,
-            getAllRole
+            getAllRole,
+            addUser
         }}>
             {children}
         </UserContext.Provider>
