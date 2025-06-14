@@ -60,7 +60,8 @@ const MangaDetail = () => {
             await fetchComments();
         } catch (error) {
             console.error("Comment failed", error);
-            await showErrorDialog("Lỗi", "Không thể gửi bình luận");
+            const message = error?.response?.data?.message
+            await showErrorDialog("Lỗi",message ||"Không thể gửi bình luận");
         }
     };
 
@@ -86,8 +87,9 @@ const MangaDetail = () => {
                 }
             });
             await showSuccessDialog("Đã chặn người dùng");
-        } catch (err) {
-            await showErrorDialog("Lỗi", "Không thể chặn người dùng");
+        } catch (error) {
+            const message = error?.response?.data?.message
+            await showErrorDialog("Lỗi", message||"Không thể chặn người dùng");
         }
     };
 
@@ -97,75 +99,109 @@ const MangaDetail = () => {
 
         return (
             <div className="comment-section">
-                <h3 className="comment-heading">Bình luận</h3>
+                <h3 className="comment-heading">Bình luận ({comments.length})</h3>
 
                 {user ? (
-                    <div className="comment-input">
-                        {replyTo && <div className="reply-label">Đang trả lời bình luận #{replyTo}</div>}
+                    <div className="comment-input-wrapper">
+                        {replyTo && (
+                            <div className="replying-to">
+                                Đang trả lời bình luận #{replyTo}{" "}
+                                <span onClick={() => setReplyTo(null)} className="cancel-reply">Hủy</span>
+                            </div>
+                        )}
                         <textarea
                             value={newComment}
                             onChange={(e) => setNewComment(e.target.value)}
-                            placeholder="Viết bình luận..."
+                            placeholder="Nhập bình luận..."
+                            rows={3}
+                            className="comment-textarea"
                         />
-                        <button onClick={handlePostComment}>Gửi</button>
+                        <button onClick={handlePostComment} className="post-comment-btn">Gửi bình luận</button>
                     </div>
                 ) : (
-                    <p>Hãy <strong>đăng nhập</strong> để bình luận</p>
+                    <p className="login-notice">Vui lòng <strong>đăng nhập</strong> để bình luận.</p>
                 )}
 
                 <div className="comment-list">
                     {rootComments.map(comment => (
                         <div key={comment.id} className="comment-item">
-                            <div className="avatar-section">
+                            <div className="comment-avatar">
                                 <img src={comment.avatarUrl || "/default-avatar.png"} alt="avatar" />
                             </div>
-
-                            <div className="content-section">
+                            <div className="comment-content">
                                 <div className="comment-header">
-                                    <span className="username">{comment.userName || "Ẩn danh"}</span>
-                                    <span className="time">{new Date(comment.updatedAt).toLocaleString("vi-VN")}</span>
+                                    <span className="comment-user">{comment.userName || "Ẩn danh"}</span>
+                                    <span className="comment-time">{new Date(comment.updatedAt).toLocaleString("vi-VN")}</span>
                                 </div>
-
-                                <div className="comment-text">
+                                <div className="comment-body">
                                     {comment.comment}
                                 </div>
-
                                 <div className="comment-actions">
                                     {!comment.isDeleted && user && (
                                         <button onClick={() => setReplyTo(comment.id)}>Trả lời</button>
                                     )}
                                     {['ADMIN', 'MOD'].includes(user?.role?.role_name) && (
                                         <>
-                                            <button onClick={() => handleDeleteComment(comment.id)} className="admin-delete">Xóa</button>
-                                            <button onClick={() => handleBanUser(comment.userId)} className="admin-ban">Chặn</button>
+                                            <button onClick={() => handleDeleteComment(comment.id)} className="admin-action delete">Xóa</button>
+                                            {/*<button onClick={() => handleBanUser(comment.userId)} className="admin-action ban">Chặn</button>*/}
                                         </>
                                     )}
                                 </div>
 
-                                {/* Replies */}
-                                <div className="comment-replies">
+                                {/* Form trả lời */}
+                                {replyTo === comment.id && (
+                                    <div className="reply-input">
+                                    <textarea
+                                        value={newComment}
+                                        onChange={(e) => setNewComment(e.target.value)}
+                                        placeholder={`Phản hồi ${comment.userName || "ẩn danh"}...`}
+                                        rows={2}
+                                        className="comment-textarea"
+                                    />
+                                        <button onClick={handlePostComment} className="post-comment-btn">Gửi phản hồi</button>
+                                        <button onClick={() => setReplyTo(null)} className="cancel-reply">Hủy</button>
+                                    </div>
+                                )}
+
+                                {/* Hiển thị reply ngay dưới comment cha */}
+                                <div className="replies">
                                     {getReplies(comment.id).map(reply => (
-                                        <div key={reply.id} className="comment-item reply-comment">
-                                            <div className="avatar-section">
+                                        <div key={reply.id} className="reply-item">
+                                            <div className="comment-avatar">
                                                 <img src={reply.avatarUrl || "/default-avatar.png"} alt="avatar" />
                                             </div>
-                                            <div className="content-section">
+                                            <div className="comment-content">
                                                 <div className="comment-header">
-                                                    <span className="username">{reply.userName || "Ẩn danh"}</span>
-                                                    <span className="time">{new Date(reply.updatedAt).toLocaleString("vi-VN")}</span>
+                                                    <span className="comment-user">{reply.userName || "Ẩn danh"}</span>
+                                                    <span className="comment-time">{new Date(reply.updatedAt).toLocaleString("vi-VN")}</span>
                                                 </div>
-                                                <div className="comment-text">{reply.comment}</div>
+                                                <div className="comment-body">{reply.comment}</div>
                                                 <div className="comment-actions">
                                                     {!reply.isDeleted && user && (
                                                         <button onClick={() => setReplyTo(reply.id)}>Trả lời</button>
                                                     )}
                                                     {['ADMIN', 'MOD'].includes(user?.role?.role_name) && (
                                                         <>
-                                                            <button onClick={() => handleDeleteComment(reply.id)} className="admin-delete">Xóa</button>
-                                                            <button onClick={() => handleBanUser(reply.userId)} className="admin-ban">Chặn</button>
+                                                            <button onClick={() => handleDeleteComment(reply.id)} className="admin-action delete">Xóa</button>
+                                                            {/*<button onClick={() => handleBanUser(reply.userId)} className="admin-action ban">Chặn</button>*/}
                                                         </>
                                                     )}
                                                 </div>
+
+                                                {/*/!* Form trả lời dưới reply *!/*/}
+                                                {/*{replyTo === reply.id && (*/}
+                                                {/*    <div className="reply-input">*/}
+                                                {/*    <textarea*/}
+                                                {/*        value={newComment}*/}
+                                                {/*        onChange={(e) => setNewComment(e.target.value)}*/}
+                                                {/*        placeholder={`Phản hồi ${reply.userName || "ẩn danh"}...`}*/}
+                                                {/*        rows={2}*/}
+                                                {/*        className="comment-textarea"*/}
+                                                {/*    />*/}
+                                                {/*        <button onClick={handlePostComment} className="post-comment-btn">Gửi phản hồi</button>*/}
+                                                {/*        <button onClick={() => setReplyTo(null)} className="cancel-reply">Hủy</button>*/}
+                                                {/*    </div>*/}
+                                                {/*)}*/}
                                             </div>
                                         </div>
                                     ))}
@@ -177,6 +213,7 @@ const MangaDetail = () => {
             </div>
         );
     };
+
 
 
     const handleChapterClick = (chapterNumber) => {
