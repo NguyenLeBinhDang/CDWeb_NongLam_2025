@@ -49,27 +49,21 @@
 }
 
 .manga-update-card {
-    display: block;
+    /*display: ;*/
     margin-bottom: 8px;
-}
-
-.chapter-item-card {
-    background-color: #333;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-}
-
-.chapter-item-card:hover {
-    background-color: #444;
 }
 
 .chapter-number-card {
     font-weight: 600;
-    min-width: 80px;
+    min-width: 20%;
 }
 
 .chapter-title-card {
     flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block; /* Ensures ellipsis works on spans inside flex items */
 }
 
 .chapter-link-card {
@@ -82,6 +76,17 @@
 
 .chapter-link-card:hover {
     color: #f05454;
+}
+
+.chapter-item-card {
+    overflow: hidden;
+    background-color: #333;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.chapter-item-card:hover {
+    background-color: #444;
 }
 
 .no-chapters {
