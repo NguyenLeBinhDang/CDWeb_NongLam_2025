@@ -215,91 +215,105 @@
     margin-top: 30px;
 }
 
-.comment-input {
+.comment-heading {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.comment-input-wrapper {
     margin-bottom: 20px;
 }
 
-.comment-input textarea {
+.comment-textarea {
     width: 100%;
-    height: 80px;
     padding: 10px;
-    font-size: 15px;
-    margin-bottom: 10px;
-    border-radius: 6px;
+    border-radius: 4px;
+    resize: none;
     border: 1px solid #ccc;
 }
 
-.comment-input button {
-    padding: 6px 12px;
-    background-color: #3498db;
-    border: none;
+.post-comment-btn {
+    margin-top: 8px;
+    background-color: #f39c12;
     color: white;
+    border: none;
+    padding: 8px 14px;
     border-radius: 4px;
     cursor: pointer;
 }
 
-.comment-item {
+.comment-list {
+    margin-top: 20px;
+}
+
+.comment-item, .reply-item {
     display: flex;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 15px;
+    margin-bottom: 15px;
 }
 
-.reply-comment {
-    margin-left: 50px;
-    background-color: #f9f9f9;
-    border-left: 3px solid #ccc;
-    padding-left: 10px;
-}
-
-.avatar-section img {
-    width: 45px;
-    height: 45px;
+.comment-avatar img {
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
-    object-fit: cover;
 }
 
-.content-section {
+.comment-content {
+    margin-left: 10px;
     flex: 1;
-    margin-left: 15px;
 }
 
 .comment-header {
-    display: flex;
-    justify-content: space-between;
-    font-size: 14px;
-    color: #555;
-}
-
-.username {
     font-weight: bold;
+    font-size: 14px;
     color: #333;
 }
 
-.comment-text {
-    margin: 8px 0;
-    font-size: 15px;
+.comment-time {
+    font-size: 12px;
+    color: #888;
+    margin-left: 10px;
+}
+
+.comment-body {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #222;
 }
 
 .comment-actions button {
-    background: none;
-    border: none;
-    color: #007bff;
     margin-right: 10px;
     font-size: 13px;
+    background: none;
+    border: none;
+    color: #1a73e8;
     cursor: pointer;
 }
 
-.comment-actions button:hover {
-    text-decoration: underline;
-}
-
-.admin-delete {
+.admin-action.delete {
     color: red;
 }
 
-.admin-ban {
-    color: orange;
+.admin-action.ban {
+    color: darkorange;
+}
+
+.replies {
+    margin-top: 10px;
+    padding-left: 30px;
+    border-left: 2px solid #eee;
+}
+
+.replying-to {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #555;
+}
+
+.cancel-reply {
+    color: #f00;
+    margin-left: 10px;
+    cursor: pointer;
 }
 
 /*button {*/
