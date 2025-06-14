@@ -28,7 +28,11 @@ const EditUserModal = ({open, handleClose, user, onSave, onChangeAvatar}) => {
         const fetchRoles = async () => {
             getAllRole();
         }
-        fetchRoles();
+        if(roles.length === 0){
+
+            fetchRoles();
+
+        }
     }, []);
 
 

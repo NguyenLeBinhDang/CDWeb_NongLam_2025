@@ -71,17 +71,17 @@ export const UserProvider = ({children}) => {
             throw new Error(message);
         }
     }
-    const getAllUser = async (customToken) => {
+    const getAllUser = async () => {
         try {
             setLoading(true);
-            const currentToken = customToken || token;
+            // const currentToken = customToken || token;
             const response = await axios.get('http://localhost:8080/api/users', {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${currentToken}`
+                    'Authorization': `Bearer ${token}`
                 }
             });
-            setLoading(false);
+            // setLoading(false);
             setUsers(response.data);
             return response.data;
         } catch (error) {
@@ -101,7 +101,7 @@ export const UserProvider = ({children}) => {
             });
             const message = res?.data?.message || "Thay đổi thông tin thành công!";
             await showSuccessDialog("Thành công", message);
-            await getAllUser();
+            // await getAllUser();
         } catch (error) {
             const message = error?.response?.data?.message || 'Chỉnh sửa người dùng thất bại';
             await showErrorDialog("Lỗi", message);
@@ -120,7 +120,7 @@ export const UserProvider = ({children}) => {
             });
             setLoading(false);
             await showSuccessDialog("Avatar updated successfully!", "");
-            await getAllUser();
+            // await getAllUser();
         } catch (error) {
             setLoading(false);
             const message = error?.response?.data?.message || 'Failed to update avatar';
@@ -135,7 +135,7 @@ export const UserProvider = ({children}) => {
                 'Authorization': `Bearer ${token}`
             }
         });
-        await getAllUser();
+        // await getAllUser();
     };
 
     const changeUserRole = async (userId, roleId) => {
@@ -151,7 +151,7 @@ export const UserProvider = ({children}) => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            await getAllUser();
+            // await getAllUser();
             const message = res?.data?.message || "Thay đổi vai trò thành công!";
             await showSuccessDialog("Thành công", message);
         } catch (error) {
@@ -160,7 +160,7 @@ export const UserProvider = ({children}) => {
         }
     };
     const getAllRole = async () => {
-        const response = await axios.get(`http://localhost:8080/api/roles`, {}, {
+        const response = await axios.get(`http://localhost:8080/api/roles`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -179,7 +179,7 @@ export const UserProvider = ({children}) => {
             });
             setLoading(false);
             await showSuccessDialog("Thêm người dùng thành công!", "");
-            await getAllUser();
+            // await getAllUser();
             return response.data;
         } catch (error) {
             setLoading(false);

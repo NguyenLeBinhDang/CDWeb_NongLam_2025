@@ -24,40 +24,16 @@ const AddUserModal = ({open, handleClose, onSave}) => {
     });
     const {roles, getAllRole} = useContext(UserContext);
 
-    // const [avatarFile, setAvatarFile] = useState(null);
-
-    // const [previewImage, setPreviewImage] = useState(null);
-    //
-    // const handleImageChange = (e) => {
-    //     const file = e.target.files[0];
-    //     if (file) {
-    //         // setAvatarFile(file);
-    //         setFormData(prev => ({
-    //             ...prev,
-    //             avatar: file // <- Save actual file to formData
-    //         }));
-    //         const reader = new FileReader();
-    //         reader.onloadend = () => {
-    //             setPreviewImage(reader.result);
-    //         };
-    //         reader.readAsDataURL(file);
-    //     } else {
-    //         setPreviewImage(null);
-    //     }
-    // };
-
-    // const handleUpload = () => {
-    //     if (avatarFile) {
-    //         onChangeAvatar(userId, avatarFile);
-    //         handleCloseButton();
-    //     }
-    // };
 
     useEffect(() => {
         const fetchRoles = async () => {
             getAllRole();
         }
-        fetchRoles();
+        if (roles.length === 0) {
+
+            fetchRoles();
+
+        }
     }, []);
 
     const handleChange = (e) => {
