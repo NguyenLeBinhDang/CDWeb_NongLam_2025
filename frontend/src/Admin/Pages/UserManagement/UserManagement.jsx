@@ -139,7 +139,7 @@ const UserManagement = () => {
                                 <TableCell sx={tableCellStyle}>{user.id}</TableCell>
                                 <TableCell sx={tableCellStyle}>
                                     <img
-                                        src={ user.avatarUrl ?  "http://localhost:8080" + user.avatarUrl : '/img.png'}
+                                        src={ user.avatarUrl  || '/img.png'}
                                         alt="avatar"
                                         style={{width: 40, height: 40, borderRadius: '50%', objectFit: 'cover'}}
                                     />

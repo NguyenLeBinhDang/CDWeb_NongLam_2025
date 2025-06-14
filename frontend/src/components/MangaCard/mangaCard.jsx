@@ -82,7 +82,7 @@ const MangaCard = ({manga, type = null, chapter = null, isFavorite = false}) => 
                                 to={{
                                     pathname: `/manga/${manga.id}`,
                                 }}
-                                state={{pages: 'admin'}}
+                                // state={{pages: 'admin'}}
                             >
                                 <img src={manga.cover_img} alt={manga.name}/>
                             </Link>

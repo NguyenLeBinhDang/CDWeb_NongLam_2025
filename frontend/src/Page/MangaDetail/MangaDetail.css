@@ -175,12 +175,12 @@
     /*justify-content: center;*/
     gap: 10px;
     margin: 10px 0;
-    background-color: #b3d4fc;
+    /*background-color: #b3d4fc;*/
 }
 
 .edit-manga-button {
     padding: 0.5em 1.0em;
-    font-size: 18px;
+    font-size: 15px;
     border-radius: 0.5em;
     cursor: pointer;
     border: 1px solid #e8e8e8;
@@ -192,6 +192,23 @@
 }
 
 .edit-manga-button:active {
+    box-shadow: 4px 4px 12px #c5c5c5, -4px -4px 12px #ffffff;
+}
+
+.add-chapter-button{
+    padding: 0.5em 1.0em;
+    font-size: 15px;
+    border-radius: 0.5em;
+    cursor: pointer;
+    border: 1px solid #e8e8e8;
+    transition: all 0.2s;
+}
+
+.add-chapter-button:hover{
+    border: 1px solid white;
+}
+
+.add-chapter-button:active {
     box-shadow: 4px 4px 12px #c5c5c5, -4px -4px 12px #ffffff;
 }
 

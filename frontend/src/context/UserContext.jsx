@@ -23,11 +23,6 @@ export const UserProvider = ({children}) => {
                 if (savedToken && savedUser) {
                     setToken(savedToken);
                     setUser(JSON.parse(savedUser));
-                    // fetchUserInfo(JSON.parse(savedUser).id);
-                    // const parsedUser = JSON.parse(savedUser);
-                    // if (parsedUser.role === 'ADMIN'|| parsedUser.role === 'MOD') {
-                    //     await getAllUser(savedToken);
-                    // }
                 }
             } catch (error) {
                 console.error('Auth check failed:', error);
@@ -54,11 +49,6 @@ export const UserProvider = ({children}) => {
         localStorage.removeItem('user');
         localStorage.removeItem('token');
     };
-    // useEffect(() => {
-    //     if (token) {
-    //         getAllUser();  // Chỉ gọi khi token đã sẵn sàng
-    //     }
-    // }, [token]);
 
     const getUserInfo = async (userId) => {
         try {
@@ -195,26 +185,6 @@ export const UserProvider = ({children}) => {
             setLoading(false);
             const message = error?.response?.data?.message || 'Thêm người dùng thất bại';
             await showErrorDialog("Lỗi", message);
-        }
-    }
-
-    const getUserInfo = async (userId) => {
-        try {
-            setLoading(true);
-            const response = await axios.get(`http://localhost:8080/api/users/${userId}`, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-            setLoading(false);
-            setUserInfo(response.data);
-            return response.data;
-        } catch (error) {
-            setLoading(false);
-            const message = error?.response?.data?.message || 'Failed to fetch user info';
-            await showErrorDialog("Lỗi", message);
-            throw new Error(message);
         }
     }
 
