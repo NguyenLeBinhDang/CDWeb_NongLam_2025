@@ -132,6 +132,9 @@ const MangaDetail = () => {
                                 <div className="comment-header">
                                     <span className="comment-user">{comment.userName || "Ẩn danh"}</span>
                                     <span className="comment-time">{new Date(comment.updatedAt).toLocaleString("vi-VN")}</span>
+                                    {comment.chapNum != null && (
+                                        <span className="comment-chap">Chapter: {comment.chapNum}</span>
+                                    )}
                                 </div>
                                 <div className="comment-body">
                                     {comment.comment}
@@ -173,7 +176,11 @@ const MangaDetail = () => {
                                             <div className="comment-content">
                                                 <div className="comment-header">
                                                     <span className="comment-user">{reply.userName || "Ẩn danh"}</span>
+
                                                     <span className="comment-time">{new Date(reply.updatedAt).toLocaleString("vi-VN")}</span>
+                                                    {reply.chapNum != null && (
+                                                        <span className="comment-chap">Chapter: {reply.chapNum}</span>
+                                                    )}
                                                 </div>
                                                 <div className="comment-body">{reply.comment}</div>
                                                 <div className="comment-actions">

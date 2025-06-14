@@ -315,7 +315,17 @@
     margin-left: 10px;
     cursor: pointer;
 }
-
+.comment-chap {
+    display: inline-block;
+    background-color: #3498db; /* màu xanh dương */
+    color: white;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 12px;
+    margin-left: 10px;
+    font-weight: bold;
+    vertical-align: middle;
+}
 /*button {*/
 /*    !*width: 50%;*!*/
 /*    height: 40px;*/
