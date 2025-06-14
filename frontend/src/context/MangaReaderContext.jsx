@@ -1,14 +1,40 @@
-import {createContext, useContext, useState} from "react";
+import { createContext, useContext, useState } from "react";
+import axios from "axios";
 
 const MangaReaderContext = createContext();
 
-export const MangaReaderProvider = ({children}) => {
-    const [chapter, setChapter] = useState(null);
+export const MangaReaderProvider = ({ children }) => {
+    // const [chapter, setChapter] = useState(null);
     const [manga, setManga] = useState(null);
     const [currentPage, setCurrentPage] = useState(0);
     const [pages, setPages] = useState([]);
+    const [loadingPages, setLoadingPages] = useState(false);
+    const [error, setError] = useState(null);
 
-    // const [loading, setLoading] = useState(true);
+    const loadPages = async (mangaId, chapNum) => {
+        setLoadingPages(true);
+        setError(null);
+        try {
+            const response = await axios.get(
+                `http://localhost:8080/api/manga/${mangaId}/chapter/${chapNum}/pages`
+            );
+
+            if (response.data && response.data.length > 0) {
+                const imageUrls = response.data.map(p => p.page_img_url);
+                setPages(imageUrls);
+                setCurrentPage(0);
+            } else {
+                setPages([]);
+                setError('Không tìm thấy trang nào cho chương này');
+            }
+        } catch (err) {
+            console.error("Lỗi khi tải ảnh:", err);
+            setPages([]);
+            setError(err.response?.data?.message || 'Lỗi khi tải trang truyện');
+        } finally {
+            setLoadingPages(false);
+        }
+    };
 
     const handlePrevPage = () => {
         if (currentPage > 0) {
@@ -24,22 +50,21 @@ export const MangaReaderProvider = ({children}) => {
 
     return (
         <MangaReaderContext.Provider value={{
-            chapter,
-            setChapter,
+            // chapter,
             manga,
-            // setManga,
             currentPage,
-            setCurrentPage,
             pages,
-            setPages,
+            loadingPages,
+            error,
             handlePrevPage,
-            handleNextPage
+            handleNextPage,
+            loadPages,
+            setCurrentPage
         }}>
             {children}
         </MangaReaderContext.Provider>
-
     );
-}
+};
 
 export const useMangaReader = () => {
     const context = useContext(MangaReaderContext);
@@ -47,4 +72,4 @@ export const useMangaReader = () => {
         throw new Error('useMangaReader must be used within a MangaReaderProvider');
     }
     return context;
-}
+};
