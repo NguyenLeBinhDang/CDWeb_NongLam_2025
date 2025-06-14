@@ -125,8 +125,8 @@ const MangaCard = ({manga, type = null, chapter = null, isFavorite = false}) => 
                                      className="img-fluid"/>
                             </Link>
                         </div>
-                        <div className="manga-info">
-                            <h3 className="manga-title">
+                        <div className="manga-info-card">
+                            <h3 className="manga-title-card">
                                 <Link to={`/manga/${manga.id}`}>{manga.name}</Link>
                             </h3>
                             {/*<div className="manga-update">*/}
@@ -145,7 +145,7 @@ const MangaCard = ({manga, type = null, chapter = null, isFavorite = false}) => 
                             {/*    )}*/}
                             {/*</div>*/}
 
-                            <div className="manga-update">
+                            <div className="manga-update-card">
                                 {chapter && chapter.length > 0 ? (
                                     chapter.slice(0, 2).map((ch) => (
                                         <div key={ch.id} className="chapter-item">
@@ -153,10 +153,10 @@ const MangaCard = ({manga, type = null, chapter = null, isFavorite = false}) => 
                                                 to={`/manga/${manga.id}/chapter/${ch.chapter_number}`}
                                                 className="chapter-link"
                                             >
-                                                <span className="chapter-number">Chương {ch.chapter_number}</span>
-                                                <span className="chapter-title">
-                            {ch.chapter_name || `Chapter ${ch.chapter_number}`}
-                        </span>
+                                                <span className="chapter-number-card">Chương {ch.chapter_number}</span>
+                                                <span className="chapter-title-card">
+                                                    {ch.chapter_name || `Chapter ${ch.chapter_number}`}
+                                                </span>
                                             </Link>
                                         </div>
                                     ))
