@@ -14,12 +14,6 @@ const FloatingNavBar = ({
                             hasNextChapter,
                             hasPrevChapter,
                         }) => {
-        const navigate = useNavigate();
-
-
-        const nextChapter = chapters[currentChapter + 1];
-
-        const prevChapter = chapters[currentChapter - 1];
 
         const {isVisible, handleScroll} = useFloatingNavBar();
 
@@ -39,14 +33,14 @@ const FloatingNavBar = ({
                     <div className="floating-nav__buttons">
                         <button
                             onClick={onPrevChapter}
-                            disabled={currentChapter <= chapters.length - 1}
+                            disabled={!hasPrevChapter}
                             className="floating-nav__button floating-nav__button--prev"
                         >
                             Previous Chapter
                         </button>
                         <button
                             onClick={onNextChapter}
-                            disabled={currentChapter >= chapters.length - 1}
+                            disabled={!hasNextChapter}
                             className="floating-nav__button floating-nav__button--next"
                         >
                             Next Chapter

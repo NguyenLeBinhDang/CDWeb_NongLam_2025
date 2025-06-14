@@ -109,8 +109,8 @@ const MangaReader = () => {
                 onChapterChange={handleChapterChange}
                 onNextChapter={handleNextChapter}
                 onPrevChapter={handlePrevChapter}
-                hasNextChapter={sortedChapters.findIndex(ch => ch.chap_number === parsedChapNum) > 0}
-                hasPrevChapter={sortedChapters.findIndex(ch => ch.chap_number === parsedChapNum) < sortedChapters.length - 1}
+                hasNextChapter={sortedChapters.findIndex(ch => ch.chapter_number === parsedChapNum) > 0}
+                hasPrevChapter={sortedChapters.findIndex(ch => ch.chapter_number === parsedChapNum) < sortedChapters.length - 1}
             />
 
             <Button
