@@ -77,7 +77,6 @@ const MangaReader = () => {
             handleChapterChange(sortedChapters[currentIndex + 1].chap_number);
         }
     };
-
     if (!mangaId || !chapNum) {
         return <div className="error-container">Thiếu thông tin manga hoặc chương</div>;
     }
