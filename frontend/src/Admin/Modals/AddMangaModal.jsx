@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import {
     Dialog, DialogTitle, DialogContent, DialogActions,
-    Button, TextField, FormControl, Autocomplete, Chip
+    Button, TextField, FormControl, Autocomplete, Chip, Select, InputLabel, MenuItem
 } from '@mui/material';
 import axios from 'axios';
 import { showSuccessDialog, showErrorDialog } from '../../utils/Alert';
@@ -97,17 +97,20 @@ const AddMangaModal = ({ open, onClose, onSuccess }) => {
                 />
 
                 <FormControl fullWidth>
-                    <TextField
-                        select
+                    <InputLabel id="status-label">Trạng thái</InputLabel>
+                    <Select
+                        labelId="status-label"
                         label="Trạng thái"
                         name="statusId"
                         value={formData.statusId}
                         onChange={handleChange}
                     >
-                        {status.map(s => (
-                            <option key={s.id} value={s.id}>{s.status_name}</option>
+                        {status.map((s) => (
+                            <MenuItem key={s.id} value={s.id}>
+                                {s.status_name}
+                            </MenuItem>
                         ))}
-                    </TextField>
+                    </Select>
                 </FormControl>
 
                 <Autocomplete
