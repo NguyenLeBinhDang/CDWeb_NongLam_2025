@@ -9,6 +9,7 @@ import { Button, CircularProgress } from "@mui/material";
 const MangaReader = () => {
     const { mangaId, chapNum } = useParams();
     const navigate = useNavigate();
+
     const {
         pages,
         currentPage,
@@ -30,7 +31,8 @@ const MangaReader = () => {
     const [scrollMode, setScrollMode] = useState(true);
     const [error, setError] = useState(null);
 
-    // Sắp xếp chapters theo chap_number giảm dần (mới nhất đầu tiên)
+    const parsedChapNum = parseInt(chapNum);
+
     const sortedChapters = [...(chapters || [])].sort((a, b) => b.chap_number - a.chap_number);
 
     useEffect(() => {
@@ -42,24 +44,14 @@ const MangaReader = () => {
         const fetchData = async () => {
             try {
                 setError(null);
-                // Load thông tin manga và chapters
                 await getMangaById(mangaId);
                 await getChapterOfManga(mangaId);
 
-                // Kiểm tra chapter có tồn tại không
-                const chapterExists = sortedChapters.some(ch => ch.chap_number === parseInt(chapNum));
-                if (!chapterExists) {
-                    throw new Error(`Không tìm thấy chương ${chapNum}`);
-                }
-
-                // Load pages của chapter hiện tại
                 await loadPages(mangaId, chapNum);
             } catch (err) {
                 console.error('Error loading manga data:', err);
                 setError(err.message || 'Lỗi khi tải dữ liệu');
-
-                // Tự động chuyển đến chương đầu tiên nếu chương hiện tại không tồn tại
-                if (err.message.includes('Không tìm thấy chương') && sortedChapters.length > 0) {
+                if (sortedChapters.length > 0) {
                     navigate(`/manga/${mangaId}/chapter/${sortedChapters[0].chap_number}`);
                 }
             }
@@ -73,14 +65,14 @@ const MangaReader = () => {
     };
 
     const handleNextChapter = () => {
-        const currentIndex = sortedChapters.findIndex(ch => ch.chap_number === parseInt(chapNum));
+        const currentIndex = sortedChapters.findIndex(ch => ch.chap_number === parsedChapNum);
         if (currentIndex > 0) {
             handleChapterChange(sortedChapters[currentIndex - 1].chap_number);
         }
     };
 
     const handlePrevChapter = () => {
-        const currentIndex = sortedChapters.findIndex(ch => ch.chap_number === parseInt(chapNum));
+        const currentIndex = sortedChapters.findIndex(ch => ch.chap_number === parsedChapNum);
         if (currentIndex < sortedChapters.length - 1) {
             handleChapterChange(sortedChapters[currentIndex + 1].chap_number);
         }
@@ -110,15 +102,15 @@ const MangaReader = () => {
     return (
         <div className="manga-reader-page">
             <FloatingNavBar
-                currentChapter={parseInt(chapNum)}
+                currentChapter={parsedChapNum}
                 mangaId={mangaId}
                 mangaTitle={manga?.name || ''}
                 chapters={sortedChapters}
                 onChapterChange={handleChapterChange}
                 onNextChapter={handleNextChapter}
                 onPrevChapter={handlePrevChapter}
-                hasNextChapter={sortedChapters.findIndex(ch => ch.chap_number === parseInt(chapNum)) > 0}
-                hasPrevChapter={sortedChapters.findIndex(ch => ch.chap_number === parseInt(chapNum)) < sortedChapters.length - 1}
+                hasNextChapter={sortedChapters.findIndex(ch => ch.chap_number === parsedChapNum) > 0}
+                hasPrevChapter={sortedChapters.findIndex(ch => ch.chap_number === parsedChapNum) < sortedChapters.length - 1}
             />
 
             <Button
@@ -134,7 +126,7 @@ const MangaReader = () => {
                 <div className="manga-page-container scroll-mode">
                     {pages.map((page, index) => (
                         <img
-                            key={page.id}
+                            key={page.id || index}
                             src={page.page_img_url}
                             alt={`Trang ${page.page_number}`}
                             className="manga-page"
@@ -164,7 +156,7 @@ const MangaReader = () => {
                         >
                             Trang trước
                         </button>
-                        <span>Trang {pages[currentPage]?.page_number} / {pages.length}</span>
+                        <span>Trang {currentPage + 1} / {pages.length}</span>
                         <button
                             onClick={handleNextPage}
                             disabled={currentPage === pages.length - 1}

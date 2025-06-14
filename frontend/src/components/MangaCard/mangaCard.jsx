@@ -129,16 +129,36 @@ const MangaCard = ({manga, type = null, chapter = null, isFavorite = false}) => 
                             <h3 className="manga-title">
                                 <Link to={`/manga/${manga.id}`}>{manga.name}</Link>
                             </h3>
+                            {/*<div className="manga-update">*/}
+                            {/*    {chapter && chapter.length > 0 ? (*/}
+                            {/*        chapter.slice(0, 2).map((ch) => (*/}
+                            {/*            <Link*/}
+                            {/*                key={ch.id}*/}
+                            {/*                to={`/manga/${manga.id}/chapter/${ch.chap_number}`}*/}
+                            {/*                className="chapter-link"*/}
+                            {/*            >*/}
+                            {/*                {ch.chapter_name || `Chapter ${ch.chap_number}`}*/}
+                            {/*            </Link>*/}
+                            {/*        ))*/}
+                            {/*    ) : (*/}
+                            {/*        <span className="no-chapters">Chưa có chương nào</span>*/}
+                            {/*    )}*/}
+                            {/*</div>*/}
+
                             <div className="manga-update">
                                 {chapter && chapter.length > 0 ? (
                                     chapter.slice(0, 2).map((ch) => (
-                                        <Link
-                                            key={ch.id}
-                                            to={`/manga/${manga.id}/chapter/${ch.id}`}
-                                            className="chapter-link"
-                                        >
-                                            {ch.chapter_name || `Chapter ${ch.chap_number}`}
-                                        </Link>
+                                        <div key={ch.id} className="chapter-item">
+                                            <Link
+                                                to={`/manga/${manga.id}/chapter/${ch.chapter_number}`}
+                                                className="chapter-link"
+                                            >
+                                                <span className="chapter-number">Chương {ch.chapter_number}</span>
+                                                <span className="chapter-title">
+                            {ch.chapter_name || `Chapter ${ch.chapter_number}`}
+                        </span>
+                                            </Link>
+                                        </div>
                                     ))
                                 ) : (
                                     <span className="no-chapters">Chưa có chương nào</span>
