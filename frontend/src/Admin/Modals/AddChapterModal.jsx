@@ -89,13 +89,13 @@ const AddChapterModal = ({ mangaId, onClose }) => {
             const respone = await axios.post(`http://localhost:8080/api/manga/${mangaId}/chapter`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
-            showSuccessDialog(respone?.data?.message||"Thêm chap thành công!");
+            await showSuccessDialog(respone?.data?.message || "Thêm chap thành công!");
 
         } catch (error) {
             console.error(error);
             onClose();
             const msg = error?.response?.data?.message || "Thêm chap thất bại";
-            showErrorDialog("Lỗi", msg);
+            await showErrorDialog("Lỗi", msg);
         }
     };
 

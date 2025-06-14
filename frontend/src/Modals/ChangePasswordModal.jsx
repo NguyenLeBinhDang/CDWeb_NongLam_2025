@@ -1,7 +1,41 @@
-import {Box, Button, Modal, Typography} from "@mui/material";
-import React from "react";
+import {Box, Button, Modal, TextField, Typography} from "@mui/material";
+import React, {useState} from "react";
+import {useForgotPassword} from "../context/ForgotPasswordContext";
 
 const ChangePasswordModal = ({open, onClose, email}) => {
+
+    const {changePassword} = useForgotPassword();
+
+    const [changePasswordForm, setChangePasswordForm] = useState({
+        email: email,
+        oldPassword: '',
+        newPassword: '',
+    })
+
+    const handleSubmit = async () => {
+        const localFormData = {...changePasswordForm};
+        handleCloseModal();
+        await changePassword(localFormData);
+    }
+
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setChangePasswordForm({
+            ...changePasswordForm,
+            [name]: value,
+        });
+
+        // console.log(changePasswordForm);
+    };
+
+    const handleCloseModal = () => {
+        setChangePasswordForm({
+            oldPassword: '',
+            newPassword: '',
+        })
+        onClose();
+    }
+
 
     return (
         <Modal open={open} onClose={onClose}>
@@ -21,14 +55,31 @@ const ChangePasswordModal = ({open, onClose, email}) => {
                 <Box>
                     <Typography variant="h6">Nhập mật khẩu cũ:</Typography>
 
+                    <TextField
+                        label="Mật khẩu cũ"
+                        name="oldPassword"
+                        fullWidth
+                        value={changePasswordForm.oldPassword}
+                        onChange={handleChange}
+                    />
+
+
                     <Typography variant="h6">Nhập mật khẩu mới:</Typography>
+
+                    <TextField
+                        label="Mật khẩu mới"
+                        name="newPassword"
+                        fullWidth
+                        value={changePasswordForm.newPassword}
+                        onChange={handleChange}
+                    />
 
 
                 </Box>
 
                 <Box sx={{display: 'flex', justifyContent: 'flex-end', gap: 1, mt: 2}}>
-                    <Button variant="contained" color="error" onClick={onClose}>Hủy</Button>
-                    <Button variant="contained" color="primary">Lưu</Button>
+                    <Button variant="contained" color="error" onClick={handleCloseModal}>Hủy</Button>
+                    <Button variant="contained" color="primary" onClick={handleSubmit}>Lưu</Button>
                 </Box>
             </Box>
         </Modal>
