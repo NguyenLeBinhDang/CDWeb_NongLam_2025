@@ -44,7 +44,7 @@ function App() {
                                                 <Route path="/all-manga" element={<AllManga/>}/>
                                                 <Route path="/manga/:id" element={<MangaDetail/>}/>
                                                 <Route path="/manga/category/:categoryId" element={<Category/>}/>
-                                                <Route path="/manga/:id/chapter/:chapterId" element={<MangaReader/>}/>
+                                                <Route path="/manga/:mangaId/chapter/:chapNum" element={<MangaReader/>}/>
                                                 <Route path="/login" element={<Login/>}/>
                                                 <Route path="/register" element={<Register/>}/>
                                                 <Route path="/profile" element={<UserInfo/>}/>
