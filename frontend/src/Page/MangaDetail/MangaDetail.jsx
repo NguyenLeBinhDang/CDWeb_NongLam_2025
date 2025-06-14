@@ -13,9 +13,12 @@ const MangaDetail = () => {
     const navigate = useNavigate();
     const pages = location.state?.pages;
     const [showAddChapterModal, setShowAddChapterModal] = useState(false);
-
+    const [comments, setComments] = useState([]);
+    const [newComment, setNewComment] = useState("");
+    const [replyTo, setReplyTo] = useState(null);
     const { user } = useContext(UserContext);
     const canEdit = ['ADMIN', 'MOD', 'UPLOADER'].includes(user?.role?.role_name);
+    const isAdminOrMod = ['ADMIN', 'MOD'].includes(user?.role?.role_name);
     const { id } = useParams();
     const { manga, chapters, getMangaById, getChapterOfManga } = useFilter();
     const [loading, setLoading] = useState(false);
@@ -23,9 +26,158 @@ const MangaDetail = () => {
         const fetchData = async () => {
             await getMangaById(id);
             await getChapterOfManga(id);
+            await fetchComments();
         };
         fetchData();
     }, [id]);
+
+    const fetchComments = async () => {
+        try {
+            const res =await axios.get(`http://localhost:8080/api/comments/manga/${id}`);
+            setComments(res.data);
+        } catch (e) {
+            console.error("Failed to fetch comments", e);
+        }
+    };
+
+    const handlePostComment = async () => {
+        if (!newComment.trim()) return;
+        try {
+            const response = replyTo
+                ? await axios.post(`http://localhost:8080/api/comments/${replyTo}/reply`, { comment: newComment, mangaId: id }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                })
+                : await axios.post(`http://localhost:8080/api/comments`, { comment: newComment, mangaId: id }, {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`
+                    }
+                });
+
+            setNewComment("");
+            setReplyTo(null);
+            await fetchComments();
+        } catch (error) {
+            console.error("Comment failed", error);
+            await showErrorDialog("Lỗi", "Không thể gửi bình luận");
+        }
+    };
+
+
+    const handleDeleteComment = async (commentId) => {
+        try {
+            await axios.delete(`http://localhost:8080/api/comments/${commentId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            await fetchComments();
+        } catch (err) {
+            await showErrorDialog("Lỗi", "Không thể xóa bình luận");
+        }
+    };
+
+    const handleBanUser = async (userId) => {
+        try {
+            await axios.put(`http://localhost:8080/api/users/ban/${userId}`, {}, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            await showSuccessDialog("Đã chặn người dùng");
+        } catch (err) {
+            await showErrorDialog("Lỗi", "Không thể chặn người dùng");
+        }
+    };
+
+    const renderCommentSection = () => {
+        const rootComments = comments.filter(c => c.reply == null);
+        const getReplies = (parentId) => comments.filter(c => c.reply === parentId);
+
+        return (
+            <div className="comment-section">
+                <h3 className="comment-heading">Bình luận</h3>
+
+                {user ? (
+                    <div className="comment-input">
+                        {replyTo && <div className="reply-label">Đang trả lời bình luận #{replyTo}</div>}
+                        <textarea
+                            value={newComment}
+                            onChange={(e) => setNewComment(e.target.value)}
+                            placeholder="Viết bình luận..."
+                        />
+                        <button onClick={handlePostComment}>Gửi</button>
+                    </div>
+                ) : (
+                    <p>Hãy <strong>đăng nhập</strong> để bình luận</p>
+                )}
+
+                <div className="comment-list">
+                    {rootComments.map(comment => (
+                        <div key={comment.id} className="comment-item">
+                            <div className="avatar-section">
+                                <img src={comment.avatarUrl || "/default-avatar.png"} alt="avatar" />
+                            </div>
+
+                            <div className="content-section">
+                                <div className="comment-header">
+                                    <span className="username">{comment.userName || "Ẩn danh"}</span>
+                                    <span className="time">{new Date(comment.updatedAt).toLocaleString("vi-VN")}</span>
+                                </div>
+
+                                <div className="comment-text">
+                                    {comment.comment}
+                                </div>
+
+                                <div className="comment-actions">
+                                    {!comment.isDeleted && user && (
+                                        <button onClick={() => setReplyTo(comment.id)}>Trả lời</button>
+                                    )}
+                                    {['ADMIN', 'MOD'].includes(user?.role?.role_name) && (
+                                        <>
+                                            <button onClick={() => handleDeleteComment(comment.id)} className="admin-delete">Xóa</button>
+                                            <button onClick={() => handleBanUser(comment.userId)} className="admin-ban">Chặn</button>
+                                        </>
+                                    )}
+                                </div>
+
+                                {/* Replies */}
+                                <div className="comment-replies">
+                                    {getReplies(comment.id).map(reply => (
+                                        <div key={reply.id} className="comment-item reply-comment">
+                                            <div className="avatar-section">
+                                                <img src={reply.avatarUrl || "/default-avatar.png"} alt="avatar" />
+                                            </div>
+                                            <div className="content-section">
+                                                <div className="comment-header">
+                                                    <span className="username">{reply.userName || "Ẩn danh"}</span>
+                                                    <span className="time">{new Date(reply.updatedAt).toLocaleString("vi-VN")}</span>
+                                                </div>
+                                                <div className="comment-text">{reply.comment}</div>
+                                                <div className="comment-actions">
+                                                    {!reply.isDeleted && user && (
+                                                        <button onClick={() => setReplyTo(reply.id)}>Trả lời</button>
+                                                    )}
+                                                    {['ADMIN', 'MOD'].includes(user?.role?.role_name) && (
+                                                        <>
+                                                            <button onClick={() => handleDeleteComment(reply.id)} className="admin-delete">Xóa</button>
+                                                            <button onClick={() => handleBanUser(reply.userId)} className="admin-ban">Chặn</button>
+                                                        </>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        );
+    };
+
 
     const handleChapterClick = (chapterNumber) => {
         navigate(`/manga/${id}/chapter/${chapterNumber}`);
@@ -80,7 +232,9 @@ const MangaDetail = () => {
         }
     };
 
+    const renderComment= () => {
 
+    }
 
     const renderChaptersList = () => {
         // Sắp xếp chương theo số chương giảm dần (mới nhất đầu tiên)
@@ -148,6 +302,9 @@ const MangaDetail = () => {
                 <div className="manga-chapters">
                     <h2 style={{color: '#f39c12'}}>Danh sách chương</h2>
                     {renderChaptersList()}
+                </div>
+                <div className="manga-comments">
+                    {renderCommentSection()}
                 </div>
             </div>
 
