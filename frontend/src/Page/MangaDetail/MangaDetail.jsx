@@ -100,7 +100,7 @@ const MangaDetail = () => {
                     {renderMangaInfo()}
                 </div>
 
-                {pages === 'admin' && canEdit && renderAdminButtons()}
+                {canEdit && renderAdminButtons()}
 
                 <div className="manga-chapters">
                     <h2 style={{color: '#f39c12'}}>Danh sách chương</h2>

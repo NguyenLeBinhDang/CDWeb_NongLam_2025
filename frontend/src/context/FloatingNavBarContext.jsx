@@ -55,16 +55,21 @@
 //     }
 //     return context;
 // }
-import { createContext, useContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useFilter } from "./FilterContext";
+import {createContext, useContext, useState, useEffect} from "react";
+import {useNavigate, useParams} from "react-router-dom";
+import {useFilter} from "./FilterContext";
 
 const FloatingNavBarContext = createContext();
 
-export const FloatingNavBarProvider = ({ children }) => {
+export const FloatingNavBarProvider = ({children}) => {
     const [isVisible, setIsVisible] = useState(false);
-    const { manga, chapters } = useFilter();
+    const {mangaId} = useParams();
+    const {manga, chapters, getMangaById} = useFilter();
     const navigate = useNavigate();
+
+    // useEffect(() => {
+    //     getMangaById(mangaId);
+    // })
 
     // Theo dõi scroll để ẩn/hiện FloatingNavBar
     useEffect(() => {
@@ -90,13 +95,13 @@ export const FloatingNavBarProvider = ({ children }) => {
     const handleChapterNavigation = (direction) => {
         if (!manga || !chapters) return;
 
-        const currentIndex = chapters.findIndex(ch => ch.chap_number === parseInt(manga.currentChapter));
+        const currentIndex = chapters.findIndex(ch => ch.chapter_number === parseInt(manga.currentChapter));
 
         if (direction === 'next' && currentIndex > 0) {
-            const nextChapter = chapters[currentIndex - 1].chap_number;
+            const nextChapter = chapters[currentIndex - 1].chapter_number;
             navigate(`/manga/${manga.id}/chapter/${nextChapter}`);
         } else if (direction === 'prev' && currentIndex < chapters.length - 1) {
-            const prevChapter = chapters[currentIndex + 1].chap_number;
+            const prevChapter = chapters[currentIndex + 1].chapter_number;
             navigate(`/manga/${manga.id}/chapter/${prevChapter}`);
         }
     };

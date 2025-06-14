@@ -33,7 +33,7 @@ const MangaReader = () => {
 
     const parsedChapNum = parseInt(chapNum);
 
-    const sortedChapters = [...(chapters || [])].sort((a, b) => b.chap_number - a.chap_number);
+    const sortedChapters = [...(chapters || [])].sort((a, b) => b.chapter_number - a.chapter_number);
 
     useEffect(() => {
         if (!mangaId || !chapNum) {
@@ -52,7 +52,7 @@ const MangaReader = () => {
                 console.error('Error loading manga data:', err);
                 setError(err.message || 'Lỗi khi tải dữ liệu');
                 if (sortedChapters.length > 0) {
-                    navigate(`/manga/${mangaId}/chapter/${sortedChapters[0].chap_number}`);
+                    navigate(`/manga/${mangaId}/chapter/${sortedChapters[0].chapter_number}`);
                 }
             }
         };
@@ -65,16 +65,17 @@ const MangaReader = () => {
     };
 
     const handleNextChapter = () => {
-        const currentIndex = sortedChapters.findIndex(ch => ch.chap_number === parsedChapNum);
+        const currentIndex = sortedChapters.findIndex(ch => ch.chapter_number === parsedChapNum);
+        console.log(currentIndex);
         if (currentIndex > 0) {
-            handleChapterChange(sortedChapters[currentIndex - 1].chap_number);
+            handleChapterChange(sortedChapters[currentIndex - 1].chapter_number);
         }
     };
 
     const handlePrevChapter = () => {
-        const currentIndex = sortedChapters.findIndex(ch => ch.chap_number === parsedChapNum);
+        const currentIndex = sortedChapters.findIndex(ch => ch.chapter_number === parsedChapNum);
         if (currentIndex < sortedChapters.length - 1) {
-            handleChapterChange(sortedChapters[currentIndex + 1].chap_number);
+            handleChapterChange(sortedChapters[currentIndex + 1].chapter_number);
         }
     };
     if (!mangaId || !chapNum) {
