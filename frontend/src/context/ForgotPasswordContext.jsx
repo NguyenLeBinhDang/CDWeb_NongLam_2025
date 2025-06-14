@@ -19,10 +19,8 @@ export const ForgotPasswordProvider = ({children}) => {
             const checkAuth = async () => {
                 try {
                     const savedToken = localStorage.getItem('token');
-                    const savedUser = localStorage.getItem('user');
-                    if (savedToken && savedUser) {
+                    if (savedToken) {
                         setToken(savedToken);
-                        setUser(JSON.parse(savedUser));
                     }
                 } catch (error) {
                     console.error('Auth check failed:', error);
