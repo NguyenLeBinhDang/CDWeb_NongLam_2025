@@ -5,6 +5,8 @@ import { useFilter } from "../../context/FilterContext";
 import Loading from "../../components/Loader/Loading";
 import { UserContext } from "../../context/UserContext";
 import AddChapterModal from "../../Admin/Modals/AddChapterModal";
+import axios from "axios";
+import {showErrorDialog, showSuccessDialog} from "../../utils/Alert";
 
 const MangaDetail = () => {
     const location = useLocation();
@@ -15,8 +17,8 @@ const MangaDetail = () => {
     const { user } = useContext(UserContext);
     const canEdit = ['ADMIN', 'MOD', 'UPLOADER'].includes(user?.role?.role_name);
     const { id } = useParams();
-    const { manga, chapters, getMangaById, getChapterOfManga, loading } = useFilter();
-
+    const { manga, chapters, getMangaById, getChapterOfManga } = useFilter();
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         const fetchData = async () => {
             await getMangaById(id);
@@ -41,6 +43,45 @@ const MangaDetail = () => {
         </div>
     );
 
+    const renderAdminDeleteButtons = (chapid) => (
+        <button
+            className="delete-chapter-button"
+            onClick={() => handleDeleteChapter(chapid)}
+            style={{
+                backgroundColor: '#f44336',
+                color: 'white',
+                border: 'none',
+                padding: '12px 12px',
+                marginLeft: '10px',
+                borderRadius: '4px',
+                cursor: 'pointer'
+            }}
+        >
+            Xóa
+        </button>
+    );
+    const handleDeleteChapter = async (chapId) => {
+        setLoading(true);
+        try {
+            const respone = await axios.delete(`http://localhost:8080/api/manga/${id}/chapter/${chapId}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            await getChapterOfManga(id);
+            setLoading(false);
+            await showSuccessDialog(respone?.data?.message || "Xóa thành công!");
+
+        } catch (error) {
+            setLoading(false);
+            console.error(error);
+            const msg = error?.response?.data?.message || "Xóa thất bại";
+            await showErrorDialog("Lỗi", msg);
+        }
+    };
+
+
+
     const renderChaptersList = () => {
         // Sắp xếp chương theo số chương giảm dần (mới nhất đầu tiên)
         const sortedChapters = [...chapters].sort((a, b) => b.chapter_number - a.chapter_number);
@@ -55,7 +96,9 @@ const MangaDetail = () => {
                         >
                             <span className="chapter-number">Chương {ch.chapter_number}</span>
                             <span className="chapter-title">{ch.chapter_name}</span>
+                            {canEdit && renderAdminDeleteButtons(ch.id)}
                         </div>
+
                     </div>
                 ))}
             </div>
