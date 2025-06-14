@@ -6,6 +6,7 @@ import {
 import axios from 'axios';
 import { showSuccessDialog, showErrorDialog } from '../../utils/Alert';
 import { FilterContext } from '../../context/FilterContext';
+import Loading from "../../components/Loader/Loading";
 
 const AddMangaModal = ({ open, onClose, onSuccess }) => {
     const [formData, setFormData] = useState({
@@ -18,6 +19,7 @@ const AddMangaModal = ({ open, onClose, onSuccess }) => {
     });
 
     const { getAllCategories, getAllAuthor, getAllStatus, status, authors, categories } = useContext(FilterContext);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (open) {
@@ -52,24 +54,28 @@ const AddMangaModal = ({ open, onClose, onSuccess }) => {
             data.append("statusId", formData.statusId);
             formData.categoryIds.forEach(id => data.append("categoryIds", id));
 
+            setLoading(true);
+
             await axios.post('http://localhost:8080/api/manga', data, {
                 headers: {
                     // "Content-Type": "multipart/form-data",
                     'Authorization': `Bearer ${localStorage.getItem("token")}`}
 
             });
-
-            showSuccessDialog("Thành công", "Đã thêm truyện!");
-            onSuccess();
+            setLoading(false);
             onClose();
+            onSuccess();
+            await showSuccessDialog("Thành công", "Đã thêm truyện!");
         } catch (error) {
+            setLoading(false);
             const msg = error?.response?.data?.message || "Thêm truyện thất bại";
-            showErrorDialog("Lỗi", msg);
+            await showErrorDialog("Lỗi", msg);
         }
     };
 
     return (
         <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+            {loading && <Loading size="large" />}
             <DialogTitle>Thêm truyện mới</DialogTitle>
             <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                 <TextField label="Tên truyện" name="name" value={formData.name} onChange={handleChange} fullWidth />
