@@ -1,12 +1,24 @@
 import './Admin.css';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {Box, Button, Stack} from '@mui/material';
 import {Outlet, useNavigate, useLocation} from 'react-router-dom';
+import {useUser} from "../context/UserContext";
 
 const Admin = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const {user, loading} = useUser();
     const [activeButton, setActiveButton] = useState('manga');
+
+    // useEffect(() => {
+    //     if(loading){
+    //         return;
+    //     }
+    //
+    //     if(!user || user.role.role_name !== "ADMIN"){
+    //         navigate('/', { replace: true});
+    //     }
+    // },[user,navigate])
 
     const handleNavigation = (path) => {
         navigate(path);

@@ -82,7 +82,7 @@ const MangaCard = ({manga, type = null, chapter = null, isFavorite = false}) => 
                                 to={{
                                     pathname: `/manga/${manga.id}`,
                                 }}
-                                state={{pages: 'admin'}}
+                                // state={{pages: 'admin'}}
                             >
                                 <img src={manga.cover_img} alt={manga.name}/>
                             </Link>
@@ -125,20 +125,24 @@ const MangaCard = ({manga, type = null, chapter = null, isFavorite = false}) => 
                                      className="img-fluid"/>
                             </Link>
                         </div>
-                        <div className="manga-info">
-                            <h3 className="manga-title">
+                        <div className="manga-info-card">
+                            <h3 className="manga-title-card">
                                 <Link to={`/manga/${manga.id}`}>{manga.name}</Link>
                             </h3>
-                            <div className="manga-update">
+                            <div className="manga-update-card">
                                 {chapter && chapter.length > 0 ? (
                                     chapter.slice(0, 2).map((ch) => (
-                                        <Link
-                                            key={ch.id}
-                                            to={`/manga/${manga.id}/chapter/${ch.id}`}
-                                            className="chapter-link"
-                                        >
-                                            {ch.chapter_name || `Chapter ${ch.chap_number}`}
-                                        </Link>
+                                        <div key={ch.id} className="chapter-item-card">
+                                            <Link
+                                                to={`/manga/${manga.id}/chapter/${ch.chapter_number}`}
+                                                className="chapter-link"
+                                            >
+                                                <span className="chapter-number-card">Chương {ch.chapter_number}</span>
+                                                <span className="chapter-title-card">
+                                                    {ch.chapter_name || `Chapter ${ch.chapter_number}`}
+                                                </span>
+                                            </Link>
+                                        </div>
                                     ))
                                 ) : (
                                     <span className="no-chapters">Chưa có chương nào</span>

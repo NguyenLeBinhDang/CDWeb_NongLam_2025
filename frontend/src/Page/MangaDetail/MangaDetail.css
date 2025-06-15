@@ -175,12 +175,12 @@
     /*justify-content: center;*/
     gap: 10px;
     margin: 10px 0;
-    background-color: #b3d4fc;
+    /*background-color: #b3d4fc;*/
 }
 
 .edit-manga-button {
     padding: 0.5em 1.0em;
-    font-size: 18px;
+    font-size: 15px;
     border-radius: 0.5em;
     cursor: pointer;
     border: 1px solid #e8e8e8;
@@ -195,6 +195,137 @@
     box-shadow: 4px 4px 12px #c5c5c5, -4px -4px 12px #ffffff;
 }
 
+.add-chapter-button{
+    padding: 0.5em 1.0em;
+    font-size: 15px;
+    border-radius: 0.5em;
+    cursor: pointer;
+    border: 1px solid #e8e8e8;
+    transition: all 0.2s;
+}
+
+.add-chapter-button:hover{
+    border: 1px solid white;
+}
+
+.add-chapter-button:active {
+    box-shadow: 4px 4px 12px #c5c5c5, -4px -4px 12px #ffffff;
+}
+.comment-section {
+    margin-top: 30px;
+}
+
+.comment-heading {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.comment-input-wrapper {
+    margin-bottom: 20px;
+}
+
+.comment-textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 4px;
+    resize: none;
+    border: 1px solid #ccc;
+}
+
+.post-comment-btn {
+    margin-top: 8px;
+    background-color: #f39c12;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.comment-list {
+    margin-top: 20px;
+}
+
+.comment-item, .reply-item {
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.comment-avatar img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.comment-content {
+    margin-left: 10px;
+    flex: 1;
+}
+
+.comment-header {
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}
+
+.comment-time {
+    font-size: 12px;
+    color: #888;
+    margin-left: 10px;
+}
+
+.comment-body {
+    margin: 4px 0;
+    font-size: 14px;
+    color: #222;
+}
+
+.comment-actions button {
+    margin-right: 10px;
+    font-size: 13px;
+    background: none;
+    border: none;
+    color: #1a73e8;
+    cursor: pointer;
+}
+
+.admin-action.delete {
+    color: red;
+}
+
+.admin-action.ban {
+    color: darkorange;
+}
+
+.replies {
+    margin-top: 10px;
+    padding-left: 30px;
+    border-left: 2px solid #eee;
+}
+
+.replying-to {
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: #555;
+}
+
+.cancel-reply {
+    color: #f00;
+    margin-left: 10px;
+    cursor: pointer;
+}
+.comment-chap {
+    display: inline-block;
+    background-color: #3498db; /* màu xanh dương */
+    color: white;
+    font-size: 12px;
+    padding: 2px 6px;
+    border-radius: 12px;
+    margin-left: 10px;
+    font-weight: bold;
+    vertical-align: middle;
+}
 /*button {*/
 /*    !*width: 50%;*!*/
 /*    height: 40px;*/

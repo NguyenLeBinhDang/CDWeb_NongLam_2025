@@ -21,11 +21,11 @@
     object-fit: cover;
 }
 
-.manga-info {
+.manga-info-card {
     padding: 12px;
 }
 
-.manga-title {
+.manga-title-card {
     font-size: 16px;
     margin-bottom: 8px;
     white-space: nowrap;
@@ -33,14 +33,14 @@
     text-overflow: ellipsis;
 }
 
-.manga-title a {
-    color: #333;
+.manga-title-card a {
+    color: #f39c12;
     text-decoration: none;
 }
 
-.manga-title a:hover {
-    color: #f05454;
-}
+/*.manga-title-card a:hover {*/
+/*    color: #f05454;*/
+/*}*/
 
 .manga-author {
     color: #888;
@@ -48,11 +48,25 @@
     margin-bottom: 4px;
 }
 
-.manga-update {
+.manga-update-card {
+    /*display: ;*/
     margin-bottom: 8px;
 }
 
-.chapter-link {
+.chapter-number-card {
+    font-weight: 600;
+    min-width: 20%;
+}
+
+.chapter-title-card {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block; /* Ensures ellipsis works on spans inside flex items */
+}
+
+.chapter-link-card {
     display: block;
     color: #666;
     font-size: 14px;
@@ -60,8 +74,19 @@
     text-decoration: none;
 }
 
-.chapter-link:hover {
+.chapter-link-card:hover {
     color: #f05454;
+}
+
+.chapter-item-card {
+    overflow: hidden;
+    background-color: #333;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.chapter-item-card:hover {
+    background-color: #444;
 }
 
 .no-chapters {
@@ -134,6 +159,6 @@
     background-color: rgba(240, 84, 84, 0.8);
 }
 
-.manga-card:hover .icon-overlay i{
+.manga-card:hover .icon-overlay i {
     opacity: 1;
 }

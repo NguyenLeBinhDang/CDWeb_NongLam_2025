@@ -23,11 +23,6 @@ export const UserProvider = ({children}) => {
                 if (savedToken && savedUser) {
                     setToken(savedToken);
                     setUser(JSON.parse(savedUser));
-                    // fetchUserInfo(JSON.parse(savedUser).id);
-                    // const parsedUser = JSON.parse(savedUser);
-                    // if (parsedUser.role === 'ADMIN'|| parsedUser.role === 'MOD') {
-                    //     await getAllUser(savedToken);
-                    // }
                 }
             } catch (error) {
                 console.error('Auth check failed:', error);
@@ -54,11 +49,6 @@ export const UserProvider = ({children}) => {
         localStorage.removeItem('user');
         localStorage.removeItem('token');
     };
-    // useEffect(() => {
-    //     if (token) {
-    //         getAllUser();  // Chỉ gọi khi token đã sẵn sàng
-    //     }
-    // }, [token]);
 
     const getUserInfo = async (userId) => {
         try {
@@ -81,17 +71,17 @@ export const UserProvider = ({children}) => {
             throw new Error(message);
         }
     }
-    const getAllUser = async (customToken) => {
+    const getAllUser = async () => {
         try {
             setLoading(true);
-            const currentToken = customToken || token;
+            // const currentToken = customToken || token;
             const response = await axios.get('http://localhost:8080/api/users', {
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${currentToken}`
+                    'Authorization': `Bearer ${token}`
                 }
             });
-            setLoading(false);
+            // setLoading(false);
             setUsers(response.data);
             return response.data;
         } catch (error) {
@@ -111,7 +101,7 @@ export const UserProvider = ({children}) => {
             });
             const message = res?.data?.message || "Thay đổi thông tin thành công!";
             await showSuccessDialog("Thành công", message);
-            await getAllUser();
+            // await getAllUser();
         } catch (error) {
             const message = error?.response?.data?.message || 'Chỉnh sửa người dùng thất bại';
             await showErrorDialog("Lỗi", message);
@@ -130,7 +120,7 @@ export const UserProvider = ({children}) => {
             });
             setLoading(false);
             await showSuccessDialog("Avatar updated successfully!", "");
-            await getAllUser();
+            // await getAllUser();
         } catch (error) {
             setLoading(false);
             const message = error?.response?.data?.message || 'Failed to update avatar';
@@ -145,7 +135,7 @@ export const UserProvider = ({children}) => {
                 'Authorization': `Bearer ${token}`
             }
         });
-        await getAllUser();
+        // await getAllUser();
     };
 
     const changeUserRole = async (userId, roleId) => {
@@ -161,7 +151,7 @@ export const UserProvider = ({children}) => {
                     'Authorization': `Bearer ${token}`
                 }
             });
-            await getAllUser();
+            // await getAllUser();
             const message = res?.data?.message || "Thay đổi vai trò thành công!";
             await showSuccessDialog("Thành công", message);
         } catch (error) {
@@ -170,13 +160,34 @@ export const UserProvider = ({children}) => {
         }
     };
     const getAllRole = async () => {
-        const response = await axios.get(`http://localhost:8080/api/roles`, {}, {
+        const response = await axios.get(`http://localhost:8080/api/roles`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
         setRoles(response.data);
+    };
+
+    const addUser = async (userData) => {
+        try {
+            setLoading(true);
+            const response = await axios.post('http://localhost:8080/api/users/add', userData, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            setLoading(false);
+            await showSuccessDialog("Thêm người dùng thành công!", "");
+            // await getAllUser();
+            return response.data;
+        } catch (error) {
+            setLoading(false);
+            const message = error?.response?.data?.message || 'Thêm người dùng thất bại';
+            await showErrorDialog("Lỗi", message);
+        }
     }
+
     return (
         <UserContext.Provider value={{
             user,
@@ -185,13 +196,16 @@ export const UserProvider = ({children}) => {
             logout,
             loading,
             users,
+            userInfo,
             getAllUser,
             editUserByAdmin,
             updateAvatar,
             banUser,
             changeUserRole,
             roles,
-            getAllRole
+            getAllRole,
+            addUser,
+            getUserInfo
         }}>
             {children}
         </UserContext.Provider>
@@ -204,4 +218,4 @@ export const useUser = () => {
         throw new Error('useUser must be used within a UserProvider');
     }
     return context;
-}; 
+};

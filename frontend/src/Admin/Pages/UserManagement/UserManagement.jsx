@@ -13,11 +13,13 @@ import {
     MenuItem,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+// import "/img.png";
 import {useEffect, useState, useContext} from "react";
 import EditUserModal from "../../Modals/EditUserModal";
 import UpdateAvatarModal from "../../Modals/UpdateAvatarModal";
 import {useUser} from "../../../context/UserContext";
 import Loading from "../../../components/Loader/Loading";
+import AddUserModal from "../../Modals/AddUserModal";
 
 const UserManagement = () => {
     const {
@@ -28,16 +30,27 @@ const UserManagement = () => {
         banUser,
         changeUserRole,
         loading,
+        addUser,
     } = useUser();
 
     useEffect(() => {
-        getAllUser(localStorage.getItem("token"));
+        const fetchAllUser = async () => {
+            try {
+                await getAllUser();
+            } catch (error) {
+                console.log('Error fetching users:', error);
+            }
+        }
+        if (users.length === null || users.length === 0) {
+            fetchAllUser();
+        }
     }, []);
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
     const [openEditModal, setOpenEditModal] = useState(false);
     const [openAvatarModal, setOpenAvatarModal] = useState(false);
+    const [openAddUserModal, setOpenAddUserModal] = useState(false);
 
     const handleMenuClick = (event, user) => {
         setAnchorEl(event.currentTarget);
@@ -60,21 +73,44 @@ const UserManagement = () => {
 
     const handleBanUser = async () => {
         if (selectedUser) {
-            handleClose();
-            await banUser(selectedUser.id);
+            try {
+                handleClose();
+                await banUser(selectedUser.id);
+                await getAllUser(); // Refresh list after operation
+            } catch (error) {
+                console.error('Error banning user:', error);
+            }
         }
     };
 
     const handleChangeRole = async () => {
         if (selectedUser) {
-            const newRoleId = selectedUser.role.id === 1 ? 2 : 1; // ví dụ đổi role: 1 <=> 2
-            handleClose();
-            await changeUserRole(selectedUser.id, newRoleId);
+            try {
+                const newRoleId = selectedUser.role.id === 1 ? 2 : 1;
+                handleClose();
+                await changeUserRole(selectedUser.id, newRoleId);
+                await getAllUser(); // Refresh list after operation
+            } catch (error) {
+                console.error('Error changing role:', error);
+            }
         }
     };
 
+    const handleAddUserClick = () => {
+        setOpenAddUserModal(true);
+    }
+
+    const handleAddUser = async (data) => {
+        await addUser(data);
+    }
+
     const handleSaveEdit = async (userId, data) => {
-        await editUserByAdmin(userId, data);
+        try {
+            await editUserByAdmin(userId, data);
+            await getAllUser(); // Refresh list after operation
+        } catch (error) {
+            console.error('Error editing user:', error);
+        }
     };
 
     const handleUploadAvatar = async (userId, file) => {
@@ -105,7 +141,7 @@ const UserManagement = () => {
             {loading && <Loading/>}
             <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
                 <Typography variant="h4" sx={{color: '#fff'}}>Danh sách người dùng</Typography>
-                <Button variant="contained" color="primary">Thêm User</Button>
+                <Button variant="contained" color="primary" onClick={handleAddUserClick}>Thêm User</Button>
             </Box>
 
             <TableContainer sx={{maxHeight: 'calc(100vh - 200px)', overflowY: 'auto'}}>
@@ -127,7 +163,7 @@ const UserManagement = () => {
                                 <TableCell sx={tableCellStyle}>{user.id}</TableCell>
                                 <TableCell sx={tableCellStyle}>
                                     <img
-                                        src={"http://localhost:8080" + user.avatarUrl || null}
+                                        src={user.avatarUrl || '/img.png'}
                                         alt="avatar"
                                         style={{width: 40, height: 40, borderRadius: '50%', objectFit: 'cover'}}
                                     />
@@ -166,6 +202,13 @@ const UserManagement = () => {
                 handleClose={() => setOpenAvatarModal(false)}
                 userId={selectedUser?.id}
                 onUpload={handleUploadAvatar}
+            />
+
+            <AddUserModal
+                open={openAddUserModal}
+                handleClose={() => setOpenAddUserModal(false)}
+                onSave={addUser} // function gọi API POST /users
+                onUpload={handleUploadAvatar} // function gọi API POST /users/avatar
             />
         </Box>
     );

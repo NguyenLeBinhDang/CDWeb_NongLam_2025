@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import axios from 'axios';
 import {
     Dialog,
@@ -11,20 +11,23 @@ import {
     Box,
     IconButton
 } from '@mui/material';
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { arrayMove, SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import {DndContext, closestCenter, PointerSensor, useSensor, useSensors} from '@dnd-kit/core';
+import {arrayMove, SortableContext, useSortable, verticalListSortingStrategy} from '@dnd-kit/sortable';
+import {CSS} from '@dnd-kit/utilities';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {showErrorDialog, showSuccessDialog} from "../../utils/Alert";
+import Loading from "../../components/Loader/Loading";
+import {useFilter} from "../../context/FilterContext";
 
-const SortableImageItem = ({ id, file, index, removeFile }) => {
+
+const SortableImageItem = ({id, file, index, removeFile}) => {
     const {
         attributes,
         listeners,
         setNodeRef,
         transform,
         transition,
-    } = useSortable({ id });
+    } = useSortable({id});
 
     const style = {
         transform: CSS.Transform.toString(transform),
@@ -43,21 +46,22 @@ const SortableImageItem = ({ id, file, index, removeFile }) => {
             <img
                 src={URL.createObjectURL(file)}
                 alt={`page-${index}`}
-                style={{ width: 80, height: 80, objectFit: 'cover', marginRight: 12, borderRadius: 4 }}
+                style={{width: 80, height: 80, objectFit: 'cover', marginRight: 12, borderRadius: 4}}
             />
-            <Typography sx={{ flexGrow: 1 }}>{file.name}</Typography>
+            <Typography sx={{flexGrow: 1}}>{file.name}</Typography>
             <IconButton onClick={() => removeFile(index)} color="error">
-                <DeleteIcon />
+                <DeleteIcon/>
             </IconButton>
         </Box>
     );
 };
 
-const AddChapterModal = ({ mangaId, onClose }) => {
+const AddChapterModal = ({mangaId, onClose}) => {
     const [chapterName, setChapterName] = useState('');
     const [chapterNumber, setChapterNumber] = useState('');
     const [pages, setPages] = useState([]);
-
+    const [loading, setLoading] = useState(false);
+    const { getChapterOfManga } = useFilter();
     const sensors = useSensors(useSensor(PointerSensor));
 
     const handleFileChange = (e) => {
@@ -70,7 +74,7 @@ const AddChapterModal = ({ mangaId, onClose }) => {
     };
 
     const handleDragEnd = (event) => {
-        const { active, over } = event;
+        const {active, over} = event;
         if (active.id !== over.id) {
             const oldIndex = pages.findIndex((_, i) => i.toString() === active.id);
             const newIndex = pages.findIndex((_, i) => i.toString() === over.id);
@@ -86,21 +90,27 @@ const AddChapterModal = ({ mangaId, onClose }) => {
         pages.forEach(file => formData.append('pages', file));
 
         try {
+            setLoading(true);
             const respone = await axios.post(`http://localhost:8080/api/manga/${mangaId}/chapter`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
+                headers: {'Content-Type': 'multipart/form-data'}
             });
-            showSuccessDialog(respone?.data?.message||"Thêm chap thành công!");
+            await getChapterOfManga(mangaId);
+            setLoading(false);
+            onClose();
+            await showSuccessDialog(respone?.data?.message || "Thêm chap thành công!");
 
         } catch (error) {
+            setLoading(false);
             console.error(error);
             onClose();
             const msg = error?.response?.data?.message || "Thêm chap thất bại";
-            showErrorDialog("Lỗi", msg);
+            await showErrorDialog("Lỗi", msg);
         }
     };
 
     return (
         <Dialog open onClose={onClose} fullWidth maxWidth="sm">
+            {loading && <Loading size="large"/>}
             <DialogTitle>Thêm Chapter</DialogTitle>
             <form onSubmit={handleSubmit}>
                 <DialogContent dividers>
@@ -125,7 +135,7 @@ const AddChapterModal = ({ mangaId, onClose }) => {
                         variant="outlined"
                         component="label"
                         fullWidth
-                        sx={{ my: 2 }}
+                        sx={{my: 2}}
                     >
                         Chọn ảnh
                         <input
@@ -137,7 +147,7 @@ const AddChapterModal = ({ mangaId, onClose }) => {
                         />
                     </Button>
 
-                    <Typography variant="subtitle1" sx={{ mb: 1 }}>
+                    <Typography variant="subtitle1" sx={{mb: 1}}>
                         Ảnh đã chọn (kéo để sắp xếp):
                     </Typography>
                     <DndContext
