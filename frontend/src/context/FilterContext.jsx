@@ -16,11 +16,16 @@ export const FilterProvider = ({children}) => {
     const [loading, setLoading] = useState(false);
     const [errorMassage, setErrorMessage] = useState('some error');
     const [authors, setAuthors] = useState([]);
+    const [totalPages,setTotalPages] = useState(0);
+    const [currentPage, setCurrentPage] = useState(0);
     const [defaultFilter, setDefaultFilter] = useState({
         search: '',
         categoryIds: [],
         statusId: null,
-        authorId: null
+        authorId: null,
+        sortBy: 'latest',
+        page: 0,
+        size: 12,
     });
 
 
@@ -86,15 +91,15 @@ export const FilterProvider = ({children}) => {
         }
     }
 
-    const getAllManga = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/api/manga');
-            setMangaList(response.data);
-        } catch (error) {
-            console.error('Error fetching manga list:', error);
-            throw new Error('Failed to fetch manga list');
-        }
-    };
+    // const getAllManga = async () => {
+    //     try {
+    //         const response = await axios.get('http://localhost:8080/api/manga');
+    //         setMangaList(response.data);
+    //     } catch (error) {
+    //         console.error('Error fetching manga list:', error);
+    //         throw new Error ('Failed to fetch manga list');
+    //     }
+    // };
 
     const getMangaById = async (mangaId) => {
         try {
@@ -116,12 +121,20 @@ export const FilterProvider = ({children}) => {
             if (Array.isArray(filter.categoryIds)) {
                 filter.categoryIds.forEach(id => params.append("categoryIds", id));
             }
+            if (filter.sortBy !== null) params.append("sortBy", filter.sortBy);
+            params.append("page", filter.page || 0);          // page: 0-based
+            params.append("size", filter.size || 12);
             setLoading(true);
             const response = await axios.get(`http://localhost:8080/api/manga?${params.toString()}`);
-            setMangaList(response.data);
+            // setMangaList(response.data);
+            const data = response.data;
+            setMangaList(data.content);  // dữ liệu trang hiện tại
+            setTotalPages(data.totalPages); // dùng để hiển thị phân trang
+            setCurrentPage(data.number);    // dùng cho UI active page
+
             setLoading(false);
         } catch (error) {
-            setLoading(true);
+            setLoading(false);
             console.error('Error fetching manga:', error);
             const message = error?.response?.data?.message || 'Failed to fetch manga';
             await setErrorMessage(message);
@@ -144,7 +157,6 @@ export const FilterProvider = ({children}) => {
             const updatedCategories = isSelected
                 ? prevFilter.categoryIds.filter(id => id !== categoryId)
                 : [...prevFilter.categoryIds, categoryId];
-
             // Fetch new manga based on updated filters
             return {
                 ...prevFilter,
@@ -163,7 +175,22 @@ export const FilterProvider = ({children}) => {
             };
         });
     }
+    const handleSortChange = (sortBy) => {
+        setDefaultFilter(prevFilter => {
 
+            // Fetch new manga based on updated filters
+            return {
+                ...prevFilter,
+                sortBy: sortBy
+            };
+        });
+    }
+    const handlePageChange = (page) => {
+        setDefaultFilter(prev => ({
+            ...prev,
+            page: page
+        }));
+    };
     const setFilterFromHome = (filter) => {
         setDefaultFilter(filter);
     };
@@ -180,9 +207,12 @@ export const FilterProvider = ({children}) => {
             authors,
             status,
             loading,
+            totalPages,
+            currentPage,
+            handlePageChange,
             getAllCategories,
             setFilterFromHome,
-            getAllManga,
+            // getAllManga,
             getMangaById,
             getChapterOfManga,
             getManga,
@@ -191,7 +221,8 @@ export const FilterProvider = ({children}) => {
             fetchChapterForAll,
             handleStatusChange,
             getAllStatus,
-            getAllAuthor
+            getAllAuthor,
+            handleSortChange
         }}>
             {children}
         </FilterContext.Provider>

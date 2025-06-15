@@ -12,7 +12,7 @@ const Home = () => {
         mangaList,
         categories,
         getAllCategories,
-        getAllManga,
+        // getAllManga,
         getManga,
         getChapterOfManga,
         mangaChapters,
@@ -31,7 +31,7 @@ const Home = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await getAllManga();
+            await getManga();
             await getAllCategories();
         }
         fetchData()

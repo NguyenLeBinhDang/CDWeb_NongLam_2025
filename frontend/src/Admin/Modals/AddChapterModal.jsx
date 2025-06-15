@@ -92,7 +92,10 @@ const AddChapterModal = ({mangaId, onClose}) => {
         try {
             setLoading(true);
             const respone = await axios.post(`http://localhost:8080/api/manga/${mangaId}/chapter`, formData, {
-                headers: {'Content-Type': 'multipart/form-data'}
+                headers: {'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${localStorage.getItem("token")}`
+                }
+
             });
             await getChapterOfManga(mangaId);
             setLoading(false);
