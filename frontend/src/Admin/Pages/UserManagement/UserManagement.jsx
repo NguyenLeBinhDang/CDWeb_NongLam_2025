@@ -34,7 +34,16 @@ const UserManagement = () => {
     } = useUser();
 
     useEffect(() => {
-        getAllUser(localStorage.getItem("token"));
+        const fetchAllUser = async () => {
+            try {
+                await getAllUser();
+            } catch (error) {
+                console.log('Error fetching users:', error);
+            }
+        }
+        if (users.length === null || users.length === 0) {
+            fetchAllUser();
+        }
     }, []);
 
     const [anchorEl, setAnchorEl] = useState(null);
@@ -64,16 +73,26 @@ const UserManagement = () => {
 
     const handleBanUser = async () => {
         if (selectedUser) {
-            handleClose();
-            await banUser(selectedUser.id);
+            try {
+                handleClose();
+                await banUser(selectedUser.id);
+                await getAllUser(); // Refresh list after operation
+            } catch (error) {
+                console.error('Error banning user:', error);
+            }
         }
     };
 
     const handleChangeRole = async () => {
         if (selectedUser) {
-            const newRoleId = selectedUser.role.id === 1 ? 2 : 1; // ví dụ đổi role: 1 <=> 2
-            handleClose();
-            await changeUserRole(selectedUser.id, newRoleId);
+            try {
+                const newRoleId = selectedUser.role.id === 1 ? 2 : 1;
+                handleClose();
+                await changeUserRole(selectedUser.id, newRoleId);
+                await getAllUser(); // Refresh list after operation
+            } catch (error) {
+                console.error('Error changing role:', error);
+            }
         }
     };
 
@@ -86,7 +105,12 @@ const UserManagement = () => {
     }
 
     const handleSaveEdit = async (userId, data) => {
-        await editUserByAdmin(userId, data);
+        try {
+            await editUserByAdmin(userId, data);
+            await getAllUser(); // Refresh list after operation
+        } catch (error) {
+            console.error('Error editing user:', error);
+        }
     };
 
     const handleUploadAvatar = async (userId, file) => {
@@ -139,7 +163,7 @@ const UserManagement = () => {
                                 <TableCell sx={tableCellStyle}>{user.id}</TableCell>
                                 <TableCell sx={tableCellStyle}>
                                     <img
-                                        src={ user.avatarUrl  || '/img.png'}
+                                        src={user.avatarUrl || '/img.png'}
                                         alt="avatar"
                                         style={{width: 40, height: 40, borderRadius: '50%', objectFit: 'cover'}}
                                     />

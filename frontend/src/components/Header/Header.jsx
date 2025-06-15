@@ -8,23 +8,34 @@ import {useFilter} from "../../context/FilterContext";
 const Header = () => {
     const navigate = useNavigate();
     const [showMobileMenu, setShowMobileMenu] = useState(false);
-    const {user, logout} = useUser();
+    const {user, logout, userInfo, getUserInfo} = useUser();
     const {categories, getAllCategories, getManga, setFilterFromHome} = useFilter();
     const [searchTerm, setSearchTerm] = useState('');
     const [searchSuggestions, setSearchSuggestions] = useState([]);
     const [typingTimeout, setTypingTimeout] = useState(null);
+
+    const isAdmin = userInfo?.role?.role_name === 'ADMIN';
+
     useEffect(() => {
         getAllCategories();
     }, []);
 
+    useEffect(() => {
+        const fetchUserInfo = async (userId) => {
+            try {
+                await getUserInfo(userId);
+            } catch (error) {
+                console.error('Error fetching user info:', error);
+            }
+        }
+        if (user) {
+            fetchUserInfo(user.id);
+        }
+    }, [user])
+
     const toggleMobileMenu = () => {
         setShowMobileMenu(!showMobileMenu);
     };
-    //
-    // const handleSelectedCategory = (categoryId) => {
-    //     navigate(`/manga/category/${categoryId}`);
-    // };
-
     const handleBookmarkClick = () => {
         navigate('/bookmark');
     };
@@ -186,7 +197,9 @@ const Header = () => {
                         <li className="d-flex gap-2"><Link to="/bookmark"><i className="fas fa-bookmark"></i> Theo dõi
                         </Link></li>
 
-                        <li className="d-flex gap-2"><Link to="/admin"><i className="fas fa-cog"></i> Admin </Link></li>
+                        {isAdmin &&
+                            <li className="d-flex gap-2"><Link to="/admin"><i className="fas fa-cog"></i> Admin </Link>
+                            </li>}
 
                         {/*<li><span className="d-flex gap-2" onClick={handleBookmarkClick}><i className="fas fa-bookmark"></i> Theo dõi</span></li>*/}
                     </ul>
