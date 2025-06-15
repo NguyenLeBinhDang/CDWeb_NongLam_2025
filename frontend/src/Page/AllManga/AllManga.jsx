@@ -9,22 +9,24 @@ import {useBookmark} from "../../context/BookMarkContext";
 const AllManga = () => {
     const {
         mangaList,
-        getAllManga,
+        // getAllManga,
         getManga,
         defaultFilter,
         mangaChapters,
         fetchChapterForAll,
         loading,
-
+        totalPages,
+        currentPage,
+        handlePageChange
     } = useFilter();
     const {
         bookmarks,
         getIsFavorite,
         isFavorite,
     } = useBookmark();
-    const [currentPage, setCurrentPage] = useState(1);
-    // const [filters, setFilters] = useState(defaultFilter);
-    const mangaPerPage = 10;
+    // const [currentPage, setCurrentPage] = useState(1);
+    // // const [filters, setFilters] = useState(defaultFilter);
+    // const mangaPerPage = 10;
 
     useEffect(() => {
         getManga(defaultFilter);
@@ -48,10 +50,37 @@ const AllManga = () => {
     // };
 
     // Calculate pagination
-    const indexOfLastManga = currentPage * mangaPerPage;
-    const indexOfFirstManga = indexOfLastManga - mangaPerPage;
-    const currentManga = mangaList.slice(indexOfFirstManga, indexOfLastManga);
-    const totalPages = Math.ceil(mangaList.length / mangaPerPage);
+    // const indexOfLastManga = currentPage * mangaPerPage;
+    // const indexOfFirstManga = indexOfLastManga - mangaPerPage;
+    // const currentManga = mangaList.slice(indexOfFirstManga, indexOfLastManga);
+    // const totalPages = Math.ceil(mangaList.length / mangaPerPage);
+    // để sinh paging dạng (1,2,3...)
+    const renderPageNumbers = () => {
+        const pageNumbers = [];
+        const maxButtons = 5; // số nút tối đa hiển thị
+        const half = Math.floor(maxButtons / 2);
+        let start = Math.max(0, currentPage - half);
+        let end = start + maxButtons - 1;
+
+        if (end >= totalPages) {
+            end = totalPages - 1;
+            start = Math.max(0, end - maxButtons + 1);
+        }
+
+        for (let i = start; i <= end; i++) {
+            pageNumbers.push(
+                <button
+                    key={i}
+                    className={`page-btn number ${i === currentPage ? 'active' : ''}`}
+                    onClick={() => handlePageChange(i)}
+                >
+                    {i + 1}
+                </button>
+            );
+        }
+
+        return pageNumbers;
+    };
 
     return (
         <div className="all-manga-page">
@@ -65,7 +94,7 @@ const AllManga = () => {
                                 <h2 className="section-title">Tất cả truyện</h2>
                             </div>
                             <div className="manga-grid">
-                                {currentManga.map(manga => (
+                                {mangaList.map(manga => (
                                     <div key={manga.id} className="manga-item">
                                         <MangaCard manga={manga} chapter={mangaChapters[manga.id] || []}
                                                    isFavorite={isFavorite[manga.id]}/>
@@ -78,18 +107,18 @@ const AllManga = () => {
                                 <div className="pagination">
                                     <button
                                         className="page-btn"
-                                        onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                                        disabled={currentPage === 1}
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        disabled={currentPage === 0}
                                     >
                                         <i className="fas fa-chevron-left"></i>
                                     </button>
-                                    <span className="page-info">
-                                        Trang {currentPage} / {totalPages}
-                                    </span>
+
+                                    {renderPageNumbers()}
+
                                     <button
                                         className="page-btn"
-                                        onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                                        disabled={currentPage === totalPages}
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        disabled={currentPage + 1 >= totalPages}
                                     >
                                         <i className="fas fa-chevron-right"></i>
                                     </button>
