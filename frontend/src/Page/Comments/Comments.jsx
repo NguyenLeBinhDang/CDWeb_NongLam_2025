@@ -149,7 +149,7 @@ const Comments = () => {
                             {/* Align button to the left */}
                             <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
                                 <Button variant="contained" color="primary"
-                                        onClick={() => handlePostComment(createCommentData)}>
+                                        onClick={() => handleReply(commentId, createCommentData)}>
                                     Bình luận
                                 </Button>
                             </Box>
