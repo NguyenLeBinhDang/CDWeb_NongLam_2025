@@ -16,12 +16,19 @@ const FloatingNavBar = ({
                         }) => {
 
         const {isVisible, handleScroll} = useFloatingNavBar();
+        const navigate = useNavigate();
+
+        const currentChapterId = chapters.find(ch => ch.chapter_number === currentChapter)?.id || -1;
 
         useEffect(() => {
             handleScroll();
             window.addEventListener('scroll', handleScroll);
             return () => window.removeEventListener('scroll', handleScroll);
         }, []);
+
+        const handleComment = () => {
+            navigate(`/manga/${mangaId}/chapter/${currentChapterId}/comments`);
+        }
 
         return (
             <div className={`floating-nav ${isVisible ? 'visible' : ''} `}>
@@ -45,6 +52,12 @@ const FloatingNavBar = ({
                         >
                             Next Chapter
                         </button>
+                        <button className="floating-nav__button floating-nav__button--comment" onClick={handleComment}>
+                            {/*<i className="fa-light fa-comment"></i>*/}
+                            {/*<i className="fa-solid fa-comment"></i>*/}
+                            <i className="fa-regular fa-comment"></i>
+                        </button>
+
                     </div>
                 </div>
             </div>
