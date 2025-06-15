@@ -11,7 +11,8 @@ const FilterSidebar = ({filters, pages}) => {
         status,
         setFilterFromHome,
         handleCategoryChange,
-        handleStatusChange
+        handleStatusChange,
+        handleSortChange
     } = useFilter();
 
     useEffect(() => {
@@ -34,6 +35,7 @@ const FilterSidebar = ({filters, pages}) => {
             categoryIds: [],
             statusId: null,
             authorId: null,
+            sortBy: 'latest'
         };
         setFilterFromHome(newFilter);
         getManga(newFilter);
@@ -84,13 +86,13 @@ const FilterSidebar = ({filters, pages}) => {
                                 <h3 className="filter-title">Sắp xếp theo</h3>
                                 <div className="filter-options">
                                     {sortOptions.map(option => (
-                                        <label key={option.id} className="filter-option">
+                                        <label key={option.value} className="filter-option">
                                             <input
                                                 type="radio"
                                                 name="sort"
                                                 value={option.value}
-                                                checked={filters.sortBy === option.id}
-                                                // onChange={}
+                                                checked={filters.sortBy === option.value}
+                                                onChange={() => handleSortChange(option.value)}
                                             />
                                             <span className="radio-label"></span>
                                             {option.label}
@@ -144,13 +146,13 @@ const FilterSidebar = ({filters, pages}) => {
                                 <h3 className="filter-title">Sắp xếp theo</h3>
                                 <div className="filter-options">
                                     {sortOptions.map(option => (
-                                        <label key={option.id} className="filter-option">
+                                        <label key={option.value} className="filter-option">
                                             <input
                                                 type="radio"
                                                 name="sort"
                                                 value={option.value}
-                                                checked={filters.sortBy === option.id}
-                                                // onChange={}
+                                                checked={filters.sortBy === option.value}
+                                                onChange={() => handleSortChange(option.value)}
                                             />
                                             <span className="radio-label"></span>
                                             {option.label}
