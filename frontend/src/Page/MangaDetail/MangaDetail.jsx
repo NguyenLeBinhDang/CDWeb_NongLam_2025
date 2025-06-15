@@ -247,15 +247,6 @@ const MangaDetail = () => {
         <button
             className="delete-chapter-button"
             onClick={() => handleDeleteChapter(chapid)}
-            style={{
-                backgroundColor: '#f44336',
-                color: 'white',
-                border: 'none',
-                padding: '12px 12px',
-                marginLeft: '10px',
-                borderRadius: '4px',
-                cursor: 'pointer'
-            }}
         >
             Xóa
         </button>

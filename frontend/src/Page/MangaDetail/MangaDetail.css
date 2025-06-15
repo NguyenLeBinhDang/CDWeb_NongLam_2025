@@ -326,6 +326,20 @@
     font-weight: bold;
     vertical-align: middle;
 }
+.delete-chapter-button {
+    background-color: #d3355f;
+    color: white;
+    border: none;
+    padding: 12px 12px;
+    margin-left: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.delete-chapter-button:hover {
+    background-color: #9c130a;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    transform: scale(1.03);
+}
 /*button {*/
 /*    !*width: 50%;*!*/
 /*    height: 40px;*/
