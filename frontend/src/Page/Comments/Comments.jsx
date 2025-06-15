@@ -37,7 +37,7 @@ const Comments = () => {
         // }
 
         // if (listComment.length === 0) {
-            fetchComment(chapId);
+        fetchComment(chapId);
         // }
         console.log(listComment);
 
@@ -90,7 +90,7 @@ const Comments = () => {
                     <Box sx={{display: 'flex', gap: 2}}>
                         <Typography
                             variant="caption"
-                            sx={{ color: "#007BFF", cursor: "pointer" }}
+                            sx={{color: "#007BFF", cursor: "pointer"}}
                             onClick={(e) => {
                                 e.preventDefault(); // ← Add this just to be safe
                                 fetchReply(comment.id);
@@ -122,7 +122,6 @@ const Comments = () => {
                 </Box>
 
 
-
             </>
         )
     }
@@ -130,28 +129,45 @@ const Comments = () => {
     const renderReplyBox = (commentId) => {
         return (
             <>
-                <Box sx={{mt: 4, backgroundColor: '#fff', p: 2, borderRadius: 2}}>
-                    <Stack spacing={1}>
+
+
+                {user ? (
+
+                    <Box sx={{mt: 4, backgroundColor: '#fff', p: 2, borderRadius: 2}}>
+                        <Stack spacing={1}>
+                            <TextField
+                                fullWidth
+                                placeholder="Viết bình luận..."
+                                multiline
+                                minRows={3}
+                                onChange={(e) => setCreateCommentData(prev => ({
+                                    ...prev,
+                                    comment: e.target.value
+                                }))}
+                            />
+
+                            {/* Align button to the left */}
+                            <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
+                                <Button variant="contained" color="primary"
+                                        onClick={() => handlePostComment(createCommentData)}>
+                                    Bình luận
+                                </Button>
+                            </Box>
+                        </Stack>
+                    </Box>
+                ) : (
+
+                    <Box sx={{mt: 4, backgroundColor: '#fff'}}>
                         <TextField
                             fullWidth
-                            placeholder="Viết bình luận..."
+                            placeholder=" Vui long dang nhap"
                             multiline
                             minRows={3}
-                            onChange={(e) => setCreateCommentData(prev => ({
-                                ...prev,
-                                comment: e.target.value
-                            }))}
+                            disabled
                         />
-
-                        {/* Align button to the left */}
-                        <Box sx={{display: 'flex', justifyContent: 'flex-end'}}>
-                            <Button variant="contained" color="primary"
-                                    onClick={() => handleReply(commentId, createCommentData)}>
-                                Bình luận
-                            </Button>
-                        </Box>
-                    </Stack>
-                </Box>
+                    </Box>
+                    // <Typography> Vui long dang nhap </Typography>
+                )}
             </>
         )
     }
@@ -234,45 +250,6 @@ const Comments = () => {
                                 <Typography variant="body1" sx={{whiteSpace: 'pre-line'}}>
                                     {comment.comment}
                                 </Typography>
-
-                                {/*Fetch replies when component renders*/}
-                                {/*<Box sx={{*/}
-                                {/*    display: 'flex',*/}
-                                {/*    justifyContent: 'space-between',*/}
-                                {/*    alignItems: 'center',*/}
-                                {/*    mt: 1*/}
-                                {/*}}>*/}
-                                {/*    /!* Left side buttons *!/*/}
-                                {/*    <Box sx={{display: 'flex', gap: 2}}>*/}
-                                {/*        <Typography*/}
-                                {/*            variant="caption"*/}
-                                {/*            sx={{color: "#007BFF", cursor: "pointer"}}*/}
-                                {/*            onClick={() => fetchReply(comment.id)}*/}
-                                {/*        >*/}
-                                {/*            Xem phản hồi*/}
-                                {/*        </Typography>*/}
-                                {/*        {user?.fullName === comment.userName || user?.role.role_name === 'ADMIN' ?  (*/}
-                                {/*            <Typography*/}
-                                {/*                variant="caption"*/}
-                                {/*                sx={{color: "red", cursor: "pointer"}}*/}
-                                {/*                onClick={() => handleDeleteComment(comment.id)}*/}
-                                {/*            >*/}
-                                {/*                Xóa bình luận*/}
-                                {/*            </Typography>*/}
-                                {/*        ) : (*/}
-                                {/*            <Box></Box>*/}
-                                {/*        )}*/}
-                                {/*    </Box>*/}
-
-                                {/*    /!* Right side button *!/*/}
-                                {/*    <Typography*/}
-                                {/*        variant="caption"*/}
-                                {/*        sx={{color: "#007BFF", cursor: "pointer"}}*/}
-                                {/*        onClick={() => setActiveReplyId(activeReplyId === comment.id ? null : comment.id)}*/}
-                                {/*    >*/}
-                                {/*        Phản hồi bình luận*/}
-                                {/*    </Typography>*/}
-                                {/*</Box>*/}
 
                                 {renderActionBox(comment)}
 
