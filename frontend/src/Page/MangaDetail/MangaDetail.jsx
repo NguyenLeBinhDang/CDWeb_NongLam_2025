@@ -7,6 +7,7 @@ import { UserContext } from "../../context/UserContext";
 import AddChapterModal from "../../Admin/Modals/AddChapterModal";
 import axios from "axios";
 import {showErrorDialog, showSuccessDialog} from "../../utils/Alert";
+import AddMangaModal from "../../Admin/Modals/AddMangaModal";
 
 const MangaDetail = () => {
     const location = useLocation();
@@ -22,6 +23,7 @@ const MangaDetail = () => {
     const { id } = useParams();
     const { manga, chapters, getMangaById, getChapterOfManga } = useFilter();
     const [loading, setLoading] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     useEffect(() => {
         const fetchData = async () => {
             await getMangaById(id);
@@ -229,7 +231,9 @@ const MangaDetail = () => {
 
     const renderAdminButtons = () => (
         <div className="edit-manga-buttons-container">
-            <button className="edit-manga-button">Chỉnh sửa thông tin truyện</button>
+            <button className="edit-manga-button"
+                    onClick={() => setShowEditModal(true)
+            }>Chỉnh sửa thông tin truyện</button>
             <button
                 className="add-chapter-button"
                 onClick={() => setShowAddChapterModal(true)}
@@ -351,6 +355,18 @@ const MangaDetail = () => {
                     {renderCommentSection()}
                 </div>
             </div>
+            {showEditModal && (
+                <AddMangaModal
+                    open={showEditModal}
+                    onClose={() => setShowEditModal(false)}
+                    onSuccess={async () => {
+                        await getMangaById(manga.id)
+                        setShowEditModal(false);
+                    }}
+                    isEdit={true}
+                    defaultData={manga}
+                />
+            )}
 
             {showAddChapterModal && (
                 <AddChapterModal

@@ -5,31 +5,34 @@ import {Grid, Pagination, Box, Button} from '@mui/material';
 import FilterSidebar from "../../../components/FilterSidebar";
 import AddMangaModal from "../../Modals/AddMangaModal";
 const MangaManagement = () => {
-    const {mangaList, getAllManga, defaultFilter, getManga, setFilterFromHome} = useFilter();
-    const [currentPage, setCurrentPage] = useState(1);
-    const mangaPerPage = 8;
+    const {mangaList,  defaultFilter, getManga, setFilterFromHome, totalPages, currentPage} = useFilter();
     const [openAddManga, setOpenAddManga] = useState(false);
-    useEffect(() => {
-        getManga(defaultFilter);
-    }, [defaultFilter]);
+    // useEffect(() => {
+    //     getManga(defaultFilter);
+    // }, [defaultFilter]);
 
     useEffect(() => {
         const newFilter = {
             search: '',
             categoryIds: [],
             statusId: null,
-            authorId: null
+            authorId: null,
+            sortBy: 'latest',
         }
         setFilterFromHome(newFilter);
+        getManga(newFilter);
     }, []);
 
-    const indexOfLastManga = currentPage * mangaPerPage;
-    const indexOfFirstManga = indexOfLastManga - mangaPerPage;
-    const currentManga = mangaList.slice(indexOfFirstManga, indexOfLastManga);
-    const totalPages = Math.ceil(mangaList.length / mangaPerPage);
-
     const handlePageChange = (event, value) => {
-        setCurrentPage(value);
+        const zeroBasedPage = value - 1;
+        setFilterFromHome({
+            ...defaultFilter,
+            page: zeroBasedPage
+        });
+        getManga({
+            ...defaultFilter,
+            page: zeroBasedPage
+        });
     };
 
     const handleOpenAdd = () => setOpenAddManga(true);
@@ -37,6 +40,7 @@ const MangaManagement = () => {
     const handleAddSuccess = () => {
         getManga(defaultFilter); // refresh list
     };
+
     return (
         <>
             {/*<Box sx={{backgroundColor: '#666', padding: 3, minHeight: '100vh'}}>*/}
@@ -57,9 +61,9 @@ const MangaManagement = () => {
                     {/* Manga grid column */}
                     <Box sx={{flexGrow: 1}}>
                         <Grid container spacing={3}>
-                            {currentManga.map((manga) => (
+                            {mangaList.map((manga) => (
                                 <Grid item xs={12} sm={6} md={4} lg={3} key={manga.id}>
-                                    <MangaCard manga={manga} type="admin"/>
+                                    <MangaCard manga={manga} type="admin" onReload={handleAddSuccess} />
                                 </Grid>
                             ))}
                         </Grid>
@@ -67,7 +71,7 @@ const MangaManagement = () => {
                         <Box sx={{display: 'flex', justifyContent: 'center', mt: 4, mb: 2}}>
                             <Pagination
                                 count={totalPages}
-                                page={currentPage}
+                                page={currentPage + 1} // vì API trả page 0-based
                                 onChange={handlePageChange}
                                 color="primary"
                                 size="large"

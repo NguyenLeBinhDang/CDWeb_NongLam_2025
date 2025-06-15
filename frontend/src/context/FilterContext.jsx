@@ -91,15 +91,15 @@ export const FilterProvider = ({children}) => {
         }
     }
 
-    const getAllManga = async () => {
-        try {
-            const response = await axios.get('http://localhost:8080/api/manga');
-            setMangaList(response.data);
-        } catch (error) {
-            console.error('Error fetching manga list:', error);
-            throw new Error('Failed to fetch manga list');
-        }
-    };
+    // const getAllManga = async () => {
+    //     try {
+    //         const response = await axios.get('http://localhost:8080/api/manga');
+    //         setMangaList(response.data);
+    //     } catch (error) {
+    //         console.error('Error fetching manga list:', error);
+    //         throw new Error ('Failed to fetch manga list');
+    //     }
+    // };
 
     const getMangaById = async (mangaId) => {
         try {
@@ -185,7 +185,12 @@ export const FilterProvider = ({children}) => {
             };
         });
     }
-
+    const handlePageChange = (page) => {
+        setDefaultFilter(prev => ({
+            ...prev,
+            page: page
+        }));
+    };
     const setFilterFromHome = (filter) => {
         setDefaultFilter(filter);
     };
@@ -204,9 +209,10 @@ export const FilterProvider = ({children}) => {
             loading,
             totalPages,
             currentPage,
+            handlePageChange,
             getAllCategories,
             setFilterFromHome,
-            getAllManga,
+            // getAllManga,
             getMangaById,
             getChapterOfManga,
             getManga,
