@@ -80,6 +80,11 @@
     background-color: #e67e22;
 }
 
+.floating-nav__button--comment {
+    background-color: #e67e22;
+    color: white;
+}
+
 /* Responsive styles */
 @media (max-width: 640px) {
     .floating-nav__container {
