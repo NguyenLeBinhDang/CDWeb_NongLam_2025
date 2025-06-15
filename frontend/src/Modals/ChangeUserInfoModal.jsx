@@ -42,7 +42,7 @@ const ChangeUserInfoModal = ({open, onClose, user}) => {
             })
 
             await showSuccessDialog('Thành công','Cập nhật thông tin thành công')
-            if (!loading) await getUserInfo(user?.id);
+
             // setLoading(false);
         } catch (error) {
             setLoading(false);
@@ -76,7 +76,7 @@ const ChangeUserInfoModal = ({open, onClose, user}) => {
         await handleCloseButton();
         await handleUpload();
         await handleChangeName(userFormData);
-
+        await getUserInfo(user?.id);
 
         setUserFormData((prev) =>({
             ...prev,
