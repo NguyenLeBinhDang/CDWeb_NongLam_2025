@@ -6,7 +6,7 @@ import Loading from "../../components/Loader/Loading";
 import { UserContext } from "../../context/UserContext";
 import AddChapterModal from "../../Admin/Modals/AddChapterModal";
 import axios from "axios";
-import {showErrorDialog, showSuccessDialog} from "../../utils/Alert";
+import {showConfirmDialog, showErrorDialog, showSuccessDialog} from "../../utils/Alert";
 import AddMangaModal from "../../Admin/Modals/AddMangaModal";
 
 const MangaDetail = () => {
@@ -252,16 +252,21 @@ const MangaDetail = () => {
         </button>
     );
     const handleDeleteChapter = async (chapId) => {
-        setLoading(true);
+
         try {
-            const respone = await axios.delete(`http://localhost:8080/api/manga/${id}/chapter/${chapId}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            await getChapterOfManga(id);
-            setLoading(false);
-            await showSuccessDialog(respone?.data?.message || "Xóa thành công!");
+            const confirm =  await showConfirmDialog("Bạn chắc chắn chứ?" )
+            if (confirm.isConfirmed) {
+                setLoading(true);
+                const respone = await axios.delete(`http://localhost:8080/api/manga/${id}/chapter/${chapId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                await getChapterOfManga(id);
+                setLoading(false);
+                await showSuccessDialog(respone?.data?.message || "Xóa thành công!");
+            }
+
 
         } catch (error) {
             setLoading(false);
@@ -284,14 +289,17 @@ const MangaDetail = () => {
                 {sortedChapters.map((ch) => (
                     <div key={ch.id} className="chapter-item">
                         <div
-                            onClick={() => handleChapterClick(ch.chapter_number)}
                             className="chapter-link"
+                            onClick={() => handleChapterClick(ch.chapter_number)}
                         >
                             <span className="chapter-number">Chương {ch.chapter_number}</span>
-                            <span className="chapter-title">{ch.chapter_name}</span>
+                            <span className="chapter-title" >{ch.chapter_name} </span>
+
                             {canEdit && renderAdminDeleteButtons(ch.id)}
                         </div>
+                        <div>
 
+                        </div>
                     </div>
                 ))}
             </div>
