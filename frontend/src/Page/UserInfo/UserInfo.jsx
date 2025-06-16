@@ -3,6 +3,7 @@ import {useUser} from '../../context/UserContext';
 import './UserInfo.css';
 import Loading from "../../components/Loader/Loading";
 import ChangePasswordModal from "../../Modals/ChangePasswordModal";
+import ChangeUserInfoModal from "../../Modals/ChangeUserInfoModal";
 
 
 const UserInfo = () => {
@@ -67,11 +68,19 @@ const UserInfo = () => {
             </div>
 
             {userInfo && (
-                <ChangePasswordModal
-                    open={openChangePassword}
-                    onClose={() => setOpenChangePassword(false)}
-                    email={userInfo.email}
-                />
+                <>
+                    <ChangePasswordModal
+                        open={openChangePassword}
+                        onClose={() => setOpenChangePassword(false)}
+                        email={userInfo.email}
+                    />
+                    <ChangeUserInfoModal
+                        open={openEditInfo}
+                        onClose={() => setOpenEditInfo(false)}
+                        user={userInfo}
+                    />
+
+                </>
             )}
 
 
