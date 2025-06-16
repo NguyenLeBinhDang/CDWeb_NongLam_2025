@@ -48,12 +48,24 @@ const AddMangaModal = ({ open, onClose, onSuccess, isEdit = false, defaultData =
             [name]: value
         }));
     };
-
+    // để set preview ảnh
+    const [previewImage, setPreviewImage] = useState(null);
     const handleFileChange = (e) => {
         setFormData(prev => ({
             ...prev,
             coverImg: e.target.files[0]
+
         }));
+         const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setPreviewImage(reader.result);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            setPreviewImage(null);
+        }
     };
 
     const handleSubmit = async () => {
@@ -112,6 +124,7 @@ const AddMangaModal = ({ open, onClose, onSuccess, isEdit = false, defaultData =
                 <Button variant="outlined" component="label">
                     {formData.coverImg ? formData.coverImg.name : "Chọn ảnh bìa"}
                     <input type="file" hidden onChange={handleFileChange} accept="image/*" />
+
                 </Button>
 
                 <Autocomplete

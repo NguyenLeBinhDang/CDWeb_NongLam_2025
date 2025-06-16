@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {Link, useNavigate} from 'react-router-dom';
+import React, {useCallback, useEffect} from 'react';
+import {useNavigate} from 'react-router-dom';
 import MangaCard from '../../components/MangaCard/mangaCard';
 import {useFilter} from '../../context/FilterContext';
 import './Home.css';
@@ -36,18 +36,31 @@ const Home = () => {
         }
         fetchData()
     }, []);
-
+    const checkAuth = useCallback(() => {
+        return !!localStorage.getItem('token');
+    }, []);
     useEffect(() => {
         if (mangaList.length > 0) {
             fetchChapterForAll()
         }
     }, [mangaList])
-
     useEffect(() => {
-        mangaList.forEach((manga) => {
-            getIsFavorite(manga.id);
-        })
-    }, [mangaList, bookmarks])
+        const fetchFavoriteStatuses = async () => {
+            if (checkAuth() && mangaList.length > 0) {
+                // Chỉ kiểm tra cho những manga chưa có trong isFavorite
+                const mangaToCheck = mangaList.filter(manga =>
+                    isFavorite[manga.id] === undefined
+                );
+
+                // Sử dụng Promise.all để gọi song song
+                await Promise.all(
+                    mangaToCheck.map(manga => getIsFavorite(manga.id))
+                );
+            }
+        };
+
+        fetchFavoriteStatuses();
+    }, [mangaList, isFavorite, checkAuth, getIsFavorite]);
 
     const handleViewAllLatest = async () => {
         const newFilter = {

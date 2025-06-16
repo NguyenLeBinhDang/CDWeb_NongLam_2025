@@ -4,12 +4,13 @@ import {useUser} from '../../context/UserContext';
 import axios from 'axios';
 import './Header.css';
 import {useFilter} from "../../context/FilterContext";
+import {hyAM} from "@mui/material/locale";
 
 const Header = () => {
     const navigate = useNavigate();
     const [showMobileMenu, setShowMobileMenu] = useState(false);
     const {user, logout, userInfo, getUserInfo} = useUser();
-    const {categories, getAllCategories, getManga, setFilterFromHome} = useFilter();
+    const {categories, getAllCategories, getManga, setFilterFromHome,defaultf} = useFilter();
     const [searchTerm, setSearchTerm] = useState('');
     const [searchSuggestions, setSearchSuggestions] = useState([]);
     const [typingTimeout, setTypingTimeout] = useState(null);
@@ -42,7 +43,7 @@ const Header = () => {
 
     const handleLogout = async () => {
         try {
-            await axios.post('http://localhost:8080/api/auth/logout');
+            // await axios.post('http://localhost:8080/api/auth/logout');
             logout();
             navigate('/login');
         } catch (error) {
@@ -69,8 +70,11 @@ const Header = () => {
             try {
                 const params = new URLSearchParams();
                 params.append("search", value);
+                params.append("page",   0); // page: 0-based
+                params.append("size",  5);// Gợi ý tối đa 5
                 const response = await axios.get(`http://localhost:8080/api/manga?${params.toString()}`);
-                setSearchSuggestions(response.data.slice(0, 5)); // Gợi ý tối đa 5
+                const data = await response.data;
+                setSearchSuggestions(data.content);
             } catch (error) {
                 console.error("Failed to fetch suggestions", error);
             }
@@ -78,7 +82,10 @@ const Header = () => {
 
         setTypingTimeout(timeout);
     };
-
+    const handleHome = async () => {
+        setFilterFromHome(defaultf);
+        await getManga();
+    }
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
         const newFilter = {
@@ -103,7 +110,16 @@ const Header = () => {
         setFilterFromHome(newFilter);
         navigate('/all-manga');
     }
-
+    const handleCompleted = async (id) => {
+        const newFilter = {
+            search: '',
+            categoryIds: [],
+            statusId: id,
+            authorId: null
+        }
+        setFilterFromHome(newFilter);
+        // navigate('/all-manga');
+    }
     return (
         <header className="site-header">
             <div className="container">
@@ -111,7 +127,7 @@ const Header = () => {
                     <div className="row align-items-center">
                         <div className="col-lg-3 col-md-4 col-8">
                             <div className="site-branding">
-                                <Link to="/" className="logo">
+                                <Link to="/" className="logo" onClick={handleHome}>
                                     <img src="/img.png" alt="LowQuality" className="img-fluid"/>
                                     <span className="site-name">LowQuality</span>
                                 </Link>
@@ -174,9 +190,10 @@ const Header = () => {
 
                 <nav className={`main-navigation ${showMobileMenu ? 'mobile-menu-active' : ''}`}>
                     <ul className="main-menu">
-                        <li><Link to="/"><i className="fas fa-home"></i> Trang chủ</Link></li>
+                        <li><Link to="/" onClick={()=> handleHome()}><i className="fas fa-home"></i> Trang chủ</Link></li>
                         <li><Link to="/hot"><i className="fas fa-fire"></i> Truyện Hot</Link></li>
-                        <li><Link to="/completed"><i className="fas fa-check-circle"></i> Hoàn thành</Link></li>
+                        {/*<li><Link to="/completed"><i className="fas fa-check-circle"></i> Hoàn thành</Link></li>*/}
+                        <li><Link onClick={() => handleCompleted(2)} to={"/all-manga"}><i className="fas fa-check-circle"></i> Hoàn thành</Link></li>
                         <li className="dropdown">
                             <Link to="#" className="dropdown-toggle">
                                 <i className="fas fa-list"></i> Thể loại

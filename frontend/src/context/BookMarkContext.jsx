@@ -11,7 +11,18 @@ export const BookmarkProvider = ({children}) => {
     const [isFavorite, setIsFavorite] = useState({});
     const [chapters, setChapters] = useState({});
 
+    const checkAuth = () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            showErrorDialog('Lỗi', 'Vui lòng đăng nhập để sử dụng tính năng này');
+            return false;
+        }
+        return true;
+    };
+
     const fetchChapterForAll = async () => {
+        if (!checkAuth()) return;
+
         const chaptersMap = {};
         if (bookmarks !== null) {
             await Promise.all(bookmarks.map(async (bookmark) => {
@@ -22,6 +33,8 @@ export const BookmarkProvider = ({children}) => {
     };
 
     const getBookmarks = async () => {
+        if (!checkAuth()) return [];
+
         try {
             const response = await axios.get(`http://localhost:8080/api/favorites`, {
                 headers: {
@@ -35,11 +48,14 @@ export const BookmarkProvider = ({children}) => {
         } catch (error) {
             console.error('Error fetching bookmarks:', error);
             const message = error.response?.data?.messages || 'Failed to fetch bookmarks';
-            await showErrorDialog('Lỗi khi lấy danh sách theo dõi', message)
+            await showErrorDialog('Lỗi khi lấy danh sách theo dõi', message);
+            return [];
         }
     }
 
     const addBookmark = async (mangaId) => {
+        if (!checkAuth()) return false;
+
         try {
             const response = await axios.post(`http://localhost:8080/api/favorites/${mangaId}`, {}, {
                 headers: {
@@ -47,16 +63,19 @@ export const BookmarkProvider = ({children}) => {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             });
-            // setBookmarks(prev => [...prev, response.data]);
             await getBookmarks();
+            return true;
         } catch (error) {
             console.error('Error adding bookmark:', error);
             const message = error.response?.data?.message || 'Failed to add bookmark';
             await showErrorDialog('Lỗi khi thêm vào theo dõi', message);
+            return false;
         }
     }
 
     const removeBookmark = async (mangaId) => {
+        if (!checkAuth()) return false;
+
         try {
             await axios.delete(`http://localhost:8080/api/favorites/${mangaId}`, {
                 headers: {
@@ -65,19 +84,17 @@ export const BookmarkProvider = ({children}) => {
                 }
             });
             await getBookmarks();
-            // setBookmarks(prev => prev.filter(bookmark => bookmark.mangaId !== mangaId));
+            return true;
         } catch (error) {
             console.error('Error removing bookmark:', error);
             const message = error.response?.data?.message || 'Failed to remove bookmark';
             await showErrorDialog('Lỗi khi xóa theo dõi', message);
+            return false;
         }
     }
 
     const getIsFavorite = async (mangaId) => {
-        // if (isFavorite[mangaId] !== undefined) {
-        //     return isFavorite[mangaId];
-        // }
-
+        if (!checkAuth()) return false;
 
         try {
             const response = await axios.get(`http://localhost:8080/api/favorites/${mangaId}`, {
@@ -92,8 +109,6 @@ export const BookmarkProvider = ({children}) => {
                 [mangaId]: response.data
             }));
 
-            // await getBookmarks()
-
             return response.data;
         } catch (error) {
             console.error('Error checking if manga is favorite:', error);
@@ -101,25 +116,36 @@ export const BookmarkProvider = ({children}) => {
             await showErrorDialog('Lỗi khi kiểm tra theo dõi', message);
             return false;
         }
-        // return bookmarks.some(bookmark => bookmark.mangaId === mangaId);
     }
 
     const handleAddToFavorite = async (mangaId) => {
-        await showConfirmDialog("Bạn có chắc muốn thêm vào theo dõi?", "question");
-        await addBookmark(mangaId);
-        await getIsFavorite(mangaId); // update isFavorite state
-        await showSuccessDialog("Đã thêm vào theo dõi", "success");
+        if (!checkAuth()) return;
+
+        const confirmed = await showConfirmDialog("Bạn có chắc muốn thêm vào theo dõi?", "question");
+        if (!confirmed) return;
+
+        const success = await addBookmark(mangaId);
+        if (success) {
+            await getIsFavorite(mangaId);
+            await showSuccessDialog("Đã thêm vào theo dõi", "success");
+        }
     };
 
     const handleRemoveFromFavorite = async (mangaId) => {
-        await showConfirmDialog("Bạn có chắc muốn xóa khỏi theo dõi?", "question");
-        await removeBookmark(mangaId);
-        setIsFavorite(prev => {
-            const updated = {...prev};
-            delete updated[mangaId];
-            return updated;
-        });
-        await showSuccessDialog("Đã xóa khỏi theo dõi", "success");
+        if (!checkAuth()) return;
+
+        const confirmed = await showConfirmDialog("Bạn có chắc muốn xóa khỏi theo dõi?", "question");
+        if (!confirmed) return;
+
+        const success = await removeBookmark(mangaId);
+        if (success) {
+            setIsFavorite(prev => {
+                const updated = {...prev};
+                delete updated[mangaId];
+                return updated;
+            });
+            await showSuccessDialog("Đã xóa khỏi theo dõi", "success");
+        }
     };
 
     return (
