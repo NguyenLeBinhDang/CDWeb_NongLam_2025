@@ -5,6 +5,7 @@ import {useFilter} from '../../context/FilterContext';
 import './AllManga.css';
 import Loading from "../../components/Loader/Loading";
 import {useBookmark} from "../../context/BookMarkContext";
+import {showErrorDialog} from "../../utils/Alert";
 
 const AllManga = () => {
     const {
@@ -37,12 +38,31 @@ const AllManga = () => {
             fetchChapterForAll();
         }
     }, [mangaList]);
-
+    const checkAuth = () => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            return false;
+        }
+        return true;
+    };
     useEffect(() => {
-        mangaList.forEach((manga) => {
-            getIsFavorite(manga.id);
-        })
-    }, [mangaList, bookmarks]);
+        const fetchFavoriteStatuses = async () => {
+            if (checkAuth() && mangaList.length > 0) {
+                // Chỉ kiểm tra cho những manga chưa có trong isFavorite
+                const mangaToCheck = mangaList.filter(manga =>
+                    isFavorite[manga.id] === undefined
+                );
+
+                // Sử dụng Promise.all để gọi song song
+                await Promise.all(
+                    mangaToCheck.map(manga => getIsFavorite(manga.id))
+                );
+            }
+        };
+
+        fetchFavoriteStatuses();
+    }, [mangaList, isFavorite, checkAuth, getIsFavorite]);
+
 
     // const handleFilterChange = (newFilters) => {
     //     setFilters(newFilters);
@@ -54,6 +74,7 @@ const AllManga = () => {
     // const indexOfFirstManga = indexOfLastManga - mangaPerPage;
     // const currentManga = mangaList.slice(indexOfFirstManga, indexOfLastManga);
     // const totalPages = Math.ceil(mangaList.length / mangaPerPage);
+
     // để sinh paging dạng (1,2,3...)
     const renderPageNumbers = () => {
         const pageNumbers = [];

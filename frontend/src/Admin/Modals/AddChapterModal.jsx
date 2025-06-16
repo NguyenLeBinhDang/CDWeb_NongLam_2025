@@ -123,7 +123,6 @@ const AddChapterModal = ({mangaId, onClose}) => {
                         margin="normal"
                         value={chapterName}
                         onChange={(e) => setChapterName(e.target.value)}
-                        required
                     />
                     <TextField
                         label="Số chapter"

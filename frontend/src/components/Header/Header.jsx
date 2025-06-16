@@ -42,7 +42,7 @@ const Header = () => {
 
     const handleLogout = async () => {
         try {
-            await axios.post('http://localhost:8080/api/auth/logout');
+            // await axios.post('http://localhost:8080/api/auth/logout');
             logout();
             navigate('/login');
         } catch (error) {
@@ -69,8 +69,11 @@ const Header = () => {
             try {
                 const params = new URLSearchParams();
                 params.append("search", value);
+                params.append("page",   0); // page: 0-based
+                params.append("size",  5);// Gợi ý tối đa 5
                 const response = await axios.get(`http://localhost:8080/api/manga?${params.toString()}`);
-                setSearchSuggestions(response.data.slice(0, 5)); // Gợi ý tối đa 5
+                const data = await response.data;
+                setSearchSuggestions(data.content);
             } catch (error) {
                 console.error("Failed to fetch suggestions", error);
             }
