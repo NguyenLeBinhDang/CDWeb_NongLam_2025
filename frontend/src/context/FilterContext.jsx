@@ -27,6 +27,15 @@ export const FilterProvider = ({children}) => {
         page: 0,
         size: 12,
     });
+    const [defaultf, setDefaultf] = useState({
+        search: '',
+        categoryIds: [],
+        statusId: null,
+        authorId: null,
+        sortBy: 'latest',
+        page: 0,
+        size: 12,
+    });
 
 
     const fetchChapterForAll = async () => {
@@ -218,6 +227,7 @@ export const FilterProvider = ({children}) => {
             getManga,
             handleCategoryChange,
             // getAllUser,
+            defaultf,
             fetchChapterForAll,
             handleStatusChange,
             getAllStatus,
