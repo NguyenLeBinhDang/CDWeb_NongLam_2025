@@ -21,13 +21,12 @@ const MangaDetail = () => {
     const canEdit = ['ADMIN', 'MOD', 'UPLOADER'].includes(user?.role?.role_name);
     const isAdminOrMod = ['ADMIN', 'MOD'].includes(user?.role?.role_name);
     const {id} = useParams();
-    const {manga, chapters, getMangaById, getChapterOfManga} = useFilter();
+    const {manga,  getMangaById, } = useFilter();
     const [loading, setLoading] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     useEffect(() => {
         const fetchData = async () => {
             await getMangaById(id);
-            await getChapterOfManga(id);
             await fetchComments();
         };
         fetchData();
@@ -272,7 +271,7 @@ const MangaDetail = () => {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
                 });
-                await getChapterOfManga(id);
+                // await getChapterOfManga(id);
                 setLoading(false);
                 await showSuccessDialog(respone?.data?.message || "Xóa thành công!");
             }
@@ -292,34 +291,45 @@ const MangaDetail = () => {
 
     const renderChaptersList = () => {
         // Sắp xếp chương theo số chương giảm dần (mới nhất đầu tiên)
-        const sortedChapters = [...chapters].sort((a, b) => b.chapter_number - a.chapter_number);
+        // const sortedChapters = [...chapters].sort((a, b) => b.chapter_number - a.chapter_number);
 
         return (
             <div className="chapters-list">
-                {sortedChapters.map((ch) => (
-                    <div
-                        key={ch.id}
-                        className="chapter-item"
-                        style={{
-                            display: 'flex',
-                        }}
-                    >
-                        <div
-                            className="chapter-link"
-                            onClick={() => handleChapterClick(ch.chapter_number)}
-                            style={{
-                                flex: 1,
-                                cursor: 'pointer',
-                                display: 'flex',
-                                alignItems: 'center',
-                            }}
-                        >
-                            <span className="chapter-number">Chương {ch.chapter_number}: </span>
-                            <span className="chapter-title">{ch.chapter_name}</span>
-                        </div>
-                        {canEdit && renderAdminDeleteButtons(ch.id)}
+                {manga.chapter?.length > 0 ? (
+                    manga.chapter
+                        .sort((a, b) => b.chapter_number - a.chapter_number) // Sắp xếp chương mới nhất trước
+                        .map((ch) => (
+                            <div
+                                key={ch.id}
+                                className="chapter-item"
+                                style={{ display: 'flex' }}
+                            >
+                                <div
+                                    className="chapter-link"
+                                    onClick={() => handleChapterClick(ch.chapter_number)}
+                                    style={{
+                                        flex: 1,
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center'
+                                    }}
+                                >
+                                <span className="chapter-number">
+                                  Chương {ch.chapter_number}
+                                    {ch.chapter_name && ': '} {/* Chỉ hiện dấu ':' nếu có tên chương */}
+                                </span>
+                                    {ch.chapter_name && (
+                                        <span className="chapter-title">{ch.chapter_name}</span>
+                                    )}
+                                </div>
+                                {canEdit && renderAdminDeleteButtons(ch.id)}
+                            </div>
+                        ))
+                ) : (
+                    <div className="no-chapters-message">
+                        Truyện chưa có chương nào được đăng
                     </div>
-                ))}
+                )}
             </div>
         );
     };
@@ -388,7 +398,9 @@ const MangaDetail = () => {
             {showAddChapterModal && (
                 <AddChapterModal
                     mangaId={manga.id}
-                    onClose={() => setShowAddChapterModal(false)}
+                    onClose={async () =>{
+                        await getMangaById(manga.id)
+                        setShowAddChapterModal(false)}}
                 />
             )}
         </div>

@@ -9,9 +9,9 @@ export const FilterProvider = ({children}) => {
     const [mangaList, setMangaList] = useState([]);
     const [manga, setManga] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [chapters, setChapters] = useState([]);
+    // const [chapters, setChapters] = useState([]);
     const [users, setUsers] = useState([]);
-    const [mangaChapters, setMangaChapters] = useState({});
+    // const [mangaChapters, setMangaChapters] = useState({});
     const [status, setStatus] = useState([]);
     const [loading, setLoading] = useState(false);
     const [errorMassage, setErrorMessage] = useState('some error');
@@ -38,15 +38,15 @@ export const FilterProvider = ({children}) => {
     });
 
 
-    const fetchChapterForAll = async () => {
-        const chaptersMap = {};
-        if (mangaList !== null) {
-            await Promise.all(mangaList.map(async (manga) => {
-                chaptersMap[manga.id] = await getChapterOfManga(manga.id);
-            }))
-            setMangaChapters(chaptersMap);
-        }
-    };
+    // const fetchChapterForAll = async () => {
+    //     const chaptersMap = {};
+    //     if (mangaList !== null) {
+    //         await Promise.all(mangaList.map(async (manga) => {
+    //             chaptersMap[manga.id] = await getChapterOfManga(manga.id);
+    //         }))
+    //         setMangaChapters(chaptersMap);
+    //     }
+    // };
     //fetch status
     const getAllStatus = async () => {
         try {
@@ -79,16 +79,16 @@ export const FilterProvider = ({children}) => {
     //     }
     // }
 
-    const getChapterOfManga = async (mangaId) => {
-        try {
-            const response = await axios.get(`http://localhost:8080/api/manga/${mangaId}/chapter`);
-            setChapters(response.data);
-            return response.data;
-        } catch (error) {
-            console.error(`Error fetching chapters for manga with ID ${mangaId}:`, error);
-            throw new Error(`Failed to fetch chapters for manga with ID ${mangaId}`);
-        }
-    }
+    // const getChapterOfManga = async (mangaId) => {
+    //     try {
+    //         const response = await axios.get(`http://localhost:8080/api/manga/${mangaId}/chapter`);
+    //         setChapters(response.data);
+    //         return response.data;
+    //     } catch (error) {
+    //         console.error(`Error fetching chapters for manga with ID ${mangaId}:`, error);
+    //         throw new Error(`Failed to fetch chapters for manga with ID ${mangaId}`);
+    //     }
+    // }
 
     const getAllCategories = async () => {
         try {
@@ -210,9 +210,9 @@ export const FilterProvider = ({children}) => {
             mangaList,
             manga,
             categories,
-            chapters,
+            // chapters,
             users,
-            mangaChapters,
+            // mangaChapters,
             authors,
             status,
             loading,
@@ -223,12 +223,12 @@ export const FilterProvider = ({children}) => {
             setFilterFromHome,
             // getAllManga,
             getMangaById,
-            getChapterOfManga,
+            // getChapterOfManga,
             getManga,
             handleCategoryChange,
             // getAllUser,
             defaultf,
-            fetchChapterForAll,
+            // fetchChapterForAll,
             handleStatusChange,
             getAllStatus,
             getAllAuthor,

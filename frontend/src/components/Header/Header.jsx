@@ -82,10 +82,10 @@ const Header = () => {
 
         setTypingTimeout(timeout);
     };
-    const handleHome = async () => {
-        setFilterFromHome(defaultf);
-        await getManga();
-    }
+    // const handleHome = async () => {
+    //     setFilterFromHome(defaultf);
+    //     await getManga();
+    // }
     const handleSearchSubmit = async (e) => {
         e.preventDefault();
         const newFilter = {
@@ -127,7 +127,9 @@ const Header = () => {
                     <div className="row align-items-center">
                         <div className="col-lg-3 col-md-4 col-8">
                             <div className="site-branding">
-                                <Link to="/" className="logo" onClick={handleHome}>
+                                <Link to="/" className="logo"
+                                      // onClick={handleHome}
+                                >
                                     <img src="/img.png" alt="LowQuality" className="img-fluid"/>
                                     <span className="site-name">LowQuality</span>
                                 </Link>
@@ -190,7 +192,9 @@ const Header = () => {
 
                 <nav className={`main-navigation ${showMobileMenu ? 'mobile-menu-active' : ''}`}>
                     <ul className="main-menu">
-                        <li><Link to="/" onClick={()=> handleHome()}><i className="fas fa-home"></i> Trang chủ</Link></li>
+                        <li><Link to="/"
+                                  // onClick={()=> handleHome()}
+                        ><i className="fas fa-home"></i> Trang chủ</Link></li>
                         <li><Link to="/hot"><i className="fas fa-fire"></i> Truyện Hot</Link></li>
                         {/*<li><Link to="/completed"><i className="fas fa-check-circle"></i> Hoàn thành</Link></li>*/}
                         <li><Link onClick={() => handleCompleted(2)} to={"/all-manga"}><i className="fas fa-check-circle"></i> Hoàn thành</Link></li>
