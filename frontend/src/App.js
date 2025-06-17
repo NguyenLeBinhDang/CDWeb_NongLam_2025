@@ -26,6 +26,7 @@ import {ForgotPasswordProvider} from "./context/ForgotPasswordContext";
 import AdminRoute from "./Admin/AdminRoute";
 import Comments from "./Page/Comments/Comments";
 import {CommentProvider} from "./context/CommentsContext";
+import AdminWelcome from "./Admin/Pages/Welcome";
 
 
 const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_CLIENT_ID'; // Thay thế bằng Client ID của bạn
@@ -57,12 +58,15 @@ function App() {
                                                     <Route path="/profile" element={<UserInfo/>}/>
                                                     <Route path="/bookmark" element={<BookMark/>}/>
                                                     <Route path="/forgot-password" element={<ForgotPassword/>}/>
-                                                    <Route path="/admin" element={<AdminRoute allowedRoles={["ADMIN", "MOD"]} />}>
-                                                        <Route element={<Admin />}>
-                                                            <Route index element={<div>Welcome to Admin Dashboard</div>} />
-                                                            <Route path="manga-management" element={<MangaManagement />} />
-                                                            <Route path="user-management" element={<UserManagement />} />
-                                                            <Route path="button3" element={<div>Button 3 Content</div>} />
+                                                    <Route path="/admin"
+                                                           element={<AdminRoute allowedRoles={["ADMIN", "MOD"]}/>}>
+                                                        <Route element={<Admin/>}>
+                                                            <Route index element={<AdminWelcome/>}/>
+                                                            <Route path="manga-management"
+                                                                   element={<MangaManagement/>}/>
+                                                            <Route path="user-management" element={<UserManagement/>}/>
+                                                            <Route path="button3"
+                                                                   element={<div>Button 3 Content</div>}/>
                                                         </Route>
                                                     </Route>
                                                 </Routes>
