@@ -7,21 +7,21 @@ import AddMangaModal from "../../Modals/AddMangaModal";
 const MangaManagement = () => {
     const {mangaList,  defaultFilter, getManga, setFilterFromHome, totalPages, currentPage} = useFilter();
     const [openAddManga, setOpenAddManga] = useState(false);
-    // useEffect(() => {
-    //     getManga(defaultFilter);
-    // }, [defaultFilter]);
-
     useEffect(() => {
-        const newFilter = {
-            search: '',
-            categoryIds: [],
-            statusId: null,
-            authorId: null,
-            sortBy: 'latest',
-        }
-        setFilterFromHome(newFilter);
-        getManga(newFilter);
-    }, []);
+        getManga(defaultFilter);
+    }, [defaultFilter]);
+
+    // useEffect(() => {
+    //     const newFilter = {
+    //         search: '',
+    //         categoryIds: [],
+    //         statusId: null,
+    //         authorId: null,
+    //         sortBy: 'latest',
+    //     }
+    //     setFilterFromHome(newFilter);
+    //     getManga(newFilter);
+    // }, []);
 
     const handlePageChange = (event, value) => {
         const zeroBasedPage = value - 1;
