@@ -20,6 +20,8 @@ import UpdateAvatarModal from "../../Modals/UpdateAvatarModal";
 import {useUser} from "../../../context/UserContext";
 import Loading from "../../../components/Loader/Loading";
 import AddUserModal from "../../Modals/AddUserModal";
+import {showConfirmDialog, showErrorDialog, showSuccessDialog} from "../../../utils/Alert";
+import Swal from "sweetalert2";
 
 const UserManagement = () => {
     const {
@@ -31,8 +33,19 @@ const UserManagement = () => {
         changeUserRole,
         loading,
         addUser,
+        getAllRole,
+        roles,
     } = useUser();
+    useEffect(() => {
+        const fetchRoles = async () => {
+            getAllRole();
+        }
+        if(roles.length === 0){
 
+            fetchRoles();
+
+        }
+    }, []);
     const [userFilter, setUserFilter] = useState('');
 
     useEffect(() => {
@@ -72,39 +85,80 @@ const UserManagement = () => {
         handleClose();
     };
 
+    // const handleBanUser = async () => {
+    //     if (selectedUser) {
+    //         try {
+    //             const confirm =await showConfirmDialog(`Bạn có chắc chặn ${selectedUser.fullName}`)
+    //             if (!confirm.isConfirmed) {
+    //                 return;
+    //             }
+    //             handleClose();
+    //             await banUser(selectedUser.id);
+    //             await showSuccessDialog("Ban thành công")
+    //             await getAllUser(); // Refresh list after operation
+    //         } catch (error) {
+    //
+    //         }
+    //     }
+    // };
     const handleBanUser = async () => {
-        if (selectedUser) {
+        if (!selectedUser) return;
+        const action = selectedUser.isActive ? "Khóa" : "Mở khóa";
+        const result = await showConfirmDialog(`${action} người dùng này?`);
+
+        if (result.isConfirmed) {
             try {
                 handleClose();
                 await banUser(selectedUser.id);
-                await getAllUser(); // Refresh list after operation
-            } catch (error) {
-                console.error('Error banning user:', error);
+                await showSuccessDialog(`${action} thành công`);
+            }catch (error){
+                await showErrorDialog(error?.response?.data?.message);
             }
+
         }
     };
-
+    // const handleChangeRole = async () => {
+    //     if (selectedUser) {
+    //         try {
+    //             const newRoleId = selectedUser.role.id === 1 ? 2 : 1;
+    //             handleClose();
+    //             await changeUserRole(selectedUser.id, newRoleId);
+    //             await getAllUser(); // Refresh list after operation
+    //         } catch (error) {
+    //             console.error('Error changing role:', error);
+    //         }
+    //     }
+    // };
     const handleChangeRole = async () => {
-        if (selectedUser) {
+        if (!selectedUser || !roles.length) return;
+
+        const roleOptions = roles.reduce((acc, role) => {
+            acc[role.id] = role.role_name;
+            return acc;
+        }, {});
+        const { value: selectedRoleId } = await Swal.fire({
+            title: "Chọn vai trò mới",
+            input: "select",
+            inputOptions: roleOptions,
+            inputPlaceholder: "Chọn vai trò",
+            showCancelButton: true,
+            confirmButtonText: "Xác nhận",
+            cancelButtonText: "Hủy"
+        });
+
+        if (selectedRoleId) {
             try {
-                const newRoleId = selectedUser.role.id === 1 ? 2 : 1;
-                handleClose();
-                await changeUserRole(selectedUser.id, newRoleId);
-                await getAllUser(); // Refresh list after operation
-            } catch (error) {
-                console.error('Error changing role:', error);
+            await changeUserRole(selectedUser.id, Number(selectedRoleId));
+            // await showSuccessDialog("Cập nhật vai trò thành công");
+            }
+            catch (error) {
+                await showErrorDialog(error?.response?.data?.message || "Lỗi khi thay đổi role");
             }
         }
     };
-
     const handleAddUserClick = () => {
         setOpenAddUserModal(true);
     }
-
-    const handleAddUser = async (data) => {
-        await addUser(data);
-    }
-
     const handleSaveEdit = async (userId, data) => {
         try {
             await editUserByAdmin(userId, data);
@@ -218,7 +272,9 @@ const UserManagement = () => {
             <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleClose}>
                 <MenuItem onClick={handleOpenEditModal}>Chỉnh sửa thông tin</MenuItem>
                 <MenuItem onClick={handleOpenAvatarModal}>Cập nhật avatar</MenuItem>
-                <MenuItem onClick={handleBanUser}>Ban</MenuItem>
+                <MenuItem onClick={handleBanUser}>
+                    {selectedUser?.active ? 'Khóa' : 'Mở khóa'}
+                </MenuItem>
                 <MenuItem onClick={handleChangeRole}>Thay đổi role</MenuItem>
             </Menu>
 
