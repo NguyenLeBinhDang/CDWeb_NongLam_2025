@@ -6,10 +6,10 @@ import {useFilter} from "./FilterContext";
 const BookmarkContext = createContext();
 
 export const BookmarkProvider = ({children}) => {
-    const {getChapterOfManga} = useFilter();
+    // const {getChapterOfManga} = useFilter();
     const [bookmarks, setBookmarks] = useState([]);
     const [isFavorite, setIsFavorite] = useState({});
-    const [chapters, setChapters] = useState({});
+    // const [chapters, setChapters] = useState({});
 
     const checkAuth = () => {
         const token = localStorage.getItem('token');
@@ -19,18 +19,18 @@ export const BookmarkProvider = ({children}) => {
         }
         return true;
     };
-
-    const fetchChapterForAll = async () => {
-        if (!checkAuth()) return;
-
-        const chaptersMap = {};
-        if (bookmarks !== null) {
-            await Promise.all(bookmarks.map(async (bookmark) => {
-                chaptersMap[bookmark.manga.id] = await getChapterOfManga(bookmark.manga.id);
-            }))
-            setChapters(chaptersMap);
-        }
-    };
+    //
+    // const fetchChapterForAll = async () => {
+    //     if (!checkAuth()) return;
+    //
+    //     const chaptersMap = {};
+    //     if (bookmarks !== null) {
+    //         await Promise.all(bookmarks.map(async (bookmark) => {
+    //             chaptersMap[bookmark.manga.id] = await getChapterOfManga(bookmark.manga.id);
+    //         }))
+    //         setChapters(chaptersMap);
+    //     }
+    // };
 
     const getBookmarks = async () => {
         if (!checkAuth()) return [];
@@ -153,12 +153,12 @@ export const BookmarkProvider = ({children}) => {
             value={{
                 bookmarks,
                 isFavorite,
-                chapters,
+                // chapters,
                 getIsFavorite,
                 getBookmarks,
                 handleAddToFavorite,
                 handleRemoveFromFavorite,
-                fetchChapterForAll
+                // fetchChapterForAll
             }}>
             {children}
         </BookmarkContext.Provider>
