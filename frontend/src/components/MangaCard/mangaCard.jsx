@@ -166,7 +166,7 @@ const MangaCard = ({ manga, type = null, chapter = null, isFavorite = false, onR
                                     chapter.slice(0, 2).map((ch) => (
                                         <div key={ch.id} className="chapter-item-card">
                                             <Link to={`/manga/${manga.id}/chapter/${ch.chapter_number}`} className="chapter-link">
-                                                <span className="chapter-number-card">Chương {ch.chapter_number}</span>
+                                                <span className="chapter-number-card">Chương {ch.chapter_number}:</span>
                                                 <span className="chapter-title-card">{ch.chapter_name || []}</span>
                                             </Link>
                                         </div>
