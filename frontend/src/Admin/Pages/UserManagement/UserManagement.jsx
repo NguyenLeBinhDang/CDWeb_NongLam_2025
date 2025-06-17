@@ -102,15 +102,17 @@ const UserManagement = () => {
     //     }
     // };
     const handleBanUser = async () => {
+        handleClose();
         if (!selectedUser) return;
-        const action = selectedUser.isActive ? "Khóa" : "Mở khóa";
+        const action = selectedUser.active ? "Khóa" : "Mở khóa";
         const result = await showConfirmDialog(`${action} người dùng này?`);
 
         if (result.isConfirmed) {
             try {
-                handleClose();
+
                 await banUser(selectedUser.id);
                 await showSuccessDialog(`${action} thành công`);
+                await getAllUser();
             }catch (error){
                 await showErrorDialog(error?.response?.data?.message);
             }
@@ -130,8 +132,8 @@ const UserManagement = () => {
     //     }
     // };
     const handleChangeRole = async () => {
+        handleClose();
         if (!selectedUser || !roles.length) return;
-
         const roleOptions = roles.reduce((acc, role) => {
             acc[role.id] = role.role_name;
             return acc;
@@ -148,8 +150,9 @@ const UserManagement = () => {
 
         if (selectedRoleId) {
             try {
-            await changeUserRole(selectedUser.id, Number(selectedRoleId));
+             await changeUserRole(selectedUser.id, Number(selectedRoleId));
             // await showSuccessDialog("Cập nhật vai trò thành công");
+             await getAllUser();
             }
             catch (error) {
                 await showErrorDialog(error?.response?.data?.message || "Lỗi khi thay đổi role");
