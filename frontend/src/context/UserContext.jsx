@@ -6,7 +6,7 @@ export const UserContext = createContext();
 
 export const UserProvider = ({children}) => {
     const [user, setUser] = useState(null);
-    const [loadUserData, setLoadUserDat] = useState(true);
+    const [loadUserData, setLoadUserData] = useState(true);
     const [token, setToken] = useState(null);
     const [loading, setLoading] = useState(true);
     const [userInfo, setUserInfo] = useState(null);
@@ -29,7 +29,7 @@ export const UserProvider = ({children}) => {
             } catch (error) {
                 console.error('Auth check failed:', error);
             } finally {
-                setLoadUserDat(false);
+                setLoadUserData(false);
             }
         };
 
