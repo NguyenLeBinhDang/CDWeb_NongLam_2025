@@ -35,19 +35,6 @@ const UserManagement = () => {
 
     const [userFilter, setUserFilter] = useState('');
 
-    // useEffect(() => {
-    //     const fetchAllUser = async () => {
-    //         try {
-    //             await getAllUser(newUs);
-    //         } catch (error) {
-    //             console.log('Error fetching users:', error);
-    //         }
-    //     }
-    //     if (users.length === null || users.length === 0) {
-    //         fetchAllUser();
-    //     }
-    // }, []);
-
     useEffect(() => {
         const fetchAllUser = async () => {
             try {
@@ -59,10 +46,6 @@ const UserManagement = () => {
 
         fetchAllUser(); // just fetch with current filter
     }, [userFilter]);
-
-    // useEffect(() => {
-    //     getAllUser(userFilter);
-    // }, [userFilter]);
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -136,8 +119,6 @@ const UserManagement = () => {
     };
 
     const handleSearchUser = async (e) => {
-        // const newFilter = setUserFilter(e.target.value);
-        // await getAllUser(newFilter);
         setUserFilter(e.target.value);
     }
 
@@ -177,9 +158,10 @@ const UserManagement = () => {
 
                 <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
                     <TextField
-                        label="Tìm kiếm người dùng"
+                        // label="Tìm kiếm người dùng"
                         size="small" // Ensures it matches the button height
                         sx={{backgroundColor: '#fff', borderRadius: 1}}
+                        placeholder="Nhập tên người dùng"
                         onChange={handleSearchUser}
                     />
                     <Button
