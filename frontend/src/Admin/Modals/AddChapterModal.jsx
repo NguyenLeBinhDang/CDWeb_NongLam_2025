@@ -61,7 +61,7 @@ const AddChapterModal = ({mangaId, onClose}) => {
     const [chapterNumber, setChapterNumber] = useState('');
     const [pages, setPages] = useState([]);
     const [loading, setLoading] = useState(false);
-    const { getChapterOfManga } = useFilter();
+    // const { getChapterOfManga } = useFilter();
     const sensors = useSensors(useSensor(PointerSensor));
 
     const handleFileChange = (e) => {
@@ -97,7 +97,7 @@ const AddChapterModal = ({mangaId, onClose}) => {
                 }
 
             });
-            await getChapterOfManga(mangaId);
+            // await getChapterOfManga(mangaId);
             setLoading(false);
             onClose();
             await showSuccessDialog(respone?.data?.message || "Thêm chap thành công!");

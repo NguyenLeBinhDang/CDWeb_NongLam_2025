@@ -101,6 +101,14 @@ const AddMangaModal = ({ open, onClose, onSuccess, isEdit = false, defaultData =
                 });
                 setLoading(false);
                 await showSuccessDialog("Thành công", "Đã thêm truyện!");
+                setFormData({
+                    name: '',
+                    description: '',
+                    coverImg: null,          // file
+                    authorName: '',
+                    statusId: '',
+                    categoryIds: []
+                })
             }
 
 

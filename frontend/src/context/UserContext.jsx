@@ -6,12 +6,14 @@ export const UserContext = createContext();
 
 export const UserProvider = ({children}) => {
     const [user, setUser] = useState(null);
+    const [loadUserData, setLoadUserData] = useState(true);
     const [token, setToken] = useState(null);
     const [loading, setLoading] = useState(true);
     const [userInfo, setUserInfo] = useState(null);
     const [users, setUsers] = useState([]);
     const [roles, setRoles] = useState([]);
     const [errorMassage, setErrorMessage] = useState('some error');
+    const [defaultUserFilter] = useState(null);
 
 
     useEffect(() => {
@@ -27,7 +29,7 @@ export const UserProvider = ({children}) => {
             } catch (error) {
                 console.error('Auth check failed:', error);
             } finally {
-                setLoading(false);
+                setLoadUserData(false);
             }
         };
 
@@ -71,7 +73,7 @@ export const UserProvider = ({children}) => {
             throw new Error(message);
         }
     }
-    const getAllUser = async () => {
+    const getAllUser = async (search = defaultUserFilter) => {
         try {
             setLoading(true);
             // const currentToken = customToken || token;
@@ -79,6 +81,9 @@ export const UserProvider = ({children}) => {
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
+                },
+                params: {
+                    search: search
                 }
             });
             // setLoading(false);
@@ -205,7 +210,8 @@ export const UserProvider = ({children}) => {
             roles,
             getAllRole,
             addUser,
-            getUserInfo
+            getUserInfo,
+            loadUserData,
         }}>
             {children}
         </UserContext.Provider>

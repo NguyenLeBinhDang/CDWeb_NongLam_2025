@@ -21,8 +21,8 @@ const MangaReader = () => {
     } = useMangaReader();
 
     const {
-        getChapterOfManga,
-        chapters,
+        // getChapterOfManga,
+        // chapters,
         getMangaById,
         manga,
         loading: filterLoading
@@ -33,7 +33,7 @@ const MangaReader = () => {
 
     const parsedChapNum = parseInt(chapNum);
 
-    const sortedChapters = [...(chapters || [])].sort((a, b) => b.chapter_number - a.chapter_number);
+    const sortedChapters = [...( manga?.chapter || [])].sort((a, b) => b.chapter_number - a.chapter_number);
 
     useEffect(() => {
         if (!mangaId || !chapNum) {
@@ -45,7 +45,7 @@ const MangaReader = () => {
             try {
                 setError(null);
                 await getMangaById(mangaId);
-                await getChapterOfManga(mangaId);
+                // await getChapterOfManga(mangaId);
 
                 await loadPages(mangaId, chapNum);
             } catch (err) {

@@ -13,8 +13,8 @@ const AllManga = () => {
         // getAllManga,
         getManga,
         defaultFilter,
-        mangaChapters,
-        fetchChapterForAll,
+        // mangaChapters,
+        // fetchChapterForAll,
         loading,
         totalPages,
         currentPage,
@@ -32,12 +32,12 @@ const AllManga = () => {
     useEffect(() => {
         getManga(defaultFilter);
     }, [defaultFilter]);
-
-    useEffect(() => {
-        if (mangaList.length > 0) {
-            fetchChapterForAll();
-        }
-    }, [mangaList]);
+    //
+    // useEffect(() => {
+    //     if (mangaList.length > 0) {
+    //         fetchChapterForAll();
+    //     }
+    // }, [mangaList]);
     const checkAuth = () => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -117,7 +117,7 @@ const AllManga = () => {
                             <div className="manga-grid">
                                 {mangaList.map(manga => (
                                     <div key={manga.id} className="manga-item">
-                                        <MangaCard manga={manga} chapter={mangaChapters[manga.id] || []}
+                                        <MangaCard manga={manga} chapter={manga?.chapter || []}
                                                    isFavorite={isFavorite[manga.id]}/>
                                     </div>
                                 ))}

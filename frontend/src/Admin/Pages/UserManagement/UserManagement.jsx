@@ -10,7 +10,7 @@ import {
     Typography,
     IconButton,
     Menu,
-    MenuItem,
+    MenuItem, TextField,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 // import "/img.png";
@@ -33,18 +33,19 @@ const UserManagement = () => {
         addUser,
     } = useUser();
 
+    const [userFilter, setUserFilter] = useState('');
+
     useEffect(() => {
         const fetchAllUser = async () => {
             try {
-                await getAllUser();
+                await getAllUser(userFilter);
             } catch (error) {
                 console.log('Error fetching users:', error);
             }
-        }
-        if (users.length === null || users.length === 0) {
-            fetchAllUser();
-        }
-    }, []);
+        };
+
+        fetchAllUser(); // just fetch with current filter
+    }, [userFilter]);
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedUser, setSelectedUser] = useState(null);
@@ -117,6 +118,10 @@ const UserManagement = () => {
         await updateAvatar(userId, file);
     };
 
+    const handleSearchUser = async (e) => {
+        setUserFilter(e.target.value);
+    }
+
     const tableCellStyle = {
         whiteSpace: 'normal',
         backgroundColor: '#fff',
@@ -139,10 +144,37 @@ const UserManagement = () => {
     return (
         <Box sx={{backgroundColor: '#666', padding: 3, minHeight: '100vh'}}>
             {loading && <Loading/>}
-            <Box sx={{display: 'flex', justifyContent: 'space-between', mb: 2}}>
-                <Typography variant="h4" sx={{color: '#fff'}}>Danh sách người dùng</Typography>
-                <Button variant="contained" color="primary" onClick={handleAddUserClick}>Thêm User</Button>
+            <Box
+                sx={{
+                    display: 'flex',
+                    mb: 2,
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                }}
+            >
+                <Typography variant="h4" sx={{color: '#fff'}}>
+                    Danh sách người dùng
+                </Typography>
+
+                <Box sx={{display: 'flex', alignItems: 'center', gap: 1}}>
+                    <TextField
+                        // label="Tìm kiếm người dùng"
+                        size="small" // Ensures it matches the button height
+                        sx={{backgroundColor: '#fff', borderRadius: 1}}
+                        placeholder="Nhập tên người dùng"
+                        onChange={handleSearchUser}
+                    />
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={handleAddUserClick}
+                        sx={{height: '40px'}}
+                    >
+                        Thêm User
+                    </Button>
+                </Box>
             </Box>
+
 
             <TableContainer sx={{maxHeight: 'calc(100vh - 200px)', overflowY: 'auto'}}>
                 <Table stickyHeader>

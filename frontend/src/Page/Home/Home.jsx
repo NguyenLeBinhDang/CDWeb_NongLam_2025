@@ -14,9 +14,9 @@ const Home = () => {
         getAllCategories,
         // getAllManga,
         getManga,
-        getChapterOfManga,
-        mangaChapters,
-        fetchChapterForAll,
+        defaultf,
+        // mangaChapters,
+        // fetchChapterForAll,
         setFilterFromHome
     } = useFilter();
     // const [mangaChapters, setMangaChapters] = useState({});
@@ -31,7 +31,7 @@ const Home = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            await getManga();
+            await getManga(defaultf);
             await getAllCategories();
         }
         fetchData()
@@ -39,11 +39,11 @@ const Home = () => {
     const checkAuth = useCallback(() => {
         return !!localStorage.getItem('token');
     }, []);
-    useEffect(() => {
-        if (mangaList.length > 0) {
-            fetchChapterForAll()
-        }
-    }, [mangaList])
+    // useEffect(() => {
+    //     if (mangaList.length > 0) {
+    //         fetchChapterForAll()
+    //     }
+    // }, [mangaList])
     useEffect(() => {
         const fetchFavoriteStatuses = async () => {
             if (checkAuth() && mangaList.length > 0) {
@@ -144,7 +144,7 @@ const Home = () => {
                                 <div className="row">
                                     {mangaList.map(manga => (
                                         <div key={manga.id} className="col-md-6 col-lg-4 mb-4">
-                                            <MangaCard manga={manga} chapter={mangaChapters[manga.id] || []}
+                                            <MangaCard manga={manga} chapter={manga.chapter || []}
                                                        isFavorite={isFavorite[manga.id]}/>
                                         </div>
                                     ))}

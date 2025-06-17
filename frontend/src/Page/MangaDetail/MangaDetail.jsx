@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import React, {useContext, useEffect, useState} from 'react';
+import {useLocation, useParams, useNavigate} from 'react-router-dom';
 import './MangaDetail.css';
-import { useFilter } from "../../context/FilterContext";
+import {useFilter} from "../../context/FilterContext";
 import Loading from "../../components/Loader/Loading";
-import { UserContext } from "../../context/UserContext";
+import {UserContext} from "../../context/UserContext";
 import AddChapterModal from "../../Admin/Modals/AddChapterModal";
 import axios from "axios";
-import {showErrorDialog, showSuccessDialog} from "../../utils/Alert";
+import {showConfirmDialog, showErrorDialog, showSuccessDialog} from "../../utils/Alert";
 import AddMangaModal from "../../Admin/Modals/AddMangaModal";
 
 const MangaDetail = () => {
@@ -17,17 +17,16 @@ const MangaDetail = () => {
     const [comments, setComments] = useState([]);
     const [newComment, setNewComment] = useState("");
     const [replyTo, setReplyTo] = useState(null);
-    const { user } = useContext(UserContext);
+    const {user} = useContext(UserContext);
     const canEdit = ['ADMIN', 'MOD', 'UPLOADER'].includes(user?.role?.role_name);
     const isAdminOrMod = ['ADMIN', 'MOD'].includes(user?.role?.role_name);
-    const { id } = useParams();
-    const { manga, chapters, getMangaById, getChapterOfManga } = useFilter();
+    const {id} = useParams();
+    const {manga,  getMangaById, } = useFilter();
     const [loading, setLoading] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
     useEffect(() => {
         const fetchData = async () => {
             await getMangaById(id);
-            await getChapterOfManga(id);
             await fetchComments();
         };
         fetchData();
@@ -35,7 +34,7 @@ const MangaDetail = () => {
 
     const fetchComments = async () => {
         try {
-            const res =await axios.get(`http://localhost:8080/api/comments/manga/${id}`);
+            const res = await axios.get(`http://localhost:8080/api/comments/manga/${id}`);
             setComments(res.data);
         } catch (e) {
             console.error("Failed to fetch comments", e);
@@ -46,12 +45,15 @@ const MangaDetail = () => {
         if (!newComment.trim()) return;
         try {
             const response = replyTo
-                ? await axios.post(`http://localhost:8080/api/comments/${replyTo}/reply`, { comment: newComment, mangaId: id }, {
+                ? await axios.post(`http://localhost:8080/api/comments/${replyTo}/reply`, {
+                    comment: newComment,
+                    mangaId: id
+                }, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
                 })
-                : await axios.post(`http://localhost:8080/api/comments`, { comment: newComment, mangaId: id }, {
+                : await axios.post(`http://localhost:8080/api/comments`, {comment: newComment, mangaId: id}, {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`
                     }
@@ -63,7 +65,7 @@ const MangaDetail = () => {
         } catch (error) {
             console.error("Comment failed", error);
             const message = error?.response?.data?.message
-            await showErrorDialog("Lỗi",message ||"Không thể gửi bình luận");
+            await showErrorDialog("Lỗi", message || "Không thể gửi bình luận");
         }
     };
 
@@ -91,7 +93,7 @@ const MangaDetail = () => {
             await showSuccessDialog("Đã chặn người dùng");
         } catch (error) {
             const message = error?.response?.data?.message
-            await showErrorDialog("Lỗi", message||"Không thể chặn người dùng");
+            await showErrorDialog("Lỗi", message || "Không thể chặn người dùng");
         }
     };
 
@@ -128,12 +130,13 @@ const MangaDetail = () => {
                     {rootComments.map(comment => (
                         <div key={comment.id} className="comment-item">
                             <div className="comment-avatar">
-                                <img src={comment.avatarUrl || "/default-avatar.png"} alt="avatar" />
+                                <img src={comment.avatarUrl || "/default-avatar.png"} alt="avatar"/>
                             </div>
                             <div className="comment-content">
                                 <div className="comment-header">
                                     <span className="comment-user">{comment.userName || "Ẩn danh"}</span>
-                                    <span className="comment-time">{new Date(comment.updatedAt).toLocaleString("vi-VN")}</span>
+                                    <span
+                                        className="comment-time">{new Date(comment.updatedAt).toLocaleString("vi-VN")}</span>
                                     {comment.chapNum != null && (
                                         <span className="comment-chap">Chapter: {comment.chapNum}</span>
                                     )}
@@ -147,7 +150,9 @@ const MangaDetail = () => {
                                     )}
                                     {['ADMIN', 'MOD'].includes(user?.role?.role_name) && (
                                         <>
-                                            <button onClick={() => handleDeleteComment(comment.id)} className="admin-action delete">Xóa</button>
+                                            <button onClick={() => handleDeleteComment(comment.id)}
+                                                    className="admin-action delete">Xóa
+                                            </button>
                                             {/*<button onClick={() => handleBanUser(comment.userId)} className="admin-action ban">Chặn</button>*/}
                                         </>
                                     )}
@@ -163,7 +168,8 @@ const MangaDetail = () => {
                                         rows={2}
                                         className="comment-textarea"
                                     />
-                                        <button onClick={handlePostComment} className="post-comment-btn">Gửi phản hồi</button>
+                                        <button onClick={handlePostComment} className="post-comment-btn">Gửi phản hồi
+                                        </button>
                                         <button onClick={() => setReplyTo(null)} className="cancel-reply">Hủy</button>
                                     </div>
                                 )}
@@ -173,13 +179,14 @@ const MangaDetail = () => {
                                     {getReplies(comment.id).map(reply => (
                                         <div key={reply.id} className="reply-item">
                                             <div className="comment-avatar">
-                                                <img src={reply.avatarUrl || "/default-avatar.png"} alt="avatar" />
+                                                <img src={reply.avatarUrl || "/default-avatar.png"} alt="avatar"/>
                                             </div>
                                             <div className="comment-content">
                                                 <div className="comment-header">
                                                     <span className="comment-user">{reply.userName || "Ẩn danh"}</span>
 
-                                                    <span className="comment-time">{new Date(reply.updatedAt).toLocaleString("vi-VN")}</span>
+                                                    <span
+                                                        className="comment-time">{new Date(reply.updatedAt).toLocaleString("vi-VN")}</span>
                                                     {reply.chapNum != null && (
                                                         <span className="comment-chap">Chapter: {reply.chapNum}</span>
                                                     )}
@@ -191,7 +198,9 @@ const MangaDetail = () => {
                                                     )}
                                                     {['ADMIN', 'MOD'].includes(user?.role?.role_name) && (
                                                         <>
-                                                            <button onClick={() => handleDeleteComment(reply.id)} className="admin-action delete">Xóa</button>
+                                                            <button onClick={() => handleDeleteComment(reply.id)}
+                                                                    className="admin-action delete">Xóa
+                                                            </button>
                                                             {/*<button onClick={() => handleBanUser(reply.userId)} className="admin-action ban">Chặn</button>*/}
                                                         </>
                                                     )}
@@ -224,7 +233,6 @@ const MangaDetail = () => {
     };
 
 
-
     const handleChapterClick = (chapterNumber) => {
         navigate(`/manga/${id}/chapter/${chapterNumber}`);
     };
@@ -233,7 +241,8 @@ const MangaDetail = () => {
         <div className="edit-manga-buttons-container">
             <button className="edit-manga-button"
                     onClick={() => setShowEditModal(true)
-            }>Chỉnh sửa thông tin truyện</button>
+                    }>Chỉnh sửa thông tin truyện
+            </button>
             <button
                 className="add-chapter-button"
                 onClick={() => setShowAddChapterModal(true)}
@@ -252,16 +261,21 @@ const MangaDetail = () => {
         </button>
     );
     const handleDeleteChapter = async (chapId) => {
-        setLoading(true);
+
         try {
-            const respone = await axios.delete(`http://localhost:8080/api/manga/${id}/chapter/${chapId}`, {
-                headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`
-                }
-            });
-            await getChapterOfManga(id);
-            setLoading(false);
-            await showSuccessDialog(respone?.data?.message || "Xóa thành công!");
+            const confirm = await showConfirmDialog("Bạn chắc chắn chứ?")
+            if (confirm.isConfirmed) {
+                setLoading(true);
+                const respone = await axios.delete(`http://localhost:8080/api/manga/${id}/chapter/${chapId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                // await getChapterOfManga(id);
+                setLoading(false);
+                await showSuccessDialog(respone?.data?.message || "Xóa thành công!");
+            }
+
 
         } catch (error) {
             setLoading(false);
@@ -271,29 +285,51 @@ const MangaDetail = () => {
         }
     };
 
-    const renderComment= () => {
+    const renderComment = () => {
 
     }
 
     const renderChaptersList = () => {
         // Sắp xếp chương theo số chương giảm dần (mới nhất đầu tiên)
-        const sortedChapters = [...chapters].sort((a, b) => b.chapter_number - a.chapter_number);
+        // const sortedChapters = [...chapters].sort((a, b) => b.chapter_number - a.chapter_number);
 
         return (
             <div className="chapters-list">
-                {sortedChapters.map((ch) => (
-                    <div key={ch.id} className="chapter-item">
-                        <div
-                            onClick={() => handleChapterClick(ch.chapter_number)}
-                            className="chapter-link"
-                        >
-                            <span className="chapter-number">Chương {ch.chapter_number}</span>
-                            <span className="chapter-title">{ch.chapter_name}</span>
-                            {canEdit && renderAdminDeleteButtons(ch.id)}
-                        </div>
-
+                {manga.chapter?.length > 0 ? (
+                    manga.chapter
+                        .sort((a, b) => b.chapter_number - a.chapter_number) // Sắp xếp chương mới nhất trước
+                        .map((ch) => (
+                            <div
+                                key={ch.id}
+                                className="chapter-item"
+                                style={{ display: 'flex' }}
+                            >
+                                <div
+                                    className="chapter-link"
+                                    onClick={() => handleChapterClick(ch.chapter_number)}
+                                    style={{
+                                        flex: 1,
+                                        cursor: 'pointer',
+                                        display: 'flex',
+                                        alignItems: 'center'
+                                    }}
+                                >
+                                <span className="chapter-number">
+                                  Chương {ch.chapter_number}
+                                    {ch.chapter_name && ': '} {/* Chỉ hiện dấu ':' nếu có tên chương */}
+                                </span>
+                                    {ch.chapter_name && (
+                                        <span className="chapter-title">{ch.chapter_name}</span>
+                                    )}
+                                </div>
+                                {canEdit && renderAdminDeleteButtons(ch.id)}
+                            </div>
+                        ))
+                ) : (
+                    <div className="no-chapters-message">
+                        Truyện chưa có chương nào được đăng
                     </div>
-                ))}
+                )}
             </div>
         );
     };
@@ -327,7 +363,7 @@ const MangaDetail = () => {
         </div>
     );
 
-    if (!manga || loading) return <Loading />;
+    if (!manga || loading) return <Loading/>;
 
     return (
         <div className="manga-detail-page">
@@ -362,7 +398,9 @@ const MangaDetail = () => {
             {showAddChapterModal && (
                 <AddChapterModal
                     mangaId={manga.id}
-                    onClose={() => setShowAddChapterModal(false)}
+                    onClose={async () =>{
+                        await getMangaById(manga.id)
+                        setShowAddChapterModal(false)}}
                 />
             )}
         </div>

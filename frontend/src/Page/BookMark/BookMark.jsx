@@ -15,11 +15,11 @@ const BookMark = () => {
         fetchBookmarks();
     }, []);
 
-    useEffect(() => {
-        if (bookmarks.length > 0) {
-            fetchChapterForAll();
-        }
-    }, [bookmarks]);
+    // useEffect(() => {
+    //     if (bookmarks.length > 0) {
+    //         fetchChapterForAll();
+    //     }
+    // }, [bookmarks]);
 
     return (
         <div className="bookmark-page">
@@ -34,7 +34,7 @@ const BookMark = () => {
                         <div className="manga-grid">
                             {bookmarks.map(bookmark => (
                                 <div key={bookmark.id} className="manga-item">
-                                    <MangaCard manga={bookmark.manga} chapter={chapters[bookmark.manga.id] || []}
+                                    <MangaCard manga={bookmark.manga} chapter={bookmark?.manga?.chapter || []}
                                                isFavorite={true}/>
                                 </div>
                             ))}
