@@ -214,7 +214,7 @@ const Header = () => {
                         <li className="d-flex gap-2"><Link to="/bookmark"><i className="fas fa-bookmark"></i> Theo dõi
                         </Link></li>
 
-                        {isAdmin &&
+                        {user && isAdmin &&
                             <li className="d-flex gap-2"><Link to="/admin"><i className="fas fa-cog"></i> Admin </Link>
                             </li>}
 

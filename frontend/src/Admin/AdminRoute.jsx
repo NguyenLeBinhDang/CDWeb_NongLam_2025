@@ -5,22 +5,9 @@ import Loading from "../components/Loader/Loading";
 
 
 const AdminRoute = ({allowedRoles}) => {
-    const {userInfo, loading, user, getUserInfo} = useUser();
+    const {userInfo, loadUserData, user, getUserInfo} = useUser();
 
-    // useEffect(() => {
-    //     const fetchUserInfo = async (userId) => {
-    //         try {
-    //             await getUserInfo(userId);
-    //         } catch (error) {
-    //             console.error('Error fetching user info:', error);
-    //         }
-    //     }
-    //     if (user) {
-    //         fetchUserInfo(user.id);
-    //     }
-    // }, [user]);
-
-    if (loading) return ;
+    if (loadUserData) return;
 
     if (!user || !allowedRoles.includes(user?.role?.role_name)) {
         return <Navigate to="/" replace/>

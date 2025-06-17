@@ -122,7 +122,7 @@ export const BookmarkProvider = ({children}) => {
         if (!checkAuth()) return;
 
         const confirmed = await showConfirmDialog("Bạn có chắc muốn thêm vào theo dõi?", "question");
-        if (!confirmed) return;
+        if (!confirmed.isConfirmed) return;
 
         const success = await addBookmark(mangaId);
         if (success) {
@@ -135,7 +135,7 @@ export const BookmarkProvider = ({children}) => {
         if (!checkAuth()) return;
 
         const confirmed = await showConfirmDialog("Bạn có chắc muốn xóa khỏi theo dõi?", "question");
-        if (!confirmed) return;
+        if (!confirmed.isConfirmed) return;
 
         const success = await removeBookmark(mangaId);
         if (success) {
