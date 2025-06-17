@@ -272,6 +272,7 @@ const MangaDetail = () => {
                     }
                 });
                 // await getChapterOfManga(id);
+                await getMangaById(id)
                 setLoading(false);
                 await showSuccessDialog(respone?.data?.message || "Xóa thành công!");
             }
@@ -399,8 +400,10 @@ const MangaDetail = () => {
                 <AddChapterModal
                     mangaId={manga.id}
                     onClose={async () =>{
-                        await getMangaById(manga.id)
                         setShowAddChapterModal(false)}}
+                    onSuccess={async () => {
+                        await getMangaById(manga.id)
+                    }}
                 />
             )}
         </div>
