@@ -56,7 +56,7 @@ const SortableImageItem = ({id, file, index, removeFile}) => {
     );
 };
 
-const AddChapterModal = ({mangaId, onClose}) => {
+const AddChapterModal = ({mangaId, onClose,onSuccess}) => {
     const [chapterName, setChapterName] = useState('');
     const [chapterNumber, setChapterNumber] = useState('');
     const [pages, setPages] = useState([]);
@@ -98,10 +98,11 @@ const AddChapterModal = ({mangaId, onClose}) => {
 
             });
             // await getChapterOfManga(mangaId);
+
             setLoading(false);
             onClose();
             await showSuccessDialog(respone?.data?.message || "Thêm chap thành công!");
-
+            onSuccess?.();
         } catch (error) {
             setLoading(false);
             console.error(error);
